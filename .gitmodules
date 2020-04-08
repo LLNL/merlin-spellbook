@@ -1,0 +1,6 @@
+[submodule "conduit_gather/cmake/blt"]
+	path = conduit_gather/cmake/blt
+	url = git@github.com:LLNL/blt.git
+[submodule "conduit_gather/src/tpl/conduit"]
+	path = conduit_gather/src/tpl/conduit
+	url = git@github.com:LLNL/conduit.git
