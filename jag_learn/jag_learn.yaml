@@ -1,0 +1,157 @@
+####################################################################
+## Merlin spec for running and learning on JAG
+##
+##
+## This spec makes samples, runs JAG in-situ, then runs a random forest
+## regression on their results via sci-kit learn. 
+##
+#####################################################################
+
+
+description:
+    name: jag_learn_ensemble
+    description: |
+        run some jags, build a learner, profit
+
+batch:
+    type    : local
+
+env:
+    variables:
+        OUTPUT_PATH: ./studies
+        CONDUIT_PATH: /usr/workspace/merlinau/conduit/install_blueos_3_ppc64le_ib_p9/python-modules
+        N_SAMPLES: 10
+        SHARED: $(SPECROOT)/../shared
+        SHARED_JAG: $(SHARED)/shared_jag
+        JAG: $(SHARED_JAG)/jag_exe.py
+        BUNDLER: $(SHARED)/shared_conduit/conduit_bundler.py
+        PFILE: $(SHARED_JAG)/jag_params.py
+        FEATURES: $(SHARED_JAG)/features.json
+        FEATURES_TRANSLATE: $(SHARED_JAG)/features_translate.json
+        TRANSLATE: $(SPECROOT)/translator.py
+        LEARN: $(SHARED)/learn.py
+        PREDICT: $(SHARED)/predict.py
+        MAKE_SAMPLES: $(SPECROOT)/make_samples.py
+
+study:
+    #- name: build_collector
+    #  description: build collector.cxx
+    #  run:
+    #     cmd: |
+    #          cd $(SPECROOT)
+    #          git submodule update --init .
+    #          ml cmake/3.8.2
+    #          cd $(WORKSPACE)
+    #          cmake -B $(SPECROOT)
+    #          make all -j 2
+
+    - name: build_py2_venv
+      description: make a py2 venv and install JAG and conduit to it
+      run:
+         cmd: |
+            python2 -m virtualenv venv --system-site-packages
+            venv/bin/pip install --cert /etc/pki/tls/cert.pem -r $(SHARED_JAG)/jag_reqs.txt
+            venv/bin/pip install $(CONDUIT_PATH)
+
+    - name: run_jag
+      description: |
+         process a sample with jag
+      run:
+        cmd: |
+          cp $(PFILE) .
+          cp $(BUNDLER) .
+          export PYTHONPATH=`pwd`
+          echo $(STUDY)
+          $(build_py2_venv.workspace)/venv/bin/python $(JAG) --param_file jag_params.py \
+                        --override='{"ablation_cv":$(CVABL),"MShell":$(MSHELL),"radiation_mult":$(RADMULT),"betti_prl15_trans_u":$(U),"betti_prl15_trans_v":$(V),"shape_model_initial_modes:(1,0)":$(MODE_1_0),"shape_model_initial_modes:(2,1)":$(MODE_2_1),"shape_model_initial_modes:(4,3)":$(MODE_4_3)}'
+        depends: [build_py2_venv]
+        procs: 1
+        nodes: 1
+
+    #- name: collect
+    #  description: |
+    #     process the output of the jag samples, extracting specific features
+    #  run:
+    #     cmd: |
+    #         find $(run_jag.workspace)/*STUDY.$(STUDY) -name results.hdf5 > files_to_collect.txt
+    #         $(build_collector.workspace)/bin/collector $(FEATURES) results_$(STUDY)_features.hdf5 `cat files_to_collect.txt`
+    #     depends: [run_jag_*,build_collector]
+
+    #- name: translate
+    #  description: |
+    #      Turn the hdf5 results into a numpy file for later training/ease of use.
+    #      The variables translated are listed in features_translate.json.
+    #  run:
+    #     cmd: python $(TRANSLATE) -input $(collect.workspace)/results_$(STUDY)_features.hdf5 -output results.npz -schema $(FEATURES_TRANSLATE)
+    #     depends: [collect]
+
+    #- name: learn
+    #  description: |
+    #     train a learner on the results, defining the inputs and outputs to train on
+    #  run:
+    #     cmd: python $(LEARN) -infile $(translate.workspace)/results.npz -y "outputs/scalars/Yn" -X "inputs/betti_prl15_trans_u,inputs/betti_prl15_trans_v"
+    #     depends: [translate]
+
+    #- name: make_new_samples
+    #  description: |
+    #     make a grid of new samples to pass to the predictor; dims=2 because we have two inputs we trained on
+    #  run:
+    #     cmd: python $(MAKE_SAMPLES) -dims 2 -n $(N_NEW) -sample_type grid -outfile grid_$(N_NEW).npy
+
+    #- name: predict
+    #  description: |
+    #     make a new prediction from new samples
+    #  run:
+    #     cmd: python $(PREDICT) -infile $(make_new_samples.workspace)/grid_$(N_NEW).npy -outfile prediction_$(N_NEW).npy -reg $(learn.workspace)/random_forest_reg.pkl
+    #     depends: [learn, make_new_samples]
+
+    #- name: verify
+    #  description: |
+    #     if learn and predict succeeded, output a dir to signal study completion
+    #  run:
+    #     cmd: |
+    #        if [[ -f $(learn.workspace)/random_forest_reg.pkl && -f $(predict.workspace)/prediction_$(N_NEW).npy ]]
+    #        then
+    #            touch FINISHED
+    #            exit $(merlin_success)
+    #        else
+    #            exit $(merlin_soft_fail)
+    #        fi
+    #     depends: [learn, predict]
+
+global.parameters:
+    STUDY:
+        values : [JAG, JAGX-0]
+        label  : STUDY.%%
+    CVABL:
+        values : [0.5, 1.5]
+        label  : CVABL.%%
+    MSHELL:
+        values : [50, 150]
+        label  : MSHELL.%%
+    RADMULT:
+        values : [1.0, 0.75]
+        label  : RADMULT.%%
+    N_NEW:
+        values : [10, 10]
+        label  : N_NEW.%%
+
+merlin:
+    resources:
+        task_server: celery
+        overlap: False
+        workers:
+            simworkers:
+                steps: [build_collector, build_py2_venv, run_jag, collect, translate]
+            learnworkers:
+                steps: [learn, make_new_samples, predict, verify]
+    samples:
+        generate:
+            # This creates the samples.npy file with samples in it, scaled between (min,max,scale_function) in the corresponding directions
+            cmd: python $(SPECROOT)/make_samples.py -dims 5 -n $(N_SAMPLES) -outfile=$(MERLIN_INFO)/samples.npy -scale "[(0,1,'linear'),(0,1,'linear'),(-0.3,0.3,'linear'),(-0.3,0.3,'linear'),(-0.3,0.3,'linear')]"
+# can be a file glob of numpy sample files.
+        file: $(MERLIN_INFO)/samples.npy
+# column labels need to not conflict with maestro parameter labels
+        column_labels: [U, V, MODE_1_0, MODE_2_1, MODE_4_3]
+
+
