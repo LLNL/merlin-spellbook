@@ -43,7 +43,6 @@ import conduit.relay.io
 import numpy as np
 
 
-
 LOG = logging.getLogger(__name__)
 
 
@@ -52,14 +51,15 @@ def determine_protocol(fname):
     Determines a file protocol based on file name extension.
     """
     _, ext = os.path.splitext(fname)
-    if ext.startswith('.'):
-        protocol = ext.lower().strip('.')
+    if ext.startswith("."):
+        protocol = ext.lower().strip(".")
     else:
         raise ValueError(
-            '{0} needs an ext (eg .hdf5) to determine protocol!'.format(fname))
+            "{0} needs an ext (eg .hdf5) to determine protocol!".format(fname)
+        )
     # Map .h5 to .hdf5
-    if protocol == 'h5':
-        protocol = 'hdf5'
+    if protocol == "h5":
+        protocol = "hdf5"
     return protocol
 
 
@@ -103,6 +103,13 @@ def pack_conduit_node_from_dict(d):
                     LOG.error("Conduit does not support following value", k, d[k])
         return node
     else:
+        if isinstance(d,(list, tuple, np.ndarray)):
+            d_a = np.asarray(d)
+            node = conduit.Node()
+            node['data'] = d_a
+            if len(d_a.shape) > 1:
+                node['metadata/shape'] = d_a.shape
+            return node
         if d is None:
             return "None"
         return d
@@ -166,4 +173,3 @@ def load_node(fname):
         return n
     else:
         raise IOError("No such file: " + fname)
-
