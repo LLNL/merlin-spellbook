@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from sklearn.utils.testing import all_estimators
 from sklearn import base
 
@@ -26,7 +28,7 @@ class sklearnRegressors(object):
         if name in cls.all_regs:
             return cls.all_regs[name](*args, **kwargs)
         else:
-            print(f"Unknown regressor name {name}! For valid choices see sklearnRegressors.names():")
+            print("Unknown regressor name "+name+"! For valid choices see sklearnRegressors.names()")
 
     @classmethod
     def names(cls):
@@ -38,7 +40,7 @@ def test_factory():
     regressors = sklearnRegressors.names()
     print("Building regressor objects...")
     for r in regressors:
-        print(r, sklearnRegressors.factory(r))
+        print(r, ':', sklearnRegressors.factory(r))
 
 
 def test_random_forest():
