@@ -1,6 +1,9 @@
 from __future__ import print_function
 
-from sklearn.utils.testing import all_estimators
+try:
+    from sklearn.utils import all_estimators
+except ImportError:
+    from sklearn.utils.testing import all_estimators
 from sklearn import base
 
 class sklearnRegressors(object):
