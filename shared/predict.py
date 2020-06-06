@@ -46,7 +46,7 @@ def setup_argparse():
     parser.add_argument('-infile', help='.npy file with data to predict',
                         default='new_x.npy')
     parser.add_argument('-reg', help='pickled regressor file',
-                        default='random_forest_reg.pkl')
+                        default='regressor.pkl')
     parser.add_argument('-outfile', help='file to store the new predictions',
                         default='new_y.npy')
 
