@@ -31,7 +31,7 @@ class sklearnRegressors(object):
         if name in cls.all_regs:
             return cls.all_regs[name](*args, **kwargs)
         else:
-            print("Unknown regressor name "+name+"! For valid choices see sklearnRegressors.names()")
+            raise ValueError("Unknown regressor name "+name+"! For valid choices see sklearnRegressors.names()")
 
     @classmethod
     def names(cls):
@@ -41,9 +41,8 @@ class sklearnRegressors(object):
 def test_factory():
 
     regressors = sklearnRegressors.names()
-    print("Building regressor objects...")
     for r in regressors:
-        print(r, ':', sklearnRegressors.factory(r))
+        _ = sklearnRegressors.factory(r)
 
 
 def test_random_forest():
@@ -51,8 +50,11 @@ def test_random_forest():
     rf1 = sklearnRegressors.factory('RandomForestRegressor',n_estimators=10,max_depth=5)
     rf2 = sklearnRegressors.factory('RandomForestRegressor',n_estimators=2,max_depth=3)
 
-    print(rf1)
-    print(rf2)
+    assert(rf1.n_estimators == 10)
+    assert(rf1.max_depth == 5)
+
+    assert(rf2.n_estimators == 2)
+    assert(rf2.max_depth == 3)
  
 if __name__ == '__main__':
     test_factory()
