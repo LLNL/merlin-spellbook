@@ -34,18 +34,11 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+import json
 import numpy as np
 import sys
 
-from sklearn.ensemble import RandomForestRegressor
-
-
-FOREST_DEFAULTS = {
-    'max_depth': 2,
-    'random_state': 0,
-    'n_estimators': 100,
-}
-
+import surrogates
 
 def load_infile(args):
     with np.load(args.infile) as data:
@@ -65,10 +58,13 @@ def load_infile(args):
     return X, y
 
 
-def random_forest(args):
-    forest_args = FOREST_DEFAULTS
+def make_regressor(args):
+    if args.reg_args is None:
+        reg_args = {}
+    else:
+        reg_args = args.reg_args
 
-    regr = RandomForestRegressor(**forest_args)
+    regr = surrogates.sklearnRegressors.factory(args.regressor, **reg_args)
     X, y = load_infile(args)
 
     n_samples_X = X.shape[0]
@@ -96,18 +92,20 @@ def stack_arrays(data, delimited_names, delimiter=','):
 
 def setup_argparse():
     parser = argparse.ArgumentParser(
-        description='Use sklearn to make a random forest regressor')
+        description='Use sklearn to make a regressor')
     parser.add_argument('-infile', help='.npz file with X and y data', default='results.npz')
     parser.add_argument('-X', help='variable(s) in infile for the input, defaults to X; can be a comma-delimited list')
     parser.add_argument('-y', help='variable(s) in infile for the output, defaults to y')
-    parser.add_argument('-outfile', help='file to pickle the regressor to', default='random_forest_reg.pkl')
+    parser.add_argument('-outfile', help='file to pickle the regressor to', default='regressor.pkl')
+    parser.add_argument('-regressor', help='sklearn regressor type', default='RandomForestRegressor')
+    parser.add_argument('-reg_args', help='dictionary of args to pass to the regressor. json format, eg: \'{\"n_estimators\":3,\"max_depth\":5}\'',default=None, type=json.loads)
     return parser
 
 
 def main():
     parser = setup_argparse()
     args = parser.parse_args()
-    random_forest(args)
+    make_regressor(args)
 
 
 if __name__ == "__main__":
