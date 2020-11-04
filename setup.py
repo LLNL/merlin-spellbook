@@ -8,7 +8,7 @@
 # All rights reserved.
 # This file is part of Merlin, Version: 1.7.5.
 #
-# For details, see https://github.com/LLNL/merlin.
+# For details, see https://github.com/LLNL/merlin-spellbook.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,6 @@ import os
 
 from setuptools import find_packages, setup
 
-
-#version = __import__("merlin").VERSION
 version = "1.0"
 
 extras = ["dev"]
@@ -104,7 +102,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
-    keywords="machine learning workflow",
+    keywords="machine learning workflow utilities",
     url="https://github.com/LLNL/merlin-spellbook",
     license="MIT",
     packages=find_packages(exclude=["tests.*", "tests"]),
