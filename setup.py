@@ -6,7 +6,7 @@
 #
 # LLNL-CODE-797170
 # All rights reserved.
-# This file is part of Merlin, Version: 1.7.5.
+# This file is part of Merlin-Spellbook, Version: 0.0.1.
 #
 # For details, see https://github.com/LLNL/merlin-spellbook.
 #
@@ -32,7 +32,7 @@ import os
 
 from setuptools import find_packages, setup
 
-version = "1.0"
+version = "0.0.1"
 
 extras = ["dev"]
 
