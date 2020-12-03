@@ -89,7 +89,7 @@ def extras_require():
 
 
 setup(
-    name="merlin-spellbook",
+    name="spellbook",
     author="Merlin Dev team",
     author_email="merlin@llnl.gov",
     version=version,
