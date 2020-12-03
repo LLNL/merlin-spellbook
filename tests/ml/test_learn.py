@@ -1,6 +1,6 @@
 import numpy as np
 
-from merlin_spellbook.src.ml.learn import stack_arrays
+from spellbook.ml.learn import stack_arrays
 
 
 def test_stack_arrays():
