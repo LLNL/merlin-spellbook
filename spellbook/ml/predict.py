@@ -30,36 +30,38 @@
 ###############################################################################
 
 import argparse
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 import sys
 
 import numpy as np
 
 
-def setup_argparse():
-    parser = argparse.ArgumentParser(
-        description='Use a regressor to make a prediction')
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
-    parser.add_argument('-infile', help='.npy file with data to predict',
-                        default='new_x.npy')
-    parser.add_argument('-reg', help='pickled regressor file',
-                        default='regressor.pkl')
-    parser.add_argument('-outfile', help='file to store the new predictions',
-                        default='new_y.npy')
+
+def setup_argparse():
+    parser = argparse.ArgumentParser(description="Use a regressor to make a prediction")
+
+    parser.add_argument(
+        "-infile", help=".npy file with data to predict", default="new_x.npy"
+    )
+    parser.add_argument("-reg", help="pickled regressor file", default="regressor.pkl")
+    parser.add_argument(
+        "-outfile", help="file to store the new predictions", default="new_y.npy"
+    )
 
     return parser
 
 
 def predict(args):
-    regr = pickle.load(open(args.reg, 'rb'))
+    regr = pickle.load(open(args.reg, "rb"))
 
     X = np.load(args.infile)
 
     new_y = regr.predict(X)
-    np.save(open(args.outfile, 'wb'), new_y)
+    np.save(open(args.outfile, "wb"), new_y)
 
 
 def main():

@@ -31,11 +31,14 @@
 
 from __future__ import print_function
 
+from sklearn import base
+
+
 try:
     from sklearn.utils import all_estimators
 except ImportError:
     from sklearn.utils.testing import all_estimators
-from sklearn import base
+
 
 class sklearnRegressors(object):
     """Scikit learn regressor factory.
@@ -62,7 +65,11 @@ class sklearnRegressors(object):
         if name in cls.all_regs:
             return cls.all_regs[name](*args, **kwargs)
         else:
-            raise ValueError("Unknown regressor name "+name+"! For valid choices see sklearnRegressors.names()")
+            raise ValueError(
+                "Unknown regressor name "
+                + name
+                + "! For valid choices see sklearnRegressors.names()"
+            )
 
     @classmethod
     def names(cls):
@@ -78,15 +85,20 @@ def test_factory():
 
 def test_random_forest():
 
-    rf1 = sklearnRegressors.factory('RandomForestRegressor',n_estimators=10,max_depth=5)
-    rf2 = sklearnRegressors.factory('RandomForestRegressor',n_estimators=2,max_depth=3)
+    rf1 = sklearnRegressors.factory(
+        "RandomForestRegressor", n_estimators=10, max_depth=5
+    )
+    rf2 = sklearnRegressors.factory(
+        "RandomForestRegressor", n_estimators=2, max_depth=3
+    )
 
-    assert(rf1.n_estimators == 10)
-    assert(rf1.max_depth == 5)
+    assert rf1.n_estimators == 10
+    assert rf1.max_depth == 5
 
-    assert(rf2.n_estimators == 2)
-    assert(rf2.max_depth == 3)
- 
-if __name__ == '__main__':
+    assert rf2.n_estimators == 2
+    assert rf2.max_depth == 3
+
+
+if __name__ == "__main__":
     test_factory()
     test_random_forest()
