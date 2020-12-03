@@ -38,7 +38,7 @@ import json
 import numpy as np
 import sys
 
-import surrogates
+import spellbook.ml.surrogates
 
 def load_infile(args):
     with np.load(args.infile) as data:
