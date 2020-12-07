@@ -89,7 +89,7 @@ def extras_require():
 
 
 setup(
-    name="spellbook",
+    name="merlin-spellbook",
     author="Merlin Dev team",
     author_email="merlin@llnl.gov",
     version=version,
@@ -108,6 +108,11 @@ setup(
     packages=find_packages(exclude=["tests.*", "tests"]),
     install_requires=install_requires(),
     extras_require=extras_require(),
+    entry_points={
+        "console_scripts": [
+            "spellbook=spellbook.main:main",
+        ]
+    },
     include_package_data=True,
     zip_safe=False,
 )
