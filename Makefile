@@ -20,3 +20,8 @@ version:
 	find tests/ -type f -print0 | xargs -0 sed -i 's/Version: $(VSTRING)/Version: $(VER)/g'
 	find Makefile -type f -print0 | xargs -0 sed -i 's/Version: $(VSTRING)/Version: $(VER)/g'
 
+clean:
+	-find spellbook -name "*.py[cod]" -exec rm -f {} \;
+	-find spellbook -name "__pycache__" -type d -exec rm -rf {} \;
+	-rm -rf dist
+	-rm -rf build
