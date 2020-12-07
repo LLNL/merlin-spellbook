@@ -41,14 +41,26 @@ except ImportError:
     import pickle
 
 
-def setup_argparse():
-    parser = argparse.ArgumentParser(description="Use a regressor to make a prediction")
+def setup_argparse(parent_parser=None, the_subparser=None):
+    if parent_parser is None:
+        parser = argparse.ArgumentParser(description="Use a regressor to make a prediction")
+        subparsers = parser.add_subparsers(dest="subparsers")
+        subparsers.required = True
+    else:
+        parser = parent_parser
+        subparsers = the_subparser
 
-    parser.add_argument(
+    # spellbook predict
+    predict_parser = subparsers.add_parser(
+        "predict",
+        help="Use a regressor to make a prediction",
+    )
+    predict_parser.set_defaults(func=predict)
+    predict_parser.add_argument(
         "-infile", help=".npy file with data to predict", default="new_x.npy"
     )
-    parser.add_argument("-reg", help="pickled regressor file", default="regressor.pkl")
-    parser.add_argument(
+    predict_parser.add_argument("-reg", help="pickled regressor file", default="regressor.pkl")
+    predict_parser.add_argument(
         "-outfile", help="file to store the new predictions", default="new_y.npy"
     )
 

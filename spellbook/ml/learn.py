@@ -35,7 +35,7 @@ import sys
 
 import numpy as np
 
-import spellbook.ml.surrogates
+import spellbook.ml.surrogates as surrogates
 
 
 try:
@@ -93,25 +93,38 @@ def stack_arrays(data, delimited_names, delimiter=","):
     return stacked.T
 
 
-def setup_argparse():
-    parser = argparse.ArgumentParser(description="Use sklearn to make a regressor")
-    parser.add_argument(
+def setup_argparse(parent_parser=None, the_subparser=None):
+    if parent_parser is None:
+        parser = argparse.ArgumentParser(description="Use sklearn to make a regressor")
+        subparsers = parser.add_subparsers(dest="subparsers")
+        subparsers.required = True
+    else:
+        parser = parent_parser
+        subparsers = the_subparser
+
+    # spellbook learn
+    learn = subparsers.add_parser(
+        "learn",
+        help="Use sklearn to make a regressor",
+    )
+    learn.set_defaults(func=make_regressor)
+    learn.add_argument(
         "-infile", help=".npz file with X and y data", default="results.npz"
     )
-    parser.add_argument(
+    learn.add_argument(
         "-X",
         help="variable(s) in infile for the input, defaults to X; can be a comma-delimited list",
     )
-    parser.add_argument(
+    learn.add_argument(
         "-y", help="variable(s) in infile for the output, defaults to y"
     )
-    parser.add_argument(
+    learn.add_argument(
         "-outfile", help="file to pickle the regressor to", default="regressor.pkl"
     )
-    parser.add_argument(
+    learn.add_argument(
         "-regressor", help="sklearn regressor type", default="RandomForestRegressor"
     )
-    parser.add_argument(
+    learn.add_argument(
         "-reg_args",
         help='dictionary of args to pass to the regressor. json format, eg: \'{"n_estimators":3,"max_depth":5}\'',
         default=None,

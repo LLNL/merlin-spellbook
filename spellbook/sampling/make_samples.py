@@ -178,7 +178,7 @@ def setup_argparse(parent_parser=None, the_subparser=None):
     # spellbook make-samples
     make_samples = subparsers.add_parser(
         "make-samples",
-        help="Make samples",
+        help="Generate some samples!",
     )
     make_samples.set_defaults(func=process_args)
     make_samples.add_argument(
