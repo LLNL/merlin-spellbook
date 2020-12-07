@@ -43,7 +43,9 @@ except ImportError:
 
 def setup_argparse(parent_parser=None, the_subparser=None):
     if parent_parser is None:
-        parser = argparse.ArgumentParser(description="Use a regressor to make a prediction")
+        parser = argparse.ArgumentParser(
+            description="Use a regressor to make a prediction"
+        )
         subparsers = parser.add_subparsers(dest="subparsers")
         subparsers.required = True
     else:
@@ -59,7 +61,9 @@ def setup_argparse(parent_parser=None, the_subparser=None):
     predict_parser.add_argument(
         "-infile", help=".npy file with data to predict", default="new_x.npy"
     )
-    predict_parser.add_argument("-reg", help="pickled regressor file", default="regressor.pkl")
+    predict_parser.add_argument(
+        "-reg", help="pickled regressor file", default="regressor.pkl"
+    )
     predict_parser.add_argument(
         "-outfile", help="file to store the new predictions", default="new_y.npy"
     )

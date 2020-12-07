@@ -31,9 +31,9 @@
 
 import argparse
 import sys
-import numpy as np
 
 import conduit
+import numpy as np
 
 import conduit_bundler as cb
 

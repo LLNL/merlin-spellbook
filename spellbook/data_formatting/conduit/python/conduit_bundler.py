@@ -103,12 +103,12 @@ def pack_conduit_node_from_dict(d):
                     LOG.error("Conduit does not support following value", k, d[k])
         return node
     else:
-        if isinstance(d,(list, tuple, np.ndarray)):
+        if isinstance(d, (list, tuple, np.ndarray)):
             d_a = np.asarray(d)
             node = conduit.Node()
-            node['data'] = d_a
+            node["data"] = d_a
             if len(d_a.shape) > 1:
-                node['metadata/shape'] = d_a.shape
+                node["metadata/shape"] = d_a.shape
             return node
         if d is None:
             return "None"

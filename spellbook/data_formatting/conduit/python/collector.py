@@ -3,10 +3,10 @@ from __future__ import print_function
 import argparse
 import json
 import sys
-
 from uuid import uuid4
 
 import conduit
+
 import conduit_bundler as cb
 
 

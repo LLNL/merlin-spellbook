@@ -115,9 +115,7 @@ def setup_argparse(parent_parser=None, the_subparser=None):
         "-X",
         help="variable(s) in infile for the input, defaults to X; can be a comma-delimited list",
     )
-    learn.add_argument(
-        "-y", help="variable(s) in infile for the output, defaults to y"
-    )
+    learn.add_argument("-y", help="variable(s) in infile for the output, defaults to y")
     learn.add_argument(
         "-outfile", help="file to pickle the regressor to", default="regressor.pkl"
     )

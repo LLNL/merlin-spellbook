@@ -1,16 +1,17 @@
 import argparse
+import ast
+import sys
 from argparse import (
     ArgumentDefaultsHelpFormatter,
     ArgumentParser,
     RawDescriptionHelpFormatter,
     RawTextHelpFormatter,
 )
-import ast
-import sys
 
 import numpy as np
-import pyDOE as doe
 from scipy.stats.distributions import norm
+
+import pyDOE as doe
 
 
 def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
@@ -204,7 +205,9 @@ def setup_argparse(parent_parser=None, the_subparser=None):
         type=float,
         default=1.0,
     )
-    make_samples.add_argument("-outfile", help="name of output .npy file", default="samples")
+    make_samples.add_argument(
+        "-outfile", help="name of output .npy file", default="samples"
+    )
     make_samples.add_argument(
         "-x0",
         help="file with optional point to center samples around, will be added as first entry",
