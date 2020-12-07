@@ -32,7 +32,7 @@ import os
 
 from setuptools import find_packages, setup
 
-version = "0.0.2"
+version = __import__("spellbook").__version__
 
 extras = ["dev"]
 
