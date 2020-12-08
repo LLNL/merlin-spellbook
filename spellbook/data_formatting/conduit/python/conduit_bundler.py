@@ -6,9 +6,9 @@
 #
 # LLNL-CODE-<PENDING>
 # All rights reserved.
-# This file is part of Merlin, Version: 0.0.3.
+# This file is part of merlin-spellbook, Version: 0.1.0.
 #
-# For details, see https://github.com/LLNL/<MERLIN_REPO_NAME>.
+# For details, see https://github.com/LLNL/merlin-spellbook.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
