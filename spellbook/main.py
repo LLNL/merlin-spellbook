@@ -15,6 +15,7 @@ from contextlib import suppress
 from spellbook import VERSION
 from spellbook.ml import learn, predict, surrogates
 from spellbook.sampling import make_samples
+from spellbook.data_formatting import stack_npz
 from spellbook.data_formatting.conduit.python import collector, translator
 
 
@@ -59,6 +60,9 @@ def setup_argparse():
 
     # spellbook translate
     translator.setup_argparse(parser, subparsers)
+
+    # spellbook stack-npz
+    stack_npz.setup_argparse(parser, subparsers)
 
     return parser
 
