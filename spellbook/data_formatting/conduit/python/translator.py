@@ -32,32 +32,46 @@
 import argparse
 import sys
 
-import conduit
 import numpy as np
 
-import conduit_bundler as cb
+
+def import_conduit():
+    import conduit
+    import conduit_bundler as cb
 
 
-def setup_argparse():
-    parser = argparse.ArgumentParser(
-        description='Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.'
+def setup_argparse(parent_parser=None, the_subparser=None):
+    description = 'Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.'
+    if parent_parser is None:
+        parser = argparse.ArgumentParser(description=description)
+        subparsers = parser.add_subparsers(dest="subparsers")
+        subparsers.required = True
+    else:
+        parser = parent_parser
+        subparsers = the_subparser
+
+    # spellbook translate
+    translate = subparsers.add_parser(
+        "translate",
+        help=description,
     )
-
-    parser.add_argument(
+    translate.set_defaults(func=process_args)
+    translate.add_argument(
         "-input", help=".hdf5 file with data in it", default="results_features.hdf5"
     )
-    parser.add_argument(
+    translate.add_argument(
         "-output", help=".npz file with the arrays", default="results_features.npz"
     )
-    parser.add_argument(
+    translate.add_argument(
         "-schema",
         help="schema for a single sample that says what data to translate. Defaults to whole first node. Can be a comma-delimited list of subpaths, eg inputs,outputs/scalars,metadata",
         default="auto",
     )
-    return parser
+    return translate
 
 
 def process_args(args):
+    import_conduit()
     data = cb.load_node(args.input)
     if args.schema == "auto":
         schema_json = data[data.child_names()[0]].to_json()

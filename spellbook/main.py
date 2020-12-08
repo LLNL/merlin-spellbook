@@ -15,6 +15,7 @@ from contextlib import suppress
 from spellbook import VERSION
 from spellbook.ml import learn, predict, surrogates
 from spellbook.sampling import make_samples
+from spellbook.data_formatting.conduit.python import collector, translator
 
 
 class HelpParser(ArgumentParser):
@@ -52,6 +53,12 @@ def setup_argparse():
 
     # spellbook surrogates
     # surrogates.setup_argparse(parser, subparsers) TODO set up surrogates script
+
+    # spellbook collect
+    collector.setup_argparse(parser, subparsers)
+
+    # spellbook translate
+    translator.setup_argparse(parser, subparsers)
 
     return parser
 
