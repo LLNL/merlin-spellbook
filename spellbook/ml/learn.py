@@ -36,6 +36,7 @@ import sys
 import numpy as np
 
 import spellbook.ml.surrogates as surrogates
+from spellbook.utils import prep_argparse
 
 
 try:
@@ -94,18 +95,13 @@ def stack_arrays(data, delimited_names, delimiter=","):
 
 
 def setup_argparse(parent_parser=None, the_subparser=None):
-    if parent_parser is None:
-        parser = argparse.ArgumentParser(description="Use sklearn to make a regressor")
-        subparsers = parser.add_subparsers(dest="subparsers")
-        subparsers.required = True
-    else:
-        parser = parent_parser
-        subparsers = the_subparser
+    description = "Use sklearn to make a regressor"
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook learn
     learn = subparsers.add_parser(
         "learn",
-        help="Use sklearn to make a regressor",
+        help=description,
     )
     learn.set_defaults(func=make_regressor)
     learn.add_argument(

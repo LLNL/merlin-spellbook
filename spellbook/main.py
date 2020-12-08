@@ -14,15 +14,8 @@ from contextlib import suppress
 
 from spellbook import VERSION
 from spellbook.data_formatting import stack_npz
-from spellbook.data_formatting.conduit.python import (
-    collector,
-    translator,
-)
-from spellbook.ml import (
-    learn,
-    predict,
-    surrogates,
-)
+from spellbook.data_formatting.conduit.python import collector, translator
+from spellbook.ml import learn, predict, surrogates
 from spellbook.sampling import make_samples
 
 
@@ -60,7 +53,7 @@ def setup_argparse():
     predict.setup_argparse(parser, subparsers)
 
     # spellbook surrogates
-    # surrogates.setup_argparse(parser, subparsers) TODO set up surrogates script
+    # surrogates.setup_argparse(parser, subparsers) TODO set up surrogates script?
 
     # spellbook collect
     collector.setup_argparse(parser, subparsers)

@@ -6,6 +6,8 @@ import sys
 
 import numpy as np
 
+from spellbook.utils import prep_argparse
+
 
 """ Merges npz files. See https://jiafulow.github.io/blog/2019/02/17/merge-arrays-from-multiple-npz-files/"""
 
@@ -55,18 +57,13 @@ def process_args(args):
 
 
 def setup_argparse(parent_parser=None, the_subparser=None):
-    if parent_parser is None:
-        parser = argparse.ArgumentParser(description="stacker for npz files.")
-        subparsers = parser.add_subparsers(dest="subparsers")
-        subparsers.required = True
-    else:
-        parser = parent_parser
-        subparsers = the_subparser
+    description = "stacker for npz files."
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook stack-npz
     stack_npz = subparsers.add_parser(
         "stack-npz",
-        help="stacker for npz files.",
+        help=description,
     )
     stack_npz.set_defaults(func=process_args)
     stack_npz.add_argument(

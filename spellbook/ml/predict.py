@@ -34,6 +34,8 @@ import sys
 
 import numpy as np
 
+from spellbook.utils import prep_argparse
+
 
 try:
     import cPickle as pickle
@@ -42,20 +44,13 @@ except ImportError:
 
 
 def setup_argparse(parent_parser=None, the_subparser=None):
-    if parent_parser is None:
-        parser = argparse.ArgumentParser(
-            description="Use a regressor to make a prediction"
-        )
-        subparsers = parser.add_subparsers(dest="subparsers")
-        subparsers.required = True
-    else:
-        parser = parent_parser
-        subparsers = the_subparser
+    description = "Use a regressor to make a prediction"
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook predict
     predict_parser = subparsers.add_parser(
         "predict",
-        help="Use a regressor to make a prediction",
+        help=description,
     )
     predict_parser.set_defaults(func=predict)
     predict_parser.add_argument(

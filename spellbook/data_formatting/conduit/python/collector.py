@@ -5,6 +5,8 @@ import json
 import sys
 from uuid import uuid4
 
+from spellbook.utils import prep_argparse
+
 
 def import_conduit():
     import conduit
@@ -35,13 +37,7 @@ def process_args(args):
 
 def setup_argparse(parent_parser=None, the_subparser=None):
     description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid"
-    if parent_parser is None:
-        parser = argparse.ArgumentParser(description=description)
-        subparsers = parser.add_subparsers(dest="subparsers")
-        subparsers.required = True
-    else:
-        parser = parent_parser
-        subparsers = the_subparser
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook collect
     collect = subparsers.add_parser(

@@ -34,6 +34,8 @@ import sys
 
 import numpy as np
 
+from spellbook.utils import prep_argparse
+
 
 def import_conduit():
     import conduit
@@ -42,13 +44,7 @@ def import_conduit():
 
 def setup_argparse(parent_parser=None, the_subparser=None):
     description = 'Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.'
-    if parent_parser is None:
-        parser = argparse.ArgumentParser(description=description)
-        subparsers = parser.add_subparsers(dest="subparsers")
-        subparsers.required = True
-    else:
-        parser = parent_parser
-        subparsers = the_subparser
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook translate
     translate = subparsers.add_parser(

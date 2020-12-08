@@ -9,9 +9,10 @@ from argparse import (
 )
 
 import numpy as np
+import pyDOE as doe
 from scipy.stats.distributions import norm
 
-import pyDOE as doe
+from spellbook.utils import prep_argparse
 
 
 def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
@@ -168,18 +169,13 @@ def process_args(args):
 
 
 def setup_argparse(parent_parser=None, the_subparser=None):
-    if parent_parser is None:
-        parser = argparse.ArgumentParser("Generate some samples!")
-        subparsers = parser.add_subparsers(dest="subparsers")
-        subparsers.required = True
-    else:
-        parser = parent_parser
-        subparsers = the_subparser
+    description = "Generate some samples!"
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook make-samples
     make_samples = subparsers.add_parser(
         "make-samples",
-        help="Generate some samples!",
+        help=description,
     )
     make_samples.set_defaults(func=process_args)
     make_samples.add_argument(
