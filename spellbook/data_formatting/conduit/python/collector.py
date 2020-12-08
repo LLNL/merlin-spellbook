@@ -10,6 +10,7 @@ def import_conduit():
     import conduit
     import conduit_bundler as cb
 
+
 def process_args(args):
     import_conduit()
     result = conduit.Node()

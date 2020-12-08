@@ -3,9 +3,12 @@
 import argparse
 import os
 import sys
+
 import numpy as np
 
+
 """ Merges npz files. See https://jiafulow.github.io/blog/2019/02/17/merge-arrays-from-multiple-npz-files/"""
+
 
 class Stacker(object):
     def __init__(self):
@@ -13,16 +16,20 @@ class Stacker(object):
         self.dout = {}
 
     def run(self, target, source, force=False):
-        print('hadd Target file: {0}'.format(target))
+        print("hadd Target file: {0}".format(target))
 
         if not force:
             if os.path.isfile(target):
-                print('stack_npz error opening target file (does {0} exist?).'.format(target))
+                print(
+                    "stack_npz error opening target file (does {0} exist?).".format(
+                        target
+                    )
+                )
                 print('Pass "-f" argument to force re-creation of output file.')
 
         # Loop over the source files
         for i, s in enumerate(source):
-            print('stack_npz Source file {0}: {1}'.format(i, s))
+            print("stack_npz Source file {0}: {1}".format(i, s))
             with np.load(s) as data:
                 if i == 0:
                     for k in data.files:
@@ -32,14 +39,14 @@ class Stacker(object):
                     self.d[k].append(data[k])
 
         # Merge arrays via np.hstack()
-        print('stacking...')
+        print("stacking...")
         for k, v in self.d.items():
             vv = np.hstack(v)
             self.dout[k] = vv
 
         # Write to the target file
         np.savez_compressed(target, **self.dout)
-        print('DONE')
+        print("DONE")
 
 
 def process_args(args):
@@ -49,9 +56,7 @@ def process_args(args):
 
 def setup_argparse(parent_parser=None, the_subparser=None):
     if parent_parser is None:
-        parser = argparse.ArgumentParser(
-            description="stacker for npz files."
-        )
+        parser = argparse.ArgumentParser(description="stacker for npz files.")
         subparsers = parser.add_subparsers(dest="subparsers")
         subparsers.required = True
     else:
@@ -64,9 +69,11 @@ def setup_argparse(parent_parser=None, the_subparser=None):
         help="stacker for npz files.",
     )
     stack_npz.set_defaults(func=process_args)
-    stack_npz.add_argument('-f', '--force', action='store_true', help='Force write the target file')
-    stack_npz.add_argument('target', help='target file')
-    stack_npz.add_argument('source', nargs='+', help='source files')
+    stack_npz.add_argument(
+        "-f", "--force", action="store_true", help="Force write the target file"
+    )
+    stack_npz.add_argument("target", help="target file")
+    stack_npz.add_argument("source", nargs="+", help="source files")
     return parser
 
 
@@ -76,6 +83,5 @@ def main():
     process_args(args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())
-

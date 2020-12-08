@@ -13,10 +13,17 @@ from argparse import (
 from contextlib import suppress
 
 from spellbook import VERSION
-from spellbook.ml import learn, predict, surrogates
-from spellbook.sampling import make_samples
 from spellbook.data_formatting import stack_npz
-from spellbook.data_formatting.conduit.python import collector, translator
+from spellbook.data_formatting.conduit.python import (
+    collector,
+    translator,
+)
+from spellbook.ml import (
+    learn,
+    predict,
+    surrogates,
+)
+from spellbook.sampling import make_samples
 
 
 class HelpParser(ArgumentParser):
