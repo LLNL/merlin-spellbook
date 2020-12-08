@@ -43,7 +43,7 @@ except ImportError:
 class sklearnRegressors(object):
     """Scikit learn regressor factory.
 
-    Usage: 
+    Usage:
     import surrogates
     rf1 = surrogates.sklearnRegressors.factory('RandomForestRegressor', n_estimators=5, max_depth=3)
     gp1 = surrogates.sklearnRegressors.factory('GaussianProcessRegressor')

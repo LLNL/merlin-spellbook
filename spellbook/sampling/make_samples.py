@@ -1,10 +1,18 @@
 import argparse
 import ast
 import sys
+from argparse import (
+    ArgumentDefaultsHelpFormatter,
+    ArgumentParser,
+    RawDescriptionHelpFormatter,
+    RawTextHelpFormatter,
+)
 
 import numpy as np
 import pyDOE as doe
 from scipy.stats.distributions import norm
+
+from spellbook.utils import prep_argparse
 
 
 def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
@@ -160,49 +168,59 @@ def process_args(args):
     np.save(args.outfile, x)
 
 
-def setup_argparse():
-    parser = argparse.ArgumentParser("Generate some samples!")
-    parser.add_argument(
+def setup_argparse(parent_parser=None, the_subparser=None):
+    description = "Generate some samples!"
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
+
+    # spellbook make-samples
+    make_samples = subparsers.add_parser(
+        "make-samples",
+        help=description,
+    )
+    make_samples.set_defaults(func=process_args)
+    make_samples.add_argument(
         "-seed",
         help="random number seed for generating samples",
         default=None,
         type=int,
     )
-    parser.add_argument("-n", help="number of samples", default=100, type=int)
-    parser.add_argument("-dims", help="number of dimensions", default=2, type=int)
-    parser.add_argument(
+    make_samples.add_argument("-n", help="number of samples", default=100, type=int)
+    make_samples.add_argument("-dims", help="number of dimensions", default=2, type=int)
+    make_samples.add_argument(
         "-sample_type",
         help="type of sampling. options: random, grid, lhs, lhd, star. If grid, will try to get close to the correct number of samples. for lhd min-max correspond to +- 3 sigma range",
         default="random",
     )
-    parser.add_argument(
+    make_samples.add_argument(
         "-scale",
         help='ranges to scale results in form "[(min,max,type),(min, max,type)]" where type = "linear" or "log" (optional: defaults to linear if omitted)',
     )
-    parser.add_argument(
+    make_samples.add_argument(
         "-scale_factor",
         help="scale factor to appy to all ranges (stacks with -scale)",
         type=float,
         default=1.0,
     )
-    parser.add_argument("-outfile", help="name of output .npy file", default="samples")
-    parser.add_argument(
+    make_samples.add_argument(
+        "-outfile", help="name of output .npy file", default="samples"
+    )
+    make_samples.add_argument(
         "-x0",
         help="file with optional point to center samples around, will be added as first entry",
         default=None,
     )
-    parser.add_argument(
+    make_samples.add_argument(
         "-x1",
         help="file with x1 to add points between x0 and x1 (non inclusive) along a line",
         default=None,
     )
-    parser.add_argument(
+    make_samples.add_argument(
         "-n_line",
         help="number of samples along a line between x0 and x1",
         default=100,
         type=int,
     )
-    parser.add_argument(
+    make_samples.add_argument(
         "--hard-bounds",
         help="force all points to lie within -scale",
         action="store_true",

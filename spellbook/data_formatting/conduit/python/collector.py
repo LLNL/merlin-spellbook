@@ -3,14 +3,18 @@ from __future__ import print_function
 import argparse
 import json
 import sys
-
 from uuid import uuid4
 
-import conduit
-import conduit_bundler as cb
+from spellbook.utils import prep_argparse
+
+
+def import_conduit():
+    import conduit
+    import conduit_bundler as cb
 
 
 def process_args(args):
+    import_conduit()
     result = conduit.Node()
     results = []
     for path in args.infiles.split():
@@ -31,15 +35,20 @@ def process_args(args):
     cb.dump_node(result, args.outfile)
 
 
-def setup_argparse():
-    parser = argparse.ArgumentParser(
-        description="Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid"
-    )
+def setup_argparse(parent_parser=None, the_subparser=None):
+    description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid"
+    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
-    parser.add_argument(
-        "-infiles", help="whitespace separated list of files", default=""
+    # spellbook collect
+    collect = subparsers.add_parser(
+        "collect",
+        help=description,
     )
-    parser.add_argument("-outfile", help="aggregated file", default="results.hdf5")
+    collect.set_defaults(func=process_args)
+    collect.add_argument(
+        "-infiles", help="whitespace separated list of files to collect", default=""
+    )
+    collect.add_argument("-outfile", help="aggregated file", default="results.hdf5")
     return parser
 
 
