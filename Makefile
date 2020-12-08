@@ -6,7 +6,12 @@ PROJ=spellbook
 TEST=tests
 
 unit-tests:
-	python3 -m pytest tests/
+	python3 -m pytest $(TEST)/
+
+command-line-tests:
+	python3 $(TEST)/command_line_tests.py
+
+tests: unit-tests command-line-tests
 
 release:
 	python3 setup.py sdist bdist_wheel
