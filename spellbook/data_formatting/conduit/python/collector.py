@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import argparse
+from itertools import zip_longest
 import json
 import sys
 from uuid import uuid4
@@ -8,32 +9,56 @@ from uuid import uuid4
 from spellbook.utils import prep_argparse
 
 
-def import_conduit():
-    import conduit
-    import conduit_bundler as cb
+import conduit
+from . import conduit_bundler as cb
 
+
+def grouper(iterable, n):
+    args = [iter(iterable)] * n
+    return zip_longest(*args, fillvalue=None)
+
+def savename(file_no, args):
+    if args.chunk_size:
+        base, ext = args.outfile.split('.')
+        name = f"{base}_{file_no:03}.{ext}"
+        return name
+    return args.outfile
 
 def process_args(args):
-    import_conduit()
-    result = conduit.Node()
+
+    files = args.infiles
+    nfiles = len(files)
+    if not args.chunk_size:
+        chunk_size = nfiles
+    else:
+        chunk_size = args.chunk_size
+
+
+    fileno = 0
     results = []
-    for path in args.infiles.split():
-        try:
-            subnode = cb.load_node(path)
-            for top_path in subnode.child_names():
+    for group in grouper(files, chunk_size):
+        result = conduit.Node()
+        for path in group:
+            if not path:
+                continue
+            try:
+                subnode = cb.load_node(path)
+                for top_path in subnode.child_names():
 
-                if top_path in results:
-                    print("Error! Already in results: " + top_path)
-                    top_path = "-".join((top_path, uuid4()))
-                    print("Renaming duplicate to node to: " + top_path)
+                    if top_path in results:
+                        print("Error! Already in results: " + top_path)
+                        new_path = "-".join((top_path, str(uuid4())))
+                        print("Renaming duplicate to node to: " + new_path)
+                    else:
+                        new_path = top_path
 
-                result[top_path] = subnode[top_path]
-                results.append(top_path)
-        except:
-            print("Unable to load " + path)
+                    result[new_path] = subnode[top_path]
+                    results.append(top_path)
+            except:
+                print("Unable to load " + path)
 
-    cb.dump_node(result, args.outfile)
-
+        cb.dump_node(result, savename(fileno,args))
+        fileno = fileno + 1
 
 def setup_argparse(parent_parser=None, the_subparser=None):
     description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid"
@@ -46,9 +71,10 @@ def setup_argparse(parent_parser=None, the_subparser=None):
     )
     collect.set_defaults(func=process_args)
     collect.add_argument(
-        "-infiles", help="whitespace separated list of files to collect", default=""
+        "-infiles", help="whitespace separated list of files to collect", default="", nargs='+'
     )
-    collect.add_argument("-outfile", help="aggregated file", default="results.hdf5")
+    collect.add_argument("-outfile", help="aggregated file root. If chunking will insert _n before extension", default="results.hdf5")
+    collect.add_argument("-chunk_size", help="number of files to chunk together. Default (None): don't chunk", default=None, type=int)
     return parser
 
 
