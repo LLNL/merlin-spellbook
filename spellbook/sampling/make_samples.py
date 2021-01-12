@@ -142,19 +142,26 @@ def process_args(args):
             center = np.mean(sa, axis=1)
         else:
             center = args.scale_factor * 0.5
-        x = x + x0 - center
+        # Loop over all x0 points
+        all_x = []
+        for _x0 in x0:
 
-        # replace the first entry with x0 for the random ones
-        if sample_type == "lhs" or sample_type == "lhd":
-            x[0] = x0
-        else:  # add it for the stencil points
-            x = np.insert(x, 0, x0, axis=0)
+            _x = x + _x0 - center
 
-        if args.x1 is not None:
-            x1 = np.load(args.x1)
-            line_range = np.linspace(0, 1, args.n_line + 1, endpoint=False)[1:]
-            line_samples = x0 + np.outer(line_range, (x1 - x0))
-            x = np.vstack((x, line_samples))
+            # replace the first entry with x0 for the random ones
+            if sample_type == "lhs" or sample_type == "lhd":
+                _x[0] = _x0
+            else:  # add it for the stencil points
+                _x = np.insert(_x, 0, _x0, axis=0)
+
+            if args.x1 is not None:
+                x1 = np.load(args.x1)
+                line_range = np.linspace(0, 1, args.n_line + 1, endpoint=False)[1:]
+                line_samples = _x0 + np.outer(line_range, (x1 - _x0))
+                _x = np.vstack((_x, line_samples))
+            all_x.append(_x)
+
+        x = np.vstack(all_x)
 
     if hard_bounds:
         if scales is None:
