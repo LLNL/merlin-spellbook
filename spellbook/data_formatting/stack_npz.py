@@ -23,7 +23,7 @@ class Stacker(object):
         if not force:
             if os.path.isfile(target):
                 print(
-                    "stack_npz error opening target file (does {0} exist?).".format(
+                    "stack_npz error opening target file (does '{0}' exist?).".format(
                         target
                     )
                 )
@@ -32,7 +32,7 @@ class Stacker(object):
         # Loop over the source files
         for i, s in enumerate(source):
             print("stack_npz Source file {0}: {1}".format(i, s))
-            with np.load(s) as data:
+            with np.load(s, allow_pickle=True) as data:
                 if i == 0:
                     for k in data.files:
                         self.d[k] = []
@@ -43,7 +43,7 @@ class Stacker(object):
         # Merge arrays via np.hstack()
         print("stacking...")
         for k, v in self.d.items():
-            vv = np.hstack(v)
+            vv = np.vstack(v)
             self.dout[k] = vv
 
         # Write to the target file
