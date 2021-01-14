@@ -6,11 +6,15 @@ import json
 import sys
 from uuid import uuid4
 
+from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 from spellbook.utils import prep_argparse
 
 
-import conduit
-from . import conduit_bundler as cb
+WARN = ""
+try:
+    import conduit
+except:
+    WARN = "\nWARNING: conduit not found."
 
 
 def grouper(iterable, n):
@@ -61,7 +65,7 @@ def process_args(args):
         fileno = fileno + 1
 
 def setup_argparse(parent_parser=None, the_subparser=None):
-    description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid"
+    description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid{}".format(WARN)
     parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook collect
