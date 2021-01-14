@@ -8,30 +8,37 @@ import numpy as np
 
 from spellbook.utils import prep_argparse
 
+
 """ Merges npz files. Modified from https://jiafulow.github.io/blog/2019/02/17/merge-arrays-from-multiple-npz-files/"""
+
 
 def find_max_dims(arrays):
     dims = np.atleast_2d(arrays[0]).shape
     for a in arrays[1:]:
-        dims = np.max((dims,np.atleast_2d(a).shape),axis=0)
+        dims = np.max((dims, np.atleast_2d(a).shape), axis=0)
     return dims
 
-def pad_many(arrays,dims,dont_pad_first=False,value=np.nan):
+
+def pad_many(arrays, dims, dont_pad_first=False, value=np.nan):
     fixed = []
     zeros = np.zeros_like(dims)
     for a in arrays:
-        pad_dist = dims-np.atleast_2d(a).shape
+        pad_dist = dims - np.atleast_2d(a).shape
         if dont_pad_first:
             pad_dist[0] = 0
-        padder = np.column_stack((zeros,pad_dist))
-        fixed.append(np.pad(np.atleast_2d(a),padder,mode='constant',constant_values=value))
+        padder = np.column_stack((zeros, pad_dist))
+        fixed.append(
+            np.pad(np.atleast_2d(a), padder, mode="constant", constant_values=value)
+        )
     return fixed
 
-def stack_jagged(arrays,dont_pad_first=True,stack_func=np.vstack,**kwargs):
+
+def stack_jagged(arrays, dont_pad_first=True, stack_func=np.vstack, **kwargs):
     dims = find_max_dims(arrays)
     padded = pad_many(arrays, dims, dont_pad_first, **kwargs)
     result = stack_func(padded)
     return result
+
 
 class Stacker(object):
     def __init__(self):

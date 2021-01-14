@@ -1,9 +1,9 @@
 from __future__ import print_function
 
 import argparse
-from itertools import zip_longest
 import json
 import sys
+from itertools import zip_longest
 from uuid import uuid4
 
 from spellbook.data_formatting.conduit.python import conduit_bundler as cb
@@ -21,12 +21,14 @@ def grouper(iterable, n):
     args = [iter(iterable)] * n
     return zip_longest(*args, fillvalue=None)
 
+
 def savename(file_no, args):
     if args.chunk_size:
-        base, ext = args.outfile.split('.')
+        base, ext = args.outfile.split(".")
         name = f"{base}_{file_no:03}.{ext}"
         return name
     return args.outfile
+
 
 def process_args(args):
 
@@ -36,7 +38,6 @@ def process_args(args):
         chunk_size = nfiles
     else:
         chunk_size = args.chunk_size
-
 
     fileno = 0
     results = []
@@ -61,11 +62,14 @@ def process_args(args):
             except:
                 print("Unable to load " + path)
 
-        cb.dump_node(result, savename(fileno,args))
+        cb.dump_node(result, savename(fileno, args))
         fileno = fileno + 1
 
+
 def setup_argparse(parent_parser=None, the_subparser=None):
-    description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid{}".format(WARN)
+    description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid{}".format(
+        WARN
+    )
     parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook collect
@@ -75,10 +79,22 @@ def setup_argparse(parent_parser=None, the_subparser=None):
     )
     collect.set_defaults(func=process_args)
     collect.add_argument(
-        "-infiles", help="whitespace separated list of files to collect", default="", nargs='+'
+        "-infiles",
+        help="whitespace separated list of files to collect",
+        default="",
+        nargs="+",
     )
-    collect.add_argument("-outfile", help="aggregated file root. If chunking will insert _n before extension", default="results.hdf5")
-    collect.add_argument("-chunk_size", help="number of files to chunk together. Default (None): don't chunk", default=None, type=int)
+    collect.add_argument(
+        "-outfile",
+        help="aggregated file root. If chunking will insert _n before extension",
+        default="results.hdf5",
+    )
+    collect.add_argument(
+        "-chunk_size",
+        help="number of files to chunk together. Default (None): don't chunk",
+        default=None,
+        type=int,
+    )
     return parser
 
 

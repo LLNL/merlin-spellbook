@@ -40,6 +40,7 @@ import os
 
 import numpy as np
 
+
 LOG = logging.getLogger(__name__)
 
 try:
