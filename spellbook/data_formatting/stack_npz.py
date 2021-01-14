@@ -3,6 +3,7 @@
 import argparse
 import os
 import sys
+import shutil
 
 import numpy as np
 
@@ -46,7 +47,8 @@ class Stacker(object):
         self.dout = {}
 
     def run(self, target, source, force=False):
-        print("hadd Target file: {0}".format(target))
+
+        print("Target file: {0}".format(target))
 
         if not force:
             if os.path.isfile(target):
@@ -56,6 +58,14 @@ class Stacker(object):
                     )
                 )
                 print('Pass "-f" argument to force re-creation of output file.')
+                return
+
+        n_source = len(source)
+        if n_source == 1:
+            print("Only one source file given! Not stacking, just doing a copy.")
+            shutil.copy(source[0], target)
+            print("DONE")
+            return
 
         # Loop over the source files
         for i, s in enumerate(source):

@@ -73,10 +73,7 @@ def setup_argparse(parent_parser=None, the_subparser=None):
     parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
 
     # spellbook collect
-    collect = subparsers.add_parser(
-        "collect",
-        help=description,
-    )
+    collect = subparsers.add_parser("collect", help=description)
     collect.set_defaults(func=process_args)
     collect.add_argument(
         "-infiles",
