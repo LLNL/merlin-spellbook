@@ -38,12 +38,16 @@ https://github.com/LLNL/conduit/tree/master/src/tests
 import logging
 import os
 
-import conduit
-import conduit.relay.io
 import numpy as np
 
 
 LOG = logging.getLogger(__name__)
+
+try:
+    import conduit
+    import conduit.relay.io
+except:
+    LOG.warning("conduit not found")
 
 
 def determine_protocol(fname):
