@@ -6,7 +6,7 @@
 #
 # LLNL-CODE-<PENDING>
 # All rights reserved.
-# This file is part of merlin-spellbook, Version: 0.1.0.
+# This file is part of merlin-spellbook, Version: 0.2.0.
 #
 # For details, see https://github.com/LLNL/merlin-spellbook.
 #
@@ -38,12 +38,16 @@ https://github.com/LLNL/conduit/tree/master/src/tests
 import logging
 import os
 
-import conduit
-import conduit.relay.io
 import numpy as np
 
 
 LOG = logging.getLogger(__name__)
+
+try:
+    import conduit
+    import conduit.relay.io
+except:
+    LOG.warning("conduit not found")
 
 
 def determine_protocol(fname):
