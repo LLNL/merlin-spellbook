@@ -136,7 +136,7 @@ def process_args(args):
 
     # add x0
     if args.x0 is not None:
-        x0 = np.load(args.x0)
+        x0 = np.atleast_2d(np.load(args.x0))
         if scales is not None:
             sa = args.scale_factor * np.array(scales)[:, :2].astype("float")
             center = np.mean(sa, axis=1)
