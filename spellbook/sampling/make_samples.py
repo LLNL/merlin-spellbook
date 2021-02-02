@@ -113,8 +113,8 @@ def process_args(args):
     elif sample_type == "star":
         _x = doe.doe_star.star(n_dims)[0]
         x = 0.5 * (_x + 1.0)  # transform to center at 0.5 (range 0-1)
-    elif sample_type == "central_composite":
-        _x = np.unique(doe.ccdesign(n_dims, face='ccf'), axis=0)
+    elif sample_type == "ccf" or sample_type == "ccc" or sample_type == "cci":
+        _x = np.unique(doe.ccdesign(n_dims, face=sample_type), axis=0)
         x = 0.5 * (_x + 1.0)
     else:
         raise ValueError(sample_type + " is not a valid choice for sample_type!")
@@ -198,7 +198,7 @@ def setup_argparse(parent_parser=None, the_subparser=None):
     make_samples.add_argument("-dims", help="number of dimensions", default=2, type=int)
     make_samples.add_argument(
         "-sample_type",
-        help="type of sampling. options: random, grid, lhs, lhd, star, central_composite. If grid, will try to get close to the correct number of samples. for lhd min-max correspond to +- 3 sigma range",
+        help="type of sampling. options: random, grid, lhs, lhd, star, ccf, ccc, cci. If grid, will try to get close to the correct number of samples. for lhd min-max correspond to +- 3 sigma range",
         default="random",
     )
     make_samples.add_argument(
