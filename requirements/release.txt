@@ -1,5 +1,5 @@
 importlib_resources; python_version < '3.7'
 numpy
-pyDOE
+pyDOE2
 scipy
 scikit-learn
