@@ -6,7 +6,7 @@
 #
 # LLNL-CODE-<PENDING>
 # All rights reserved.
-# This file is part of merlin-spellbook, Version: 0.2.1.
+# This file is part of merlin-spellbook, Version: 0.3.0.
 #
 # For details, see https://github.com/LLNL/merlin-spellbook.
 #

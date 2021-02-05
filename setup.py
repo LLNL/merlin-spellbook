@@ -6,7 +6,7 @@
 #
 # LLNL-CODE-797170
 # All rights reserved.
-# This file is part of Merlin-Spellbook, Version: 0.2.1.
+# This file is part of Merlin-Spellbook, Version: 0.3.0.
 #
 # For details, see https://github.com/LLNL/merlin-spellbook.
 #
