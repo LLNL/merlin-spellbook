@@ -9,9 +9,9 @@ from argparse import (
 )
 
 import numpy as np
-import pyDOE2 as doe
 from scipy.stats.distributions import norm
 
+import pyDOE2 as doe
 from spellbook.utils import prep_argparse
 
 
