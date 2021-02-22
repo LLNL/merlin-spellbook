@@ -13,7 +13,7 @@ from argparse import (
 from contextlib import suppress
 
 from spellbook import VERSION
-from spellbook.data_formatting import stack_npz
+from spellbook.data_formatting import stack_npz, serialize
 from spellbook.data_formatting.conduit.python import collector, translator
 from spellbook.ml import learn, predict, surrogates
 from spellbook.sampling import make_samples
@@ -63,6 +63,9 @@ def setup_argparse():
 
     # spellbook stack-npz
     stack_npz.setup_argparse(parser, subparsers)
+
+    # spellbook serialize
+    serialize.setup_argparse(parser, subparsers)
 
     return parser
 
