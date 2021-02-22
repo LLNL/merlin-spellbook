@@ -16,8 +16,9 @@ def nested_set(dic, keys, value):
         dic = dic.setdefault(key, {})
     dic[keys[-1]] = value
 
+
 def maybe_numeric_or_bool(string):
-    if string.lower() == 'false' or string.lower() == 'true':
+    if string.lower() == "false" or string.lower() == "true":
         return bool(string)
     if string.isdigit():
         return int(string)
@@ -26,24 +27,26 @@ def maybe_numeric_or_bool(string):
     except:
         return string
 
-def nested_dict(var_list, splitter='/'):
+
+def nested_dict(var_list, splitter="/"):
     output = {}
     for v in var_list:
-        keys, val = v.split('=')
+        keys, val = v.split("=")
         keylist = keys.split(splitter)
         value = maybe_numeric_or_bool(val)
         nested_set(output, keylist, value)
     return output
 
+
 def process_args(args):
     output = nested_dict(args.vars, splitter=args.splitter)
-    dumpargs = {'sort_keys':True}
+    dumpargs = {"sort_keys": True}
     if args.indent:
-         dumpargs['indent'] = 4
+        dumpargs["indent"] = 4
     if args.verbose:
-        print(json.dumps(output,**dumpargs))
-    with open(args.output,'w') as f:
-        json.dump(output,f,**dumpargs)
+        print(json.dumps(output, **dumpargs))
+    with open(args.output, "w") as f:
+        json.dump(output, f, **dumpargs)
 
 
 def setup_argparse(parent_parser=None, the_subparser=None):
@@ -56,11 +59,27 @@ def setup_argparse(parent_parser=None, the_subparser=None):
         help=description,
     )
     serialize.set_defaults(func=process_args)
-    serialize.add_argument("--output", help="output file", default='output.json')
-    serialize.add_argument("--vars", nargs="+", help="variables to write. specified as space separated name=VALUE")
-    serialize.add_argument("--splitter", help="key to indicate a nested value, default: /", default='/')
-    serialize.add_argument("--verbose", help="print output, default False", action='store_true', default=False)
-    serialize.add_argument("--indent", help="indent with new lines, default False", action='store_true', default=False)
+    serialize.add_argument("--output", help="output file", default="output.json")
+    serialize.add_argument(
+        "--vars",
+        nargs="+",
+        help="variables to write. specified as space separated name=VALUE",
+    )
+    serialize.add_argument(
+        "--splitter", help="key to indicate a nested value, default: /", default="/"
+    )
+    serialize.add_argument(
+        "--verbose",
+        help="print output, default False",
+        action="store_true",
+        default=False,
+    )
+    serialize.add_argument(
+        "--indent",
+        help="indent with new lines, default False",
+        action="store_true",
+        default=False,
+    )
     return parser
 
 
