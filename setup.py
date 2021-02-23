@@ -111,7 +111,7 @@ setup(
     extras_require=extras_require(),
     entry_points={
         "console_scripts": [
-            "spellbook=spellbook.main:main",
+            "spellbook=spellbook.click_main:main",
         ]
     },
     include_package_data=True,
