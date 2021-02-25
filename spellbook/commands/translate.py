@@ -30,7 +30,6 @@ def cli(infiles, outfile, chunk_size):
     Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.
     """
     from spellbook.data_formatting.conduit.python import translator
-    args = SimpleNamespace(
-            **{"input": input, "output": output, "schema": schema}
-    )
+
+    args = SimpleNamespace(**{"input": input, "output": output, "schema": schema})
     translator.process_args(args)

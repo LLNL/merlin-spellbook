@@ -8,6 +8,7 @@ import click
 from spellbook import VERSION
 from spellbook.log_formatter import setup_logging
 
+
 LOG = logging.getLogger("spellbook")
 PLUGIN_DIR = os.path.join(os.path.dirname(__file__), "commands")
 

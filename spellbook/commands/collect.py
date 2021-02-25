@@ -30,7 +30,8 @@ def cli(infiles, outfile, chunk_size):
     Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid
     """
     from spellbook.data_formatting.conduit.python import collector
+
     args = SimpleNamespace(
-            **{"infiles": infiles, "outfile": outfile, "chunk_size": chunk_size}
+        **{"infiles": infiles, "outfile": outfile, "chunk_size": chunk_size}
     )
     collector.process_args(args)

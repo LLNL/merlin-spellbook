@@ -44,7 +44,14 @@ def cli(infile, X, outfile, regressor, reg_args):
     Use sklearn to make a regressor
     """
     from spellbook.ml import learn
+
     args = SimpleNamespace(
-            **{"infile": infile, "X": X, "outfile": outfile, "regressor": regressor, "reg_args": reg_args}
+        **{
+            "infile": infile,
+            "X": X,
+            "outfile": outfile,
+            "regressor": regressor,
+            "reg_args": reg_args,
+        }
     )
     learn.make_regressor(args)

@@ -29,7 +29,6 @@ def cli(infiles, outfile, chunk_size):
     stacker for npz files.
     """
     from spellbook.data_formatting import stack_npz
-    args = SimpleNamespace(
-            **{"force": force, "target": target, "source": source}
-    )
+
+    args = SimpleNamespace(**{"force": force, "target": target, "source": source})
     stack_npz.process_args(args)

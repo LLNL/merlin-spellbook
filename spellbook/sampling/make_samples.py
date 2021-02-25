@@ -2,9 +2,8 @@ import ast
 import sys
 
 import numpy as np
-from scipy.stats.distributions import norm
-
 import pyDOE2 as doe
+from scipy.stats.distributions import norm
 
 
 def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):

@@ -1,7 +1,8 @@
 from types import SimpleNamespace
-from spellbook.utils import OptionEatAll
 
 import click
+
+from spellbook.utils import OptionEatAll
 
 
 @click.command()
@@ -48,7 +49,14 @@ def cli(output, vars, splitter, verbose, indent):
     write a serialized file from cli arguments.
     """
     from spellbook.data_formatting import serialize
+
     args = SimpleNamespace(
-            **{"output": output, "vars": vars, "splitter": splitter, "verbose": verbose, "indent": indent}
+        **{
+            "output": output,
+            "vars": vars,
+            "splitter": splitter,
+            "verbose": verbose,
+            "indent": indent,
+        }
     )
     serialize.process_args(args)
