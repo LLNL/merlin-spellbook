@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+from spellbook.utils import OptionEatAll
 
 import click
 
@@ -22,8 +23,9 @@ import click
 @click.argument(
     "source",
     required=True,
-    type=str,#TODO nargs="+"
+    type=str,
     #help="source files",
+    cls=OptionEatAll
 )
 def cli(infiles, outfile, chunk_size):
     """

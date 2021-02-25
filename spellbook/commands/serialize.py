@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+from spellbook.utils import OptionEatAll
 
 import click
 
@@ -15,8 +16,9 @@ import click
     "--vars",
     required=False,
     default="results.hdf5",
-    type=str, # TODO nargs="+"
+    type=str,
     help="variables to write. specified as space separated name=VALUE",
+    cls=OptionEatAll,
 )
 @click.option(
     "--splitter",
