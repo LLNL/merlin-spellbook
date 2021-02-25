@@ -32,17 +32,36 @@ class SpellbookCLI(click.MultiCommand):
         return ns["cli"]
 
 
+@click.command(cls=SpellbookCLI)
+@click.option(
+    "--level",
+    required=False,
+    default="INFO",
+    type=click.Choice(["INFO", "DEBUG", "WARN"], case_sensitive=False),
+    help="set the logger level",
+)
+@click.option(
+    "--version",
+    is_flag=True,
+    required=False,
+    default=False,
+    type=bool,
+    help="echo the version",
+)
+def spellbook():
+    pass
+
+
 def main():
-    cli = SpellbookCLI(help="Merlin Spellbook!")  # TODO add --level, --version
     if len(sys.argv) == 1:
-        with click.Context(cli) as ctx:
-            click.echo(cli.get_help(ctx))
+        with click.Context(spellbook) as ctx:
+            click.echo(spellbook.get_help(ctx))
         return 1
     # setup_logging(logger=LOG, log_level="INFO", colors=True)  # TODO level
     try:
-        cli()
+        spellbook()
     except Exception as e:
-        #LOG.debug(traceback.format_exc())
+        # LOG.debug(traceback.format_exc())
         print(traceback.format_exc())
         LOG.error(str(e))
         return 1
