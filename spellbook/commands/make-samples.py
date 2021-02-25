@@ -49,8 +49,8 @@ import click
 @click.option(
     "-outfile",
     required=False,
-    default="samples",
-    type=str,
+    default="samples.npy",
+    type=click.File("wb"),
     help='name of output .npy file',
 )
 @click.option(
@@ -76,6 +76,7 @@ import click
 )
 @click.option(
     "--hard-bounds",
+    is_flag=True,
     required=False,
     default=False,
     type=bool,
