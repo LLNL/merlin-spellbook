@@ -39,7 +39,7 @@ class SpellbookCLI(click.MultiCommand):
     "--level",
     required=False,
     default="INFO",
-    type=click.Choice(["INFO", "DEBUG", "WARN"], case_sensitive=False),
+    type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR"], case_sensitive=False),
     help="set the logger level",
 )
 @click.version_option(VERSION)
