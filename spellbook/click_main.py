@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import traceback
@@ -5,13 +6,14 @@ import traceback
 import click
 
 
-plugin_folder = os.path.join(os.path.dirname(__file__), "commands")
+LOG = logging.getLogger("spellbook")
+PLUGIN_DIR = os.path.join(os.path.dirname(__file__), "commands")
 
 
-class MyCLI(click.MultiCommand):
+class SpellbookCLI(click.MultiCommand):
     def list_commands(self, ctx):
         rv = []
-        for filename in os.listdir(plugin_folder):
+        for filename in os.listdir(PLUGIN_DIR):
             if filename.startswith("__"):
                 continue
             if filename.endswith(".py"):
@@ -21,7 +23,7 @@ class MyCLI(click.MultiCommand):
 
     def get_command(self, ctx, name):
         ns = {}
-        fn = os.path.join(plugin_folder, name + ".py")
+        fn = os.path.join(PLUGIN_DIR, name + ".py")
         if not os.path.isfile(fn):
             return
         with open(fn) as f:
@@ -32,15 +34,18 @@ class MyCLI(click.MultiCommand):
 
 def main():
     if len(sys.argv) == 1:
-        #parser.print_help(sys.stdout) TODO print help
+        # TODO print help
+        #with click.Context(cli) as ctx:
+        #    click.echo(cli.get_help(ctx))
         return 1
-    cli = MyCLI(help="Merlin Spellbook!")  # TODO add --level, --version
-    #setup_logging(logger=LOG, log_level="INFO", colors=True)  # TODO level
+    # setup_logging(logger=LOG, log_level="INFO", colors=True)  # TODO level
+    cli = SpellbookCLI(help="Merlin Spellbook!")  # TODO add --level, --version
     try:
         cli()
     except Exception as e:
+        #LOG.debug(traceback.format_exc())
         print(traceback.format_exc())
-        print(str(e))
+        LOG.error(str(e))
         return 1
 
 
