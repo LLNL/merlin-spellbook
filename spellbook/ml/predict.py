@@ -29,41 +29,15 @@
 # SOFTWARE.
 ###############################################################################
 
-import argparse
 import sys
 
 import numpy as np
-
-from spellbook.utils import prep_argparse
 
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
-
-
-def setup_argparse(parent_parser=None, the_subparser=None):
-    description = "Use a regressor to make a prediction"
-    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
-
-    # spellbook predict
-    predict_parser = subparsers.add_parser(
-        "predict",
-        help=description,
-    )
-    predict_parser.set_defaults(func=predict)
-    predict_parser.add_argument(
-        "-infile", help=".npy file with data to predict", default="new_x.npy"
-    )
-    predict_parser.add_argument(
-        "-reg", help="pickled regressor file", default="regressor.pkl"
-    )
-    predict_parser.add_argument(
-        "-outfile", help="file to store the new predictions", default="new_y.npy"
-    )
-
-    return parser
 
 
 def predict(args):
@@ -73,13 +47,3 @@ def predict(args):
 
     new_y = regr.predict(X)
     np.save(open(args.outfile, "wb"), new_y)
-
-
-def main():
-    parser = setup_argparse()
-    args = parser.parse_args()
-    predict(args)
-
-
-if __name__ == "__main__":
-    sys.exit(main())

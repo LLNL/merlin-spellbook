@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
-import argparse
 import os
 import shutil
 import sys
 
 import numpy as np
-
-from spellbook.utils import prep_argparse
 
 
 """ Merges npz files. Modified from https://jiafulow.github.io/blog/2019/02/17/merge-arrays-from-multiple-npz-files/"""
@@ -95,31 +92,3 @@ class Stacker(object):
 def process_args(args):
     stacker = Stacker()
     stacker.run(args.target, args.source, force=args.force)
-
-
-def setup_argparse(parent_parser=None, the_subparser=None):
-    description = "stacker for npz files."
-    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
-
-    # spellbook stack-npz
-    stack_npz = subparsers.add_parser(
-        "stack-npz",
-        help=description,
-    )
-    stack_npz.set_defaults(func=process_args)
-    stack_npz.add_argument(
-        "-f", "--force", action="store_true", help="Force write the target file"
-    )
-    stack_npz.add_argument("target", help="target file")
-    stack_npz.add_argument("source", nargs="+", help="source files")
-    return parser
-
-
-def main():
-    parser = setup_argparse()
-    args = parser.parse_args()
-    process_args(args)
-
-
-if __name__ == "__main__":
-    sys.exit(main())
