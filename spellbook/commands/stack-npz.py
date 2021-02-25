@@ -7,6 +7,7 @@ import click
 @click.option(
     "-f",
     "--force",
+    is_flag=True,
     required=False,
     default=False,
     type=bool,
