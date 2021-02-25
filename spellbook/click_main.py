@@ -5,6 +5,8 @@ import traceback
 
 import click
 
+from spellbook import VERSION
+from spellbook.log_formatter import setup_logging
 
 LOG = logging.getLogger("spellbook")
 PLUGIN_DIR = os.path.join(os.path.dirname(__file__), "commands")
@@ -40,16 +42,9 @@ class SpellbookCLI(click.MultiCommand):
     type=click.Choice(["INFO", "DEBUG", "WARN"], case_sensitive=False),
     help="set the logger level",
 )
-@click.option(
-    "--version",
-    is_flag=True,
-    required=False,
-    default=False,
-    type=bool,
-    help="echo the version",
-)
-def spellbook():
-    pass
+@click.version_option(VERSION)
+def spellbook(level):
+    setup_logging(logger=LOG, log_level=level.upper(), colors=True)
 
 
 def main():
@@ -57,7 +52,6 @@ def main():
         with click.Context(spellbook) as ctx:
             click.echo(spellbook.get_help(ctx))
         return 1
-    # setup_logging(logger=LOG, log_level="INFO", colors=True)  # TODO level
     try:
         spellbook()
     except Exception as e:
