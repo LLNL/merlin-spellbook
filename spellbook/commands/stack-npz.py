@@ -26,10 +26,10 @@ import click
 )
 def cli(infiles, outfile, chunk_size):
     """
-    Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid
+    stacker for npz files.
     """
-    from spellbook.data_formatting.conduit.python import collector
+    from spellbook.data_formatting import stack_npz
     args = SimpleNamespace(
-            **{"infiles": infiles, "outfile": outfile, "chunk_size": chunk_size}
+            **{"force": force, "target": target, "source": source}
     )
-    collector.process_args(args)
+    stack_npz.process_args(args)
