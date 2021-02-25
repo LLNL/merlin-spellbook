@@ -33,13 +33,12 @@ class SpellbookCLI(click.MultiCommand):
 
 
 def main():
+    cli = SpellbookCLI(help="Merlin Spellbook!")  # TODO add --level, --version
     if len(sys.argv) == 1:
-        # TODO print help
-        #with click.Context(cli) as ctx:
-        #    click.echo(cli.get_help(ctx))
+        with click.Context(cli) as ctx:
+            click.echo(cli.get_help(ctx))
         return 1
     # setup_logging(logger=LOG, log_level="INFO", colors=True)  # TODO level
-    cli = SpellbookCLI(help="Merlin Spellbook!")  # TODO add --level, --version
     try:
         cli()
     except Exception as e:
