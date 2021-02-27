@@ -33,6 +33,7 @@ import sys
 
 import numpy as np
 
+
 WARN = ""
 try:
     import conduit

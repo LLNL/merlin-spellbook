@@ -86,19 +86,20 @@ def process_scale(scale):
 
 
 class MakeSamples(CliCommand):
-    def run(self,
-            seed,
-            n,
-            dims,
-            sample_type,
-            scale,
-            scale_factor,
-            outfile,
-            x0,
-            x1,
-            n_line,
-            hard_bounds,
-            ):
+    def run(
+        self,
+        seed,
+        n,
+        dims,
+        sample_type,
+        scale,
+        scale_factor,
+        outfile,
+        x0,
+        x1,
+        n_line,
+        hard_bounds,
+    ):
         np.random.seed(seed)
         n_samples = n
         n_dims = dims
@@ -182,4 +183,3 @@ class MakeSamples(CliCommand):
         print(x)
 
         np.save(outfile, x)
-

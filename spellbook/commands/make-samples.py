@@ -97,16 +97,18 @@ def cli(
     Generate some samples!
     """
     from spellbook.sampling import make_samples
+
     obj = make_samples.MakeSamples()
     obj.run(
-            seed,
-            n,
-            dims,
-            sample_type,
-            scale,
-            scale_factor,
-            outfile,
-            x0,
-            x1,
-            n_line,
-            hard_bounds)
+        seed,
+        n,
+        dims,
+        sample_type,
+        scale,
+        scale_factor,
+        outfile,
+        x0,
+        x1,
+        n_line,
+        hard_bounds,
+    )
