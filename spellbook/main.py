@@ -15,6 +15,12 @@ PLUGIN_DIR = os.path.join(os.path.dirname(__file__), "commands")
 
 class SpellbookCLI(click.MultiCommand):
     def list_commands(self, ctx):
+        """
+        Avoids file reads for max speed.
+        """
+        return ['collect', 'learn', 'make-samples', 'predict', 'serialize', 'stack-npz', 'translate']
+
+    def list_commands_dynamically(self, ctx):
         rv = []
         for filename in os.listdir(PLUGIN_DIR):
             if filename.startswith("__"):

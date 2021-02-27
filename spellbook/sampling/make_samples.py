@@ -64,12 +64,7 @@ def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
         do_log = ndims * [do_log]
     logs = np.asarray(do_log)
     lims_norm = np.array([limits_norm for i in logs])
-    _lims = []
-    for limit, log in zip(limits, logs):
-        if log:
-            _lims.append(np.log10(limit))
-        else:
-            _lims.append(limit)
+    _lims = [np.log10(limit) if log else limit for limit, log in zip(limits, logs)]
     lims = np.array(_lims)
 
     slopes = (lims[:, 1] - lims[:, 0]) / (lims_norm[:, 1] - lims_norm[:, 0])
