@@ -1,5 +1,3 @@
-from types import SimpleNamespace
-
 import click
 
 
@@ -99,20 +97,16 @@ def cli(
     Generate some samples!
     """
     from spellbook.sampling import make_samples
-
-    args = SimpleNamespace(
-        **{
-            "seed": seed,
-            "n": n,
-            "dims": dims,
-            "sample_type": sample_type,
-            "scale": scale,
-            "scale_factor": scale_factor,
-            "outfile": outfile,
-            "x0": x0,
-            "x1": x1,
-            "n_line": n_line,
-            "hard_bounds": hard_bounds,
-        }
-    )
-    make_samples.process_args(args)
+    obj = make_samples.MakeSamples()
+    obj.run(
+            seed,
+            n,
+            dims,
+            sample_type,
+            scale,
+            scale_factor,
+            outfile,
+            x0,
+            x1,
+            n_line,
+            hard_bounds)
