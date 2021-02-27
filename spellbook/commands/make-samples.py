@@ -55,14 +55,14 @@ import click
     "-x0",
     required=False,
     default=None,
-    type=str,
+    type=click.File("rb"),
     help="file with optional point to center samples around, will be added as first entry",
 )
 @click.option(
     "-x1",
     required=False,
     default=None,
-    type=str,
+    type=click.File("rb"),
     help="file with x1 to add points between x0 and x1 (non inclusive) along a line",
 )
 @click.option(
