@@ -5,7 +5,7 @@ import numpy as np
 import pyDOE2 as doe
 from scipy.stats.distributions import norm
 
-from spellbook.commands.command_interface import CliCommand
+from spellbook.commands import CliCommand
 
 
 def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
