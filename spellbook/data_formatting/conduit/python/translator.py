@@ -33,6 +33,13 @@ import sys
 
 import numpy as np
 
+WARN = ""
+try:
+    import conduit
+    import conduit_bundler as cb
+except:
+    WARN = "\nWARNING: conduit not found."
+
 
 def process_args(args):
     import_conduit()
