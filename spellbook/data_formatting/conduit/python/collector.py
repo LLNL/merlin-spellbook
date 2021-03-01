@@ -29,7 +29,7 @@ def savename(file_no, args):
 
 
 def process_args(args):
-
+    print(WARNING)
     files = args.infiles
     nfiles = len(files)
     if not args.chunk_size:

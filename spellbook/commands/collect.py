@@ -5,7 +5,7 @@ import click
 
 @click.command()
 @click.option(
-    "-infiles",
+    "-instring",
     required=False,
     default="",
     type=str,
@@ -15,23 +15,16 @@ import click
     "-outfile",
     required=False,
     default="results.hdf5",
-    type=click.File("wb"),
-    help="aggregated file root. If chunking will insert _n before extension",
+    type=str,
+    help="output file",
 )
-@click.option(
-    "-chunk_size",
-    required=False,
-    default=None,
-    type=int,
-    help="number of files to chunk together. Default (None): don't chunk",
-)
-def cli(infiles, outfile, chunk_size):
+def cli(instring, outfile):
     """
-    Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid
+    Collect many json files into a single json file
     """
-    from spellbook.data_formatting.conduit.python import collector
+    from spellbook.data_formatting import collector
 
     args = SimpleNamespace(
-        **{"infiles": infiles, "outfile": outfile, "chunk_size": chunk_size}
+            **{"instring": instring, "outfile": outfile}
     )
     collector.process_args(args)

@@ -39,7 +39,7 @@ import click
     type=str,
     help='dictionary of args to pass to the regressor. json format, eg: \'{"n_estimators":3,"max_depth":5}\'',
 )
-def cli(infile, X, outfile, regressor, reg_args):
+def cli(infile, x, outfile, regressor, reg_args):
     """
     Use sklearn to make a regressor
     """
@@ -48,7 +48,7 @@ def cli(infile, X, outfile, regressor, reg_args):
     args = SimpleNamespace(
         **{
             "infile": infile,
-            "X": X,
+            "X": x,
             "outfile": outfile,
             "regressor": regressor,
             "reg_args": reg_args,
