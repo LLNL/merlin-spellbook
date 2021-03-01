@@ -32,6 +32,6 @@ def cli(infiles, outfile, chunk_size, conduit):
     from spellbook.data_formatting.conduit.python import collector
 
     args = SimpleNamespace(
-            **{"infiles": infiles, "outfile": outfile, "chunk_size": chunk_size}
+        **{"infiles": infiles, "outfile": outfile, "chunk_size": chunk_size}
     )
     collector.process_args(args)

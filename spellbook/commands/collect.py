@@ -24,7 +24,5 @@ def cli(instring, outfile):
     """
     from spellbook.data_formatting import collector
 
-    args = SimpleNamespace(
-            **{"instring": instring, "outfile": outfile}
-    )
+    args = SimpleNamespace(**{"instring": instring, "outfile": outfile})
     collector.process_args(args)

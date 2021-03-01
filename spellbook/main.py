@@ -18,7 +18,17 @@ class SpellbookCLI(click.MultiCommand):
         """
         Avoids file reads for max speed.
         """
-        return ['collect', 'conduit-collect', 'conduit-translate', 'learn', 'make-samples', 'predict', 'serialize', 'stack-npz', 'translate']
+        return [
+            "collect",
+            "conduit-collect",
+            "conduit-translate",
+            "learn",
+            "make-samples",
+            "predict",
+            "serialize",
+            "stack-npz",
+            "translate",
+        ]
 
     def list_commands_dynamically(self, ctx):
         rv = []
