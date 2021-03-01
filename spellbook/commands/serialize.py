@@ -10,7 +10,7 @@ from spellbook.utils import OptionEatAll
     "--output",
     required=False,
     default="output.json",
-    type=click.File("wb"),
+    type=str,
     help="output file",
 )
 @click.option(
@@ -59,4 +59,4 @@ def cli(output, vars, splitter, verbose, indent):
             "indent": indent,
         }
     )
-    serialize.process_args(args)
+    serialize.parse_args(args)
