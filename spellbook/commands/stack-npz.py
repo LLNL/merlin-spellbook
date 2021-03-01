@@ -16,7 +16,7 @@ import click
 @click.argument(
     "target",
     required=True,
-    type=click.File("wb"),
+    type=str,
 )
 @click.argument(
     "source",
@@ -24,7 +24,7 @@ import click
     type=str,
     nargs=-1,
 )
-def cli(infiles, outfile, chunk_size):
+def cli(force, target, source):
     """
     stacker for npz files.
     """
