@@ -7,15 +7,15 @@ import click
 @click.option(
     "-input",
     required=False,
-    default="results_features.hdf5",
-    type=click.File("rb"),
-    help=".hdf5 file with data in it",
+    default="results.json",
+    type=str,
+    help=".json file with data in it",
 )
 @click.option(
     "-output",
     required=False,
-    default="results_features.npz",
-    type=click.File("wb"),
+    default="results.npz",
+    type=str,
     help=".npz file with the arrays",
 )
 @click.option(
@@ -25,11 +25,11 @@ import click
     type=str,
     help="schema for a single sample that says what data to translate. Defaults to whole first node. Can be a comma-delimited list of subpaths, eg inputs,outputs/scalars,metadata",
 )
-def cli(infiles, outfile, chunk_size):
+def cli(input, output, schema):
     """
-    Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.
+    Flatten sample json file into numpy", filtering with an external schema.
     """
-    from spellbook.data_formatting.conduit.python import translator
+    from spellbook.data_formatting import translator
 
     args = SimpleNamespace(**{"input": input, "output": output, "schema": schema})
     translator.process_args(args)
