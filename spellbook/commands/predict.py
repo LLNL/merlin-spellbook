@@ -14,15 +14,15 @@ import click
 @click.option(
     "-reg",
     required=False,
-    default="regressor.pkl",
-    type=click.File("rb"),
+    default="random_forest_reg.pkl",
+    type=str,
     help="pickled regressor file",
 )
 @click.option(
     "-outfile",
     required=False,
     default="new_y.npy",
-    type=click.File("wb"),
+    type=str,
     help="file to store the new predictions",
 )
 def cli(infile, reg, outfile):
