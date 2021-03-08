@@ -4,10 +4,12 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.0]
 
 ### Added
 - The new spellbook command `spellbook serialize`.
+- The new spellbook command `spellbook conduit-collect`.
+- The new spellbook command `spellbook conduit-translate`.
 
 ### Changed
 - For better organization and speed, moved internal cli logic from `argparse` to `click`.
