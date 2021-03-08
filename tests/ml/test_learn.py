@@ -1,5 +1,4 @@
 import numpy as np
-
 from spellbook.ml.learn import stack_arrays
 
 

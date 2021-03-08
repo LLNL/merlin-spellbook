@@ -1,7 +1,6 @@
 from types import SimpleNamespace
 
 import click
-
 from spellbook.utils import OptionEatAll
 
 

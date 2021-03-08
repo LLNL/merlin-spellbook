@@ -4,7 +4,6 @@ import sys
 import numpy as np
 import pyDOE2 as doe
 from scipy.stats.distributions import norm
-
 from spellbook.commands import CliCommand
 
 

@@ -33,7 +33,6 @@ import json
 import sys
 
 import numpy as np
-
 import spellbook.ml.surrogates as surrogates
 
 
