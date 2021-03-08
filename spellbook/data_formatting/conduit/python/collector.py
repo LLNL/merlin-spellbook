@@ -1,13 +1,11 @@
 from __future__ import print_function
 
-import argparse
 import json
 import sys
 from itertools import zip_longest
 from uuid import uuid4
 
 from spellbook.data_formatting.conduit.python import conduit_bundler as cb
-from spellbook.utils import prep_argparse
 
 
 WARN = ""
@@ -31,7 +29,7 @@ def savename(file_no, args):
 
 
 def process_args(args):
-
+    print(WARNING)
     files = args.infiles
     nfiles = len(files)
     if not args.chunk_size:
@@ -64,42 +62,3 @@ def process_args(args):
 
         cb.dump_node(result, savename(fileno, args))
         fileno = fileno + 1
-
-
-def setup_argparse(parent_parser=None, the_subparser=None):
-    description = "Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid{}".format(
-        WARN
-    )
-    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
-
-    # spellbook collect
-    collect = subparsers.add_parser("collect", help=description)
-    collect.set_defaults(func=process_args)
-    collect.add_argument(
-        "-infiles",
-        help="whitespace separated list of files to collect",
-        default="",
-        nargs="+",
-    )
-    collect.add_argument(
-        "-outfile",
-        help="aggregated file root. If chunking will insert _n before extension",
-        default="results.hdf5",
-    )
-    collect.add_argument(
-        "-chunk_size",
-        help="number of files to chunk together. Default (None): don't chunk",
-        default=None,
-        type=int,
-    )
-    return parser
-
-
-def main():
-    parser = setup_argparse()
-    args = parser.parse_args()
-    process_args(args)
-
-
-if __name__ == "__main__":
-    sys.exit(main())

@@ -29,41 +29,17 @@
 # SOFTWARE.
 ###############################################################################
 
-import argparse
 import sys
 
 import numpy as np
 
-from spellbook.utils import prep_argparse
 
-
-def import_conduit():
+WARN = ""
+try:
     import conduit
     import conduit_bundler as cb
-
-
-def setup_argparse(parent_parser=None, the_subparser=None):
-    description = 'Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.'
-    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
-
-    # spellbook translate
-    translate = subparsers.add_parser(
-        "translate",
-        help=description,
-    )
-    translate.set_defaults(func=process_args)
-    translate.add_argument(
-        "-input", help=".hdf5 file with data in it", default="results_features.hdf5"
-    )
-    translate.add_argument(
-        "-output", help=".npz file with the arrays", default="results_features.npz"
-    )
-    translate.add_argument(
-        "-schema",
-        help="schema for a single sample that says what data to translate. Defaults to whole first node. Can be a comma-delimited list of subpaths, eg inputs,outputs/scalars,metadata",
-        default="auto",
-    )
-    return translate
+except:
+    WARN = "\nWARNING: conduit not found."
 
 
 def process_args(args):
@@ -132,13 +108,3 @@ def make_data_array_dict(d, node):
             d[path].append(datum)
         else:
             d[path] = [datum]
-
-
-def main():
-    parser = setup_argparse()
-    args = parser.parse_args()
-    process_args(args)
-
-
-if __name__ == "__main__":
-    sys.exit(main())

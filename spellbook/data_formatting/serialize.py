@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 
-import argparse
 import json
 import os
 import sys
-
-from spellbook.utils import prep_argparse
 
 
 """ Serializes a command-line input variable list"""
@@ -38,7 +35,7 @@ def nested_dict(var_list, splitter="/"):
     return output
 
 
-def process_args(args):
+def parse_args(args):
     output = nested_dict(args.vars, splitter=args.splitter)
     dumpargs = {"sort_keys": True}
     if args.indent:
@@ -47,47 +44,3 @@ def process_args(args):
         print(json.dumps(output, **dumpargs))
     with open(args.output, "w") as f:
         json.dump(output, f, **dumpargs)
-
-
-def setup_argparse(parent_parser=None, the_subparser=None):
-    description = "write a serialized file from cli arguments."
-    parser, subparsers = prep_argparse(description, parent_parser, the_subparser)
-
-    # spellbook stack-npz
-    serialize = subparsers.add_parser(
-        "serialize",
-        help=description,
-    )
-    serialize.set_defaults(func=process_args)
-    serialize.add_argument("--output", help="output file", default="output.json")
-    serialize.add_argument(
-        "--vars",
-        nargs="+",
-        help="variables to write. specified as space separated name=VALUE",
-    )
-    serialize.add_argument(
-        "--splitter", help="key to indicate a nested value, default: /", default="/"
-    )
-    serialize.add_argument(
-        "--verbose",
-        help="print output, default False",
-        action="store_true",
-        default=False,
-    )
-    serialize.add_argument(
-        "--indent",
-        help="indent with new lines, default False",
-        action="store_true",
-        default=False,
-    )
-    return parser
-
-
-def main():
-    parser = setup_argparse()
-    args = parser.parse_args()
-    process_args(args)
-
-
-if __name__ == "__main__":
-    sys.exit(main())

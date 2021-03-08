@@ -1,89 +1,80 @@
-import glob
 import logging
 import os
 import sys
-import time
 import traceback
-from argparse import (
-    ArgumentDefaultsHelpFormatter,
-    ArgumentParser,
-    RawDescriptionHelpFormatter,
-    RawTextHelpFormatter,
-)
-from contextlib import suppress
+
+import click
 
 from spellbook import VERSION
-from spellbook.data_formatting import serialize, stack_npz
-from spellbook.data_formatting.conduit.python import collector, translator
-from spellbook.ml import learn, predict, surrogates
-from spellbook.sampling import make_samples
+from spellbook.log_formatter import setup_logging
 
 
-class HelpParser(ArgumentParser):
-    """This class overrides the error message of the argument parser to
-    print the help message when an error happens."""
-
-    def error(self, message):
-        sys.stderr.write("error: %s\n" % message)
-        self.print_help()
-        sys.exit(2)
+LOG = logging.getLogger("spellbook")
+PLUGIN_DIR = os.path.join(os.path.dirname(__file__), "commands")
 
 
-def setup_argparse():
-    """
-    Setup argparse and any CLI options we want available via the package.
-    """
-    parser = HelpParser(
-        prog="spellbook",
-        description="Merlin Spellbook -- scientific workflow utilities",
-        formatter_class=RawDescriptionHelpFormatter,
-        epilog="See spellbook <command> --help for more info",
-    )
-    parser.add_argument("-v", "--version", action="version", version=VERSION)
-    subparsers = parser.add_subparsers(dest="subparsers")
-    subparsers.required = True
+class SpellbookCLI(click.MultiCommand):
+    def list_commands(self, ctx):
+        """
+        Avoids file reads for max speed.
+        """
+        return [
+            "collect",
+            "conduit-collect",
+            "conduit-translate",
+            "learn",
+            "make-samples",
+            "predict",
+            "serialize",
+            "stack-npz",
+            "translate",
+        ]
 
-    # spellbook make-samples
-    make_samples.setup_argparse(parser, subparsers)
+    def list_commands_dynamically(self, ctx):
+        rv = []
+        for filename in os.listdir(PLUGIN_DIR):
+            if filename.startswith("__"):
+                continue
+            if filename.endswith(".py"):
+                rv.append(filename[:-3])
+        rv.sort()
+        return rv
 
-    # spellbook learn
-    learn.setup_argparse(parser, subparsers)
+    def get_command(self, ctx, name):
+        ns = {}
+        fn = os.path.join(PLUGIN_DIR, name + ".py")
+        if not os.path.isfile(fn):
+            return
+        with open(fn) as f:
+            code = compile(f.read(), fn, "exec")
+            eval(code, ns, ns)
+        return ns["cli"]
 
-    # spellbook predict
-    predict.setup_argparse(parser, subparsers)
 
-    # spellbook surrogates
-    # surrogates.setup_argparse(parser, subparsers) TODO set up surrogates script?
-
-    # spellbook collect
-    collector.setup_argparse(parser, subparsers)
-
-    # spellbook translate
-    translator.setup_argparse(parser, subparsers)
-
-    # spellbook stack-npz
-    stack_npz.setup_argparse(parser, subparsers)
-
-    # spellbook serialize
-    serialize.setup_argparse(parser, subparsers)
-
-    return parser
+@click.command(cls=SpellbookCLI)
+@click.option(
+    "--level",
+    required=False,
+    default="INFO",
+    type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR"], case_sensitive=False),
+    help="set the logger level",
+)
+@click.version_option(VERSION)
+def spellbook(level):
+    setup_logging(logger=LOG, log_level=level.upper(), colors=True)
 
 
 def main():
-    """
-    High-level CLI operations.
-    """
-    parser = setup_argparse()
     if len(sys.argv) == 1:
-        parser.print_help(sys.stdout)
+        with click.Context(spellbook) as ctx:
+            click.echo(spellbook.get_help(ctx))
         return 1
-    args = parser.parse_args()
-
     try:
-        args.func(args)
+        spellbook()
     except Exception as e:
-        print(str(e))
+        # LOG.debug(traceback.format_exc())
+        print(traceback.format_exc())
+        LOG.error(str(e))
         return 1
 
 

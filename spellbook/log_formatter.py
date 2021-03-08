@@ -6,10 +6,9 @@
 #
 # LLNL-CODE-797170
 # All rights reserved.
-# This file is part of merlin-spellbook.
+# This file is part of Merlin Spellbook, Version: 0.3.0.
 #
-# For details, see https://github.com/LLNL/merlin-spellbook and
-# https://github.com/LLNL/merlin.
+# For details, see https://github.com/LLNL/merlin.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,19 +28,32 @@
 # SOFTWARE.
 ###############################################################################
 
-import numpy as np
+import logging
+import sys
+
+import coloredlogs
 
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+FORMATS = {
+    "DEFAULT": "[%(asctime)s: %(levelname)s] %(message)s",
+    "DEBUG": "[%(asctime)s: %(levelname)s] [%(module)s: %(lineno)d] %(message)s",
+}
 
 
-def predict(args):
-    regr = pickle.load(open(args.reg, "rb"))
+def setup_logging(logger, log_level="INFO", colors=True):
+    """
+    Setup and configure Python logging.
 
-    X = np.load(args.infile)
+    :param `logger`: a logging.Logger object
+    :param  `log_level`: logger level
+    """
+    formatter = logging.Formatter()
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
-    new_y = regr.predict(X)
-    np.save(open(args.outfile, "wb"), new_y)
+    logger.setLevel(log_level)
+    logger.propagate = False
+
+    if colors is True:
+        coloredlogs.install(level=log_level, logger=logger, fmt=FORMATS["DEFAULT"])

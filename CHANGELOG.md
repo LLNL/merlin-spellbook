@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- The new spellbook commabd `spellbook serialize`.
+- The new spellbook command `spellbook serialize`.
+
+### Changed
+- For better organization and speed, moved internal cli logic from `argparse` to `click`.
 
 ## [0.3.0]
 
