@@ -8,14 +8,14 @@ import click
     "-input",
     required=False,
     default="results_features.hdf5",
-    type=click.File("rb"),
+    type=click.Path(),
     help=".hdf5 file with data in it",
 )
 @click.option(
     "-output",
     required=False,
     default="results_features.npz",
-    type=click.File("wb"),
+    type=click.Path(),
     help=".npz file with the arrays",
 )
 @click.option(
