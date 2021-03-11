@@ -27,6 +27,7 @@ def savename(file_no, args):
         return name
     return args.outfile
 
+
 def make_schema_compatible(original_node, add_uuid):
     node = conduit.Node()
     if add_uuid:
@@ -34,6 +35,7 @@ def make_schema_compatible(original_node, add_uuid):
     else:
         node = original_node
     return node
+
 
 def process_args(args):
     print(WARN)

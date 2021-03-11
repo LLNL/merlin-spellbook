@@ -4,6 +4,7 @@ import sys
 import traceback
 
 import click
+
 from spellbook import VERSION
 from spellbook.log_formatter import setup_logging
 

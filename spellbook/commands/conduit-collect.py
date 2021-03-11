@@ -1,7 +1,9 @@
 from types import SimpleNamespace
 
 import click
+
 from spellbook.utils import OptionEatAll
+
 
 @click.command()
 @click.option(
@@ -39,6 +41,11 @@ def cli(infiles, outfile, chunk_size, add_uuid):
     from spellbook.data_formatting.conduit.python import collector
 
     args = SimpleNamespace(
-            **{"infiles": infiles, "outfile": outfile, "chunk_size": chunk_size, "add_uuid": add_uuid,}
+        **{
+            "infiles": infiles,
+            "outfile": outfile,
+            "chunk_size": chunk_size,
+            "add_uuid": add_uuid,
+        }
     )
     collector.process_args(args)

@@ -35,6 +35,7 @@ import numpy as np
 
 from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 
+
 WARN = ""
 try:
     import conduit
@@ -66,7 +67,6 @@ def process_args(args):
     g = conduit.Generator(schema_json, "json")
     schema = conduit.Node()
     g.walk_external(schema)
-    #print(schema_json)
 
     data_paths = []
     for path, _ in generate_scalar_path_pairs(schema):
@@ -79,23 +79,17 @@ def process_args(args):
     for s in samples:
         filtered_node = conduit.Node()
         for path in data_paths:
-            sample_path = '/'.join((s,path))
+            sample_path = "/".join((s, path))
             if data_loader.has_path(sample_path):
                 data_loader.read(filtered_node[path], sample_path)
             else:
-                filtered_node[sample_path] = np.nan # if a value is missing, that could be a problem
-        #g.walk_external(filtered_node)
-        #filtered_node.update_compatible(unfiltered_node)
-        # Stick the node to the end of the list
+                filtered_node[
+                    sample_path
+                ] = np.nan  # if a value is missing, that could be a problem
         make_data_array_dict(all_dict, filtered_node)
-        #print(unfiltered_node)
-        #print(all_dict)
 
-    print(all_dict)
     for dat in all_dict.keys():
         all_dict[dat] = np.vstack(all_dict[dat])
-        #print(n)
-    print(all_dict)
     # Save according to output extension, either numpy or conduit-compatible
     if protocol == "npz":
         np.savez(args.output, **all_dict)
