@@ -155,25 +155,48 @@ def dump_node(
         for opt in dump_options:
             save_options[opt[0]] = opt[1]
         try:
-            conduit.relay.io.save(conduit_node, fname, protocol, options=save_options)
+            conduit.relay.io.save(conduit_node, fname, options=save_options)
         except TypeError:  # Conduit version needs to be updated.
             LOG.error(
                 "Unable to customize save: please upgrade conduit to "
                 "expose save options!"
             )
-            conduit.relay.io.save(conduit_node, fname, protocol)
+            conduit.relay.io.save(conduit_node, fname)
     else:
-        conduit.relay.io.save(conduit_node, fname, protocol)
+        conduit.relay.io.save(conduit_node, fname)
 
 
-def load_node(fname):
+def load_node(fname, path='/'):
     """
-    Read a conduit file written with protocol into memory
+    Read a conduit file and return a node with data under the path.
+    If path is None, just returns the node handle.
     """
-    protocol = determine_protocol(fname)
+    handle = load_node_handle(fname)
+    if path is not None:
+        if path == '/':
+            n = conduit.Node()
+            handle.read(n)
+            handle.close()
+            return n
+        if handle.has_path(path):
+            n = conduit.Node()
+            handle.read(n, path)
+            handle.close()
+            return n
+        else:
+            print(f"ERROR in conduit_bundler.load_node: invalid_path {path}")
+            handle.close()
+            return None
+    else:
+        return handle
+
+def load_node_handle(fname):
+    """
+    Read a conduit file node handle. Does not read into memory.
+    """
     if os.path.exists(fname):
-        n = conduit.Node()
-        conduit.relay.io.load(n, fname, protocol)
-        return n
+        handle = conduit.relay.io.IOHandle()
+        handle.open(fname)
+        return handle
     else:
         raise IOError("No such file: " + fname)
