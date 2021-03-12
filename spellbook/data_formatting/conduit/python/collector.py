@@ -28,8 +28,17 @@ def savename(file_no, args):
     return args.outfile
 
 
+def make_schema_compatible(original_node, add_uuid):
+    node = conduit.Node()
+    if add_uuid:
+        node[str(uuid4())] = original_node
+    else:
+        node = original_node
+    return node
+
+
 def process_args(args):
-    print(WARNING)
+    print(WARN)
     files = args.infiles
     nfiles = len(files)
     if not args.chunk_size:
@@ -46,6 +55,7 @@ def process_args(args):
                 continue
             try:
                 subnode = cb.load_node(path)
+                subnode = make_schema_compatible(subnode, args.add_uuid)
                 for top_path in subnode.child_names():
 
                     if top_path in results:

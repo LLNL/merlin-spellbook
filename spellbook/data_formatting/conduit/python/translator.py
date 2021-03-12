@@ -33,27 +33,33 @@ import sys
 
 import numpy as np
 
+from spellbook.data_formatting.conduit.python import conduit_bundler as cb
+
 
 WARN = ""
 try:
     import conduit
-    import conduit_bundler as cb
+    import conduit.relay.io
 except:
     WARN = "\nWARNING: conduit not found."
 
 
 def process_args(args):
-    import_conduit()
-    data = cb.load_node(args.input)
+    print(WARN)
+    protocol = cb.determine_protocol(args.output)
+    # Faster loader, just read metadata
+    data_loader = conduit.relay.io.IOHandle()
+    data_loader.open(args.input)
+    first_data = conduit.Node()
+    data_loader.read(first_data, data_loader.list_child_names()[0])
     if args.schema == "auto":
-        schema_json = data[data.child_names()[0]].to_json()
+        schema_json = first_data.to_json()
     elif "," in args.schema:
         sub_list = args.schema.split(",")
         schema_node = conduit.Node()
         for item in sub_list:
-            schema_node[item] = data[data.child_names()[0] + "/" + item]
+            schema_node[item] = first_data[item]
         schema_json = schema_node.to_json()
-        print(schema_json)
     else:
         with open(args.schema, "r") as f:
             schema_json = f.read()
@@ -62,29 +68,33 @@ def process_args(args):
     schema = conduit.Node()
     g.walk_external(schema)
 
-    samples = data.child_names()
+    data_paths = []
+    for path, _ in generate_scalar_path_pairs(schema):
+        data_paths.append(path)
+    samples = data_loader.list_child_names()
 
     # Walk through all the samples and create a unified list (ie pack into a
     # dictionary of lists)
     all_dict = {}
     for s in samples:
-        unfiltered_node = data[s]
         filtered_node = conduit.Node()
-        g.walk_external(filtered_node)
-        filtered_node.update_compatible(unfiltered_node)
+        for path in data_paths:
+            sample_path = "/".join((s, path))
+            if data_loader.has_path(sample_path):
+                data_loader.read(filtered_node[path], sample_path)
+            else:
+                filtered_node[
+                    sample_path
+                ] = np.nan  # if a value is missing, that could be a problem
         make_data_array_dict(all_dict, filtered_node)
 
+    for dat in all_dict.keys():
+        all_dict[dat] = np.vstack(all_dict[dat])
     # Save according to output extension, either numpy or conduit-compatible
-    protocol = cb.determine_protocol(args.output)
     if protocol == "npz":
         np.savez(args.output, **all_dict)
     else:
         n = cb.pack_conduit_node_from_dict(all_dict)
-        # n = conduit.Node()
-        # g.walk_external(n)
-        # n.update_compatible(data)
-        # for data_name in all_dict.keys():
-        #    n[data_name] = np.array(all_dict[data_name]).
         cb.dump_node(n, args.output)
 
 
