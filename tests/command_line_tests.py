@@ -252,8 +252,16 @@ def define_tests():
         "spellbook": ("spellbook", ReturnCodeCond(1)),
         "spellbook help": ("spellbook --help", ReturnCodeCond()),
         "spellbook version": ("spellbook --version", ReturnCodeCond()),
-        "spellbook serialize": ("spellbook serialize --output thing.json --verbose --vars top/middle/bottom=1 top/middle/bottom2=2 top/middle/string=spam top/bool=false top/float=1.3e-9 top/1/junk=nan ; rm thing.json", RegexCond("{\"top\": {\"1\": {\"junk\": NaN}, \"bool\": true, \"float\": 1.3e-09, \"middle\": {\"bottom\": 1, \"bottom2\": 2, \"string\": \"spam\"}}}")),
-        "spellbook make-samples": ("spellbook make-samples ; rm samples.npy", ReturnCodeCond()),
+        "spellbook serialize": (
+            "spellbook serialize --output thing.json --verbose --vars top/middle/bottom=1 top/middle/bottom2=2 top/middle/string=spam top/bool=false top/float=1.3e-9 top/1/junk=nan ; rm thing.json",
+            RegexCond(
+                '{"top": {"1": {"junk": NaN}, "bool": true, "float": 1.3e-09, "middle": {"bottom": 1, "bottom2": 2, "string": "spam"}}}'
+            ),
+        ),
+        "spellbook make-samples": (
+            "spellbook make-samples ; rm samples.npy",
+            ReturnCodeCond(),
+        ),
         # "spellbook learn": ("spellbook learn", ReturnCodeCond()),
         # "spellbook predict": ("spellbook predict", ReturnCodeCond()),
         # "spellbook collect": ("spellbook collect", ReturnCodeCond()),
