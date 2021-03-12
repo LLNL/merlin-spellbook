@@ -166,14 +166,14 @@ def dump_node(
         conduit.relay.io.save(conduit_node, fname)
 
 
-def load_node(fname, path='/'):
+def load_node(fname, path="/"):
     """
     Read a conduit file and return a node with data under the path.
     If path is None, just returns the node handle.
     """
     handle = load_node_handle(fname)
     if path is not None:
-        if path == '/':
+        if path == "/":
             n = conduit.Node()
             handle.read(n)
             handle.close()
@@ -189,6 +189,7 @@ def load_node(fname, path='/'):
             return None
     else:
         return handle
+
 
 def load_node_handle(fname):
     """
