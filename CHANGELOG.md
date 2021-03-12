@@ -4,6 +4,16 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1]
+
+### Added
+- CLI test for `spellbook serialize`.
+- CLI test for `spellbook make-samples`.
+- Conduit bundler unit tests.
+
+### Fixed
+- A variety of bugs in `conduit-collect` and `conduit-translate`.
+
 ## [0.4.0]
 
 ### Added
