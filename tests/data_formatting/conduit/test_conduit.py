@@ -24,6 +24,7 @@ def test_make_conduit_node():
 def test_save_node():
     x = make_dummy_node()
     save_node_many(x)
+    delete_data()
 
 def save_node_many(node, base='_dummy', exts=('.h5', '.hdf5', '.json', '.yaml', '.cbin')):
     for ext in exts:
