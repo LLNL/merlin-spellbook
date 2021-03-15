@@ -48,8 +48,7 @@ def process_args(args):
     print(WARN)
     protocol = cb.determine_protocol(args.output)
     # Faster loader, just read metadata
-    data_loader = conduit.relay.io.IOHandle()
-    data_loader.open(args.input)
+    data_loader = cb.load_node_handle(args.input)
     first_data = conduit.Node()
     data_loader.read(first_data, data_loader.list_child_names()[0])
     if args.schema == "auto":
@@ -114,6 +113,8 @@ def generate_scalar_path_pairs(node, path=""):
 def make_data_array_dict(d, node):
     """ Pact a node to the end of the list in the dictionary with same name path """
     for path, datum in generate_scalar_path_pairs(node):
+        # patch for older versions of conduit
+        datum = np.array(datum)
         if path in d:
             d[path].append(datum)
         else:
