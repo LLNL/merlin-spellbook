@@ -171,7 +171,7 @@ def load_node(fname, path="/"):
     Read a conduit file and return a node with data under the path.
     If path is None, just returns the node handle.
     """
-    handle = load_node_handle(fname, mode='r')
+    handle = load_node_handle(fname, mode="r")
     if path is not None:
         if path == "/":
             n = conduit.Node()
@@ -191,13 +191,13 @@ def load_node(fname, path="/"):
         return handle
 
 
-def load_node_handle(fname, mode='r'):
+def load_node_handle(fname, mode="r"):
     """
     Read a conduit file node handle. Does not read into memory.
     """
     if os.path.exists(fname):
         options = conduit.Node()
-        options['mode'] = mode
+        options["mode"] = mode
         handle = conduit.relay.io.IOHandle()
         handle.open(fname, options=options)
         return handle
