@@ -108,9 +108,9 @@ class MakeSamples(CliCommand):
             X = np.meshgrid(*temp)
             x = np.stack([xx.flatten() for xx in X], axis=1)
         elif sample_type == "lhs":
-            x = doe.lhs(n_dims, samples=n_samples)
+            x = doe.lhs(n_dims, samples=n_samples, random_state=seed)
         elif sample_type == "lhd":
-            _x = doe.lhs(n_dims, samples=n_samples)
+            _x = doe.lhs(n_dims, samples=n_samples, random_state=seed)
             x = norm(loc=0.5, scale=0.125).ppf(_x)
         elif sample_type == "star":
             _x = doe.doe_star.star(n_dims)[0]
