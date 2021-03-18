@@ -6,7 +6,7 @@
 #
 # LLNL-CODE-<PENDING>
 # All rights reserved.
-# This file is part of merlin-spellbook, Version: 0.4.0.
+# This file is part of merlin-spellbook, Version: 0.4.2.
 #
 # For details, see https://github.com/LLNL/merlin-spellbook.
 #
@@ -171,7 +171,7 @@ def load_node(fname, path="/"):
     Read a conduit file and return a node with data under the path.
     If path is None, just returns the node handle.
     """
-    handle = load_node_handle(fname)
+    handle = load_node_handle(fname, mode="r")
     if path is not None:
         if path == "/":
             n = conduit.Node()
@@ -191,13 +191,15 @@ def load_node(fname, path="/"):
         return handle
 
 
-def load_node_handle(fname):
+def load_node_handle(fname, mode="r"):
     """
     Read a conduit file node handle. Does not read into memory.
     """
     if os.path.exists(fname):
+        options = conduit.Node()
+        options["mode"] = mode
         handle = conduit.relay.io.IOHandle()
-        handle.open(fname)
+        handle.open(fname, options=options)
         return handle
     else:
         raise IOError("No such file: " + fname)
