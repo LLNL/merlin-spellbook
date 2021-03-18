@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Allowed for pyDOE2 sampling functions to use seeds.
+- Bug in `spellbook learn` that excluded the `-regressor` flag.
 
 ## [0.4.2]
 
