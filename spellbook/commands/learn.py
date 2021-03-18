@@ -32,7 +32,14 @@ import click
     type=str,
     help="file to pickle the regressor to",
 )
-def cli(infile, x, y, outfile):
+@click.option(
+    "-regressor",
+    required=False,
+    default="RandomForestRegressor",
+    type=str,
+    help="type of regressor",
+)
+def cli(infile, x, y, outfile, regressor):
     """
     Use sklearn to make a regressor
     """
@@ -44,6 +51,7 @@ def cli(infile, x, y, outfile):
             "X": x,
             "y": y,
             "outfile": outfile,
+            "regressor": regressor,
         }
     )
     learn.random_forest(args)
