@@ -4,6 +4,12 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Help message for `-chunk_size` in `conduit-collect`. Previously was ambiguous,
+  saying `-chunk_size` corresponded to number of files, instead of size of files.
+
 ## [0.4.3]
 
 ### Fixed

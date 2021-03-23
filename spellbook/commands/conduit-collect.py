@@ -25,7 +25,7 @@ from spellbook.utils import OptionEatAll
     required=False,
     default=None,
     type=int,
-    help="number of files to chunk together. Default (None): don't chunk",
+    help="number of samples per chunk. Default (None): don't chunk"
 )
 @click.option(
     "-add_uuid",
