@@ -25,6 +25,14 @@ import click
     type=str,
     help="schema for a single sample that says what data to translate. Defaults to whole first node. Can be a comma-delimited list of subpaths, eg inputs,outputs/scalars,metadata",
 )
+@click.option(
+    "-chunks",
+    required=False,
+    default=False,
+    type=bool,
+    is_flag=True,
+    help="Read in all chunked files in the format '<input>_000.hdf5'",
+)
 def cli(input, output, schema):
     """
     Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.
