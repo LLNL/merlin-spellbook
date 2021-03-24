@@ -30,8 +30,8 @@
 ###############################################################################
 
 import glob
-import sys
 import re
+import sys
 
 import numpy as np
 
