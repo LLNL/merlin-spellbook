@@ -29,7 +29,9 @@
 # SOFTWARE.
 ###############################################################################
 
+import glob
 import sys
+import re
 
 import numpy as np
 
@@ -44,23 +46,23 @@ except:
     WARN = "\nWARNING: conduit not found."
 
 
-def process_args(args):
+def run(_input, output, schema):
     print(WARN)
-    protocol = cb.determine_protocol(args.output)
+    protocol = cb.determine_protocol(output)
     # Faster loader, just read metadata
-    data_loader = cb.load_node_handle(args.input)
+    data_loader = cb.load_node_handle(_input)
     first_data = conduit.Node()
     data_loader.read(first_data, data_loader.list_child_names()[0])
-    if args.schema == "auto":
+    if schema == "auto":
         schema_json = first_data.to_json()
-    elif "," in args.schema:
-        sub_list = args.schema.split(",")
+    elif "," in schema:
+        sub_list = schema.split(",")
         schema_node = conduit.Node()
         for item in sub_list:
             schema_node[item] = first_data[item]
         schema_json = schema_node.to_json()
     else:
-        with open(args.schema, "r") as f:
+        with open(schema, "r") as f:
             schema_json = f.read()
 
     g = conduit.Generator(schema_json, "json")
@@ -91,10 +93,22 @@ def process_args(args):
         all_dict[dat] = np.vstack(all_dict[dat])
     # Save according to output extension, either numpy or conduit-compatible
     if protocol == "npz":
-        np.savez(args.output, **all_dict)
+        np.savez(output, **all_dict)
     else:
         n = cb.pack_conduit_node_from_dict(all_dict)
-        cb.dump_node(n, args.output)
+        cb.dump_node(n, output)
+
+
+def process_args(_input, output, schema, read_chunks):
+    if read_chunks:
+        inputs = _input.split(".")
+        outputs = output.split(".")
+        for chunk in glob.glob(f"{inputs[0]}_[0-9]*.{inputs[1]}"):
+            chunk_id = re.search("_\d+", chunk)[0]
+            chunk_output = f"{outputs[0]}{chunk_id}.{outputs[1]}"
+            run(chunk, chunk_output, schema)
+    else:
+        run(_input, output, schema)
 
 
 def generate_scalar_path_pairs(node, path=""):

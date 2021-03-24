@@ -33,11 +33,10 @@ import click
     is_flag=True,
     help="Read in all chunked files in the format '<input>_000.hdf5'",
 )
-def cli(input, output, schema):
+def cli(input, output, schema, chunks):
     """
     Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.
     """
     from spellbook.data_formatting.conduit.python import translator
 
-    args = SimpleNamespace(**{"input": input, "output": output, "schema": schema})
-    translator.process_args(args)
+    translator.process_args(input, output, schema, chunks)
