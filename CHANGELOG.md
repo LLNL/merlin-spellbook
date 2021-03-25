@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Help message for `-chunk_size` in `conduit-collect`. Previously was ambiguous,
   saying `-chunk_size` corresponded to number of files, instead of size of files.
+- Typo in `make-samples` help message.
 
 ## [0.4.3]
 

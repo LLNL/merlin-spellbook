@@ -42,7 +42,7 @@ import click
     required=False,
     default=1.0,
     type=float,
-    help="scale factor to appy to all ranges (stacks with -scale)",
+    help="scale factor to apply to all ranges (stacks with -scale)",
 )
 @click.option(
     "-outfile",
