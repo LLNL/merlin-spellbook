@@ -31,12 +31,19 @@ import click
     default=False,
     type=bool,
     is_flag=True,
-    help="Read in all chunked files in the format '<input>_000.hdf5'",
+    help="Read in all chunked files in the format '<input>_000.hdf5' with n worker processes. Defaults to CPU count. Use -n to specify number of chunks.",
 )
-def cli(input, output, schema, chunks):
+@click.option(
+    "-n",
+    required=False,
+    default=None,
+    type=int,
+    help="Number of processes to translate chunks in parallel. Defaults to CPU count. Use with '-chunks' flag.",
+)
+def cli(input, output, schema, chunks, n):
     """
     Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.
     """
     from spellbook.data_formatting.conduit.python import translator
 
-    translator.process_args(input, output, schema, chunks)
+    translator.process_args(input, output, schema, chunks, n)

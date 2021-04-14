@@ -31,6 +31,7 @@
 
 import glob
 import multiprocessing as mp
+import os
 import re
 import sys
 
@@ -106,11 +107,13 @@ def translate_chunk(chunk, outputs, schema):
     run(chunk, chunk_output, schema)
 
 
-def process_args(_input, output, schema, read_chunks):
-    if read_chunks:
+def process_args(_input, output, schema, do_chunks, n_processes):
+    if do_chunks:
         inputs = _input.split(".")
         outputs = output.split(".")
-        pool = mp.Pool()
+        if n_processes is None:
+            n_processes = os.cpu_count()
+        pool = mp.Pool(n_processes)
         for chunk in glob.glob(f"{inputs[0]}_[0-9]*.{inputs[1]}"):
             pool.apply_async(translate_chunk, args=(chunk, outputs, schema))
         pool.close()
