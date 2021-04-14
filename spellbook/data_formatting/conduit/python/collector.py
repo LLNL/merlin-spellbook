@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import json
-import multiprocessing as mp
 import sys
 from itertools import zip_longest
 from uuid import uuid4
