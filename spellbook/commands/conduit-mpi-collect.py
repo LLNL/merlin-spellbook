@@ -29,7 +29,7 @@ from spellbook.utils import OptionEatAll
 )
 def cli(outfile, add_uuid, filepath_chunks):
     """
-    Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid
+    Convert a list of conduit-readable files into conduit node chunks based on groups in '-filepath_chunks'. Simple append, so nodes that already exist will get a name change to conflict-uuid.
     """
     from spellbook.data_formatting.conduit.python import mpi_collector
 
