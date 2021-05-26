@@ -31,7 +31,7 @@ def cli(outfile, n_chunks, filepaths):
     """
     Convert a list of conduit-readable files into conduit node chunks based on groups in '-filepath_chunks'. Simple append, so nodes that already exist will get a name change to conflict-uuid.
     """
-    from spellbook.data_formatting.group_files import process_args
+    from spellbook.data_formatting import group_files
 
     args = SimpleNamespace(
         **{
@@ -40,4 +40,4 @@ def cli(outfile, n_chunks, filepaths):
             "filepaths": filepaths,
         }
     )
-    mpi_collector.process_args(args)
+    group_files.process_args(args)
