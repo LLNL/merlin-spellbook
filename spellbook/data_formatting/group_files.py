@@ -16,7 +16,7 @@ def process_args(args):
         n_files_to_collect / n_chunks
     )  # TODO accomodate odd # of files, non-integer ratios
     filepath_chunks = list(get_chunks(filepaths, n_files_per_chunk))
-    pkl.dump(filepath_chunks, open("filepath_chunks.pkl", "wb"))
+    pkl.dump(filepath_chunks, open(args.outfile, "wb"))
 
 
 def setup_argparse():

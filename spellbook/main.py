@@ -23,6 +23,7 @@ class SpellbookCLI(click.MultiCommand):
             "conduit-collect",
             "conduit-mpi-collect",
             "conduit-translate",
+            "group-files",
             "learn",
             "make-samples",
             "predict",
