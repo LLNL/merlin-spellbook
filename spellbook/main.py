@@ -21,6 +21,7 @@ class SpellbookCLI(click.MultiCommand):
         return [
             "collect",
             "conduit-collect",
+            "conduit-mpi-collect",
             "conduit-translate",
             "learn",
             "make-samples",
