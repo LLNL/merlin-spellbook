@@ -22,10 +22,10 @@ from spellbook.utils import OptionEatAll
 )
 @click.option(
     "-filepaths",
-    required=True,
-    default=False,
+    required=False,
+    default="finished_hdf5.txt",
     type=str,
-    help="Space-delimited filepath list to be split into 'n_chunks' and serialized.",
+    help="Filepath of txt file containing newline-delimited absolute filepaths to collect",
 )
 def cli(outfile, n_chunks, filepaths):
     """

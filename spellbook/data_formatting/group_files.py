@@ -7,7 +7,8 @@ def get_chunks(itr, n):
 
 
 def process_args(args):
-    filepaths = args.filepaths
+    filepaths_txt = args.filepaths
+    filepaths = list(open(filepaths_txt, "r").readlines())
     n_files_to_collect = len(filepaths)
     n_chunks = args.n_chunks
     n_files_per_chunk = int(
