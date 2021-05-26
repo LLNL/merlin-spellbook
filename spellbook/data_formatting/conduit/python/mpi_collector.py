@@ -39,7 +39,7 @@ def process_args(args):
     for path in my_filepaths:
         # TODO: logger.DEBUG print(f'{my_rank} trying {path}')
         if not path or path == "":
-            print(f'{my_rank} error with path {path}')
+            print(f"{my_rank} error with path {path}")
             continue
         try:
             subnode = cb.load_node(path)

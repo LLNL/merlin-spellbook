@@ -25,7 +25,7 @@ from spellbook.utils import OptionEatAll
     required=False,
     default="filepath_chunks.pkl",
     type=str,
-    help="point to serialized file containing list of lists of filenames (chunks)"
+    help="point to serialized file containing list of lists of filenames (chunks)",
 )
 def cli(outfile, add_uuid, filepath_chunks):
     """
