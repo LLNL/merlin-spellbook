@@ -14,9 +14,11 @@ def nested_set(dic, keys, value):
     dic[keys[-1]] = value
 
 
-def maybe_numeric_or_bool(string):
-    if string.lower() == "false" or string.lower() == "true":
-        return bool(string)
+def convert_string(string):
+    if string.lower() == "false":
+        return False
+    if string.lower() == "true":
+        return True
     if string.isdigit():
         return int(string)
     try:
@@ -30,7 +32,7 @@ def nested_dict(var_list, splitter="/"):
     for v in var_list:
         keys, val = v.split("=")
         keylist = keys.split(splitter)
-        value = maybe_numeric_or_bool(val)
+        value = convert_string(val)
         nested_set(output, keylist, value)
     return output
 
