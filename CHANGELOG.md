@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Ability for `conduit-translate` to deal with chunks from `conduit-collect`.
+- Ansynchronous parallelism for `conduit-translate -chunks -n <n processes>`.
 
 ### Fixed
 - Help message for `-chunk_size` in `conduit-collect`. Previously was ambiguous,

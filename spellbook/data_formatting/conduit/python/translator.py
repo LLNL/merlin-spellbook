@@ -30,6 +30,8 @@
 ###############################################################################
 
 import glob
+import multiprocessing as mp
+import os
 import re
 import sys
 
@@ -99,14 +101,23 @@ def run(_input, output, schema):
         cb.dump_node(n, output)
 
 
-def process_args(_input, output, schema, read_chunks):
-    if read_chunks:
+def translate_chunk(chunk, outputs, schema):
+    chunk_id = re.search("_\d+", chunk)[0]
+    chunk_output = f"{outputs[0]}{chunk_id}.{outputs[1]}"
+    run(chunk, chunk_output, schema)
+
+
+def process_args(_input, output, schema, do_chunks, n_processes):
+    if do_chunks:
         inputs = _input.split(".")
         outputs = output.split(".")
+        if n_processes is None:
+            n_processes = os.cpu_count()
+        pool = mp.Pool(n_processes)
         for chunk in glob.glob(f"{inputs[0]}_[0-9]*.{inputs[1]}"):
-            chunk_id = re.search("_\d+", chunk)[0]
-            chunk_output = f"{outputs[0]}{chunk_id}.{outputs[1]}"
-            run(chunk, chunk_output, schema)
+            pool.apply_async(translate_chunk, args=(chunk, outputs, schema))
+        pool.close()
+        pool.join()
     else:
         run(_input, output, schema)
 
