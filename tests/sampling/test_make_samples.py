@@ -6,7 +6,7 @@ from spellbook.sampling.make_samples import scale_samples
 from spellbook.ml.learn import stack_arrays
 
 
-def test_scale_samples_nolog():
+def test_scale_samples_nolog_1():
 
 # Turn 0:1 samples into -1:1
 
@@ -20,8 +20,31 @@ def test_scale_samples_nolog():
  print(expected)
 
  numpy.testing.assert_array_equal(real_values, expected)
+
+
+
+def test_scale_samples_nolog_2():
+
+# Turn 0:1 samples into -1:1
+
+ norm_values = np.linspace(0,1,10).reshape((-1,10))
+ real_values = scale_samples(norm_values, [(-1,1)])
+ expected = [[  1.0,
+           -.77,
+           -.55,
+           -.33,
+           -.11,
+           .11, .33, .55,  .77, 1]]
+
+ print ("real------------------------------")
+ print(real_values)
+ print ("expected------------------------------")
+ print(expected)
+
+ numpy.testing.assert_allclose(real_values, expected, rtol=0.02, atol=.02,verbose=True)
+
  
-def test_scale_samples_log():
+def test_scale_samples_log_1():
   norm_values = np.linspace(0,1,5).reshape((1,5))
   real_values = scale_samples(norm_values, [(1,10)], do_log=True)
   print ("real------------------------------")
