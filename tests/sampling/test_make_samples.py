@@ -20,17 +20,17 @@ def test_scale_samples_nolog():
  print(expected)
 
  numpy.testing.assert_array_equal(real_values, expected)
-
  
 def test_scale_samples_log():
   norm_values = np.linspace(0,1,5).reshape((1,5))
   real_values = scale_samples(norm_values, [(1,10)], do_log=True)
   print ("real------------------------------")
   print(real_values)
-  expected = [[  1.0],
-         [  1.77],
-         [  3.16],
-         [  5.62],
-         [  10.0]]
-#  numpy.testing.assert_array_equal(real_values, expected)
+  expected = [[  1.0,
+           1.77,
+           3.16,
+           5.62,
+           10.0]]
+  print ("expected------------------------------")
+  print(expected)
   numpy.testing.assert_allclose(real_values, expected, rtol=0.02, atol=.02,verbose=True)
