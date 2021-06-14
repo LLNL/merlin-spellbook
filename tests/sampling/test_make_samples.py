@@ -1,4 +1,7 @@
 #
+# Test Description
+#  
+#-----------------------------------------------------------------------  
 import os
 import numpy as np
 import numpy.testing
@@ -30,7 +33,7 @@ def test_scale_samples_nolog_2():
 
  norm_values = np.linspace(0,1,10).reshape((-1,10))
  real_values = scale_samples(norm_values, [(-1,1)])
- expected = [[  1.0,
+ expected = [[ -1.0,
            -.77,
            -.55,
            -.33,
