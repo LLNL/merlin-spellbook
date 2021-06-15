@@ -1,6 +1,7 @@
 #
 # Test Description
-#  
+#  Checks for various ranges of values to sample
+#  for both linear and log scaling.
 #-----------------------------------------------------------------------  
 import os
 import numpy as np
@@ -29,7 +30,7 @@ def test_scale_samples_nolog_1():
 
 def test_scale_samples_nolog_2():
 
-# Turn 0:1 samples into -1:1
+# Turn 0:1 samples into -1:10
 
  norm_values = np.linspace(0,1,10).reshape((-1,10))
  real_values = scale_samples(norm_values, [(-1,1)])
@@ -47,7 +48,7 @@ def test_scale_samples_nolog_2():
 
  numpy.testing.assert_allclose(real_values, expected, rtol=0.02, atol=.02,verbose=True)
 
- 
+# Turn 0:1 samples into 1:10 with log scaling
 def test_scale_samples_log_1():
   norm_values = np.linspace(0,1,5).reshape((1,5))
   real_values = scale_samples(norm_values, [(1,10)], do_log=True)
