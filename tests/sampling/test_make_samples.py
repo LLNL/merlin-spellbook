@@ -46,7 +46,7 @@ def test_scale_samples_nolog_2():
  print ("expected------------------------------")
  print(expected)
 
- numpy.testing.assert_allclose(real_values, expected, rtol=0.02, atol=.02,verbose=True)
+ numpy.testing.assert_allclose(real_values, expected, rtol=0.02, atol=0,verbose=True)
 
 # Turn 0:1 samples into 1:10 with log scaling
 def test_scale_samples_log_1():
@@ -61,4 +61,4 @@ def test_scale_samples_log_1():
            10.0]]
   print ("expected------------------------------")
   print(expected)
-  numpy.testing.assert_allclose(real_values, expected, rtol=0.02, atol=.02,verbose=True)
+  numpy.testing.assert_allclose(real_values, expected, rtol=0.02, atol=0,verbose=True)
