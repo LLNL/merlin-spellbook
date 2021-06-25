@@ -109,11 +109,7 @@ setup(
     packages=find_packages(exclude=["tests.*", "tests"]),
     install_requires=install_requires(),
     extras_require=extras_require(),
-    entry_points={
-        "console_scripts": [
-            "spellbook=spellbook.main:main",
-        ]
-    },
+    entry_points={"console_scripts": ["spellbook=spellbook.main:main"]},
     include_package_data=True,
     zip_safe=False,
 )

@@ -9,20 +9,8 @@ import click
     type=int,
     help="random number seed for generating samples",
 )
-@click.option(
-    "-n",
-    required=False,
-    default=100,
-    type=int,
-    help="number of samples",
-)
-@click.option(
-    "-dims",
-    required=False,
-    default=2,
-    type=int,
-    help="number of dimensions",
-)
+@click.option("-n", required=False, default=100, type=int, help="number of samples")
+@click.option("-dims", required=False, default=2, type=int, help="number of dimensions")
 @click.option(
     "-sample_type",
     required=False,
