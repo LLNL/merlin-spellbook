@@ -6,7 +6,7 @@
 import os
 
 import numpy as np
-import numpy.testing
+import numpy.testing as testing
 
 from spellbook.ml.learn import stack_arrays
 from spellbook.sampling.make_samples import scale_samples
@@ -25,7 +25,7 @@ def test_scale_samples_nolog_1():
     print("expected------------------------------")
     print(expected)
 
-    numpy.testing.assert_array_equal(real_values, expected)
+    testing.assert_array_equal(real_values, expected)
 
 
 def test_scale_samples_nolog_2():
@@ -34,14 +34,15 @@ def test_scale_samples_nolog_2():
 
     norm_values = np.linspace(0, 1, 10).reshape((-1, 10))
     real_values = scale_samples(norm_values, [(-1, 1)])
-    expected = [[-1.0, -0.77, -0.55, -0.33, -0.11, 0.11, 0.33, 0.55, 0.77, 1]]
+    # expected = [[-1.0, -0.77, -0.55, -0.33, -0.11, 0.11, 0.33, 0.55, 0.77, 1]]
+    expected = np.linspace(-1,1,10).reshape((-1,1))
 
     print("real------------------------------")
     print(real_values)
     print("expected------------------------------")
     print(expected)
 
-    numpy.testing.assert_allclose(
+    testing.assert_allclose(
         real_values, expected, rtol=0.02, atol=0, verbose=True
     )
 
@@ -53,8 +54,9 @@ def test_scale_samples_log_1():
     print("real------------------------------")
     print(real_values)
     expected = [[1.0, 1.77, 3.16, 5.62, 10.0]]
+    # expected = np.logspace(0,1,5).reshape((-1,1))
     print("expected------------------------------")
     print(expected)
-    numpy.testing.assert_allclose(
+    testing.assert_allclose(
         real_values, expected, rtol=0.02, atol=0, verbose=True
     )
