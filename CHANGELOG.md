@@ -8,11 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Ability for `conduit-translate` to deal with chunks from `conduit-collect`.
+- Ansynchronous parallelism for `conduit-translate -chunks -n <n processes>`.
 
 ### Fixed
 - Help message for `-chunk_size` in `conduit-collect`. Previously was ambiguous,
   saying `-chunk_size` corresponded to number of files, instead of size of files.
 - Typo in `make-samples` help message.
+- Error in serializing booleans
 
 ## [0.4.3]
 
