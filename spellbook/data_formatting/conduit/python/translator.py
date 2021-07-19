@@ -40,7 +40,7 @@ import numpy as np
 from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 
 
-WARN = ""
+WARN = None
 try:
     import conduit
     import conduit.relay.io
@@ -49,7 +49,8 @@ except:
 
 
 def run(_input, output, schema):
-    print(WARN)
+    if WARN is not None:
+        print(WARN)
     protocol = cb.determine_protocol(output)
     # Faster loader, just read metadata
     data_loader = cb.load_node_handle(_input)
@@ -102,19 +103,21 @@ def run(_input, output, schema):
 
 
 def translate_chunk(chunk, outputs, schema):
-    chunk_id = re.search("_\d+", chunk)[0]
-    chunk_output = f"{outputs[0]}{chunk_id}.{outputs[1]}"
+    _chunk_id = re.search("_\d+", chunk)
+    chunk_id = _chunk_id[0]
+    chunk_output = f"{outputs[0]}{chunk_id}{outputs[1]}"
     run(chunk, chunk_output, schema)
 
 
 def process_args(_input, output, schema, do_chunks, n_processes):
     if do_chunks:
-        inputs = _input.split(".")
-        outputs = output.split(".")
+        inputs = os.path.splitext(_input)
+        outputs = os.path.splitext(output)
         if n_processes is None:
             n_processes = os.cpu_count()
         pool = mp.Pool(n_processes)
-        for chunk in glob.glob(f"{inputs[0]}_[0-9]*.{inputs[1]}"):
+        chunks = glob.glob(f"{inputs[0]}*{inputs[1]}")
+        for chunk in chunks:
             pool.apply_async(translate_chunk, args=(chunk, outputs, schema))
         pool.close()
         pool.join()
