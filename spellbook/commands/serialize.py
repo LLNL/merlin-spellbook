@@ -16,8 +16,8 @@ from spellbook.utils import OptionEatAll
 @click.option(
     "--vars",
     required=False,
-    default="results.hdf5",
-    type=str,
+    default="spam=cheese monkey=nugget",
+    type=list,
     help="variables to write. specified as space separated name=VALUE",
     cls=OptionEatAll,
 )
