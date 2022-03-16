@@ -3,14 +3,14 @@ import sys
 
 import numpy as np
 
-from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 
 
 try:
     import conduit
+    from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 except ModuleNotFoundError:
     print("Conduit not available! These tests will fail!")
-
+    cb = None
 
 def make_dummy_node():
     x = conduit.Node()
