@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.1]
 
+### Added
+- prototype github actions for testing and auto-deploy
+
 ### Fixed
 - `conduit-collect` incompatibility with recent versions of click
 - Copyright year to 2022
