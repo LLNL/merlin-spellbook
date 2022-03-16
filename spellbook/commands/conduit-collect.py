@@ -9,7 +9,7 @@ from spellbook.utils import OptionEatAll
 @click.option(
     "-infiles",
     required=True,
-    type=str,
+    type=list,
     cls=OptionEatAll,
     help="whitespace separated list of files to collect",
 )
