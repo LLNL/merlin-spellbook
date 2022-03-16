@@ -10,7 +10,8 @@ try:
     from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 except ModuleNotFoundError:
     print("Conduit not available! These tests will fail!")
-    cb = None
+    print("Exiting nicely!")
+    sys.exit()
 
 def make_dummy_node():
     x = conduit.Node()
