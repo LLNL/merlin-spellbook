@@ -29,6 +29,13 @@ from spellbook.utils import OptionEatAll
     help="key to indicate a nested value, default: /",
 )
 @click.option(
+    "--delimiter",
+    required=False,
+    default="=",
+    type=str,
+    help="key to indicate delimiter value, default: =",
+)
+@click.option(
     "--verbose",
     is_flag=True,
     required=False,
@@ -44,7 +51,7 @@ from spellbook.utils import OptionEatAll
     type=bool,
     help="indent with new lines, default False",
 )
-def cli(output, vars, splitter, verbose, indent):
+def cli(output, vars, splitter, delimiter, verbose, indent):
     """
     write a serialized file from cli arguments.
     """
@@ -55,6 +62,7 @@ def cli(output, vars, splitter, verbose, indent):
             "output": output,
             "vars": vars,
             "splitter": splitter,
+            "delimiter": delimiter,
             "verbose": verbose,
             "indent": indent,
         }

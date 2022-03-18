@@ -27,10 +27,10 @@ def convert_string(string):
         return string
 
 
-def nested_dict(var_list, splitter="/"):
+def nested_dict(var_list, splitter="/", delimiter="="):
     output = {}
     for v in var_list:
-        keys, val = v.split("=")
+        keys, val = v.split(delimiter, 1)
         keylist = keys.split(splitter)
         value = convert_string(val)
         nested_set(output, keylist, value)
@@ -38,7 +38,7 @@ def nested_dict(var_list, splitter="/"):
 
 
 def parse_args(args):
-    output = nested_dict(args.vars, splitter=args.splitter)
+    output = nested_dict(args.vars, splitter=args.splitter, delimiter=args.delimiter)
     dumpargs = {"sort_keys": True}
     if args.indent:
         dumpargs["indent"] = 4
