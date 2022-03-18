@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0]
 
 ## Added
-- delimiter option in serialization command
+- Delimiter option in serialization command.
+
+## Changed
+- In serialize command, grab the first entry as the key and everything else as the value.
 
 ## [0.5.3]
 

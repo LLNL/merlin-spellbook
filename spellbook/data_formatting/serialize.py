@@ -30,7 +30,7 @@ def convert_string(string):
 def nested_dict(var_list, splitter="/", delimiter="="):
     output = {}
     for v in var_list:
-        keys, val = v.split(delimiter)
+        keys, val = v.split(delimiter, 1)
         keylist = keys.split(splitter)
         value = convert_string(val)
         nested_set(output, keylist, value)
