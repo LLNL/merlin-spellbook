@@ -21,7 +21,7 @@ def make_dummy_node():
 def test_make_conduit_node():
     if skip_conduit_tests:
         return
-    x = make_dummy_node()
+    make_dummy_node()
 
 
 def test_save_node():

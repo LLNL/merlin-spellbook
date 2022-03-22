@@ -244,7 +244,7 @@ def define_tests():
     """
 
     # shortcut string variables
-    #config_dir = "./CLI_TEST_MERLIN_CONFIG"
+    # config_dir = "./CLI_TEST_MERLIN_CONFIG"
 
     return {
         "spellbook": ("spellbook", ReturnCodeCond(1)),
