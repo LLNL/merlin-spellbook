@@ -21,6 +21,8 @@ def convert_string(string):
         return int(string)
     try:
         return float(string)
+    except ValueError:
+        return string
     except OverflowError:
         return string
 
