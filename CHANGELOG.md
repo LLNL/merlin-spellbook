@@ -6,13 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.1]
 
+## Added
+- pylint to dev requirements for format checking
+
 ## Changed
-- Conduit tests are skipped when conduit python package is not available.
-- Rename l variable in setup to line.
+- Conduit tests are skipped when conduit python package is not available. (test_conduit.py is also skipped for format checking)
+- Rename l variable in setup.py to line.
 - Removed unused import libraries.
 - Fixed bare "except" statements.
-- Created a get_samples function for sample generation in MakeSamples.run.
-- Update workflow to always run syntax checkers.
+- Created a get_samples function for sample generation in MakeSamples.run to simplify run function.
+- Update workflow to always run syntax checkers even if previous syntax heckers fail.
+- Reformat code with isort, black and pylint to fit coding standards
 
 ## [0.6.0]
 
