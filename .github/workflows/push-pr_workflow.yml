@@ -53,7 +53,8 @@ jobs:
       if: always()
       run: |
         python3 -m isort --check --line-length $MAX_LINE_LENGTH spellbook
-        python3 -m isort --check --line-length $MAX_LINE_LENGTH tests
+        # Skipping test_conduit due to temporary fix for missing conduit python package.
+        python3 -m isort --check --line-length $MAX_LINE_LENGTH --skip tests/data_formatting/conduit/test_conduit.py tests
         python3 -m isort --check --line-length $MAX_LINE_LENGTH *.py
 
     - name: Lint with Black
