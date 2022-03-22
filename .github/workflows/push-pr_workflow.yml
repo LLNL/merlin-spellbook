@@ -101,5 +101,5 @@ jobs:
 
     - name: Run integration test suite
       run: |
-        python3 tests/command-line-tests.py
+        python3 tests/command_line_tests.py
 
