@@ -86,9 +86,7 @@ def run(_input, output, schema):
             if data_loader.has_path(sample_path):
                 data_loader.read(filtered_node[path], sample_path)
             else:
-                filtered_node[
-                    sample_path
-                ] = np.nan  # if a value is missing, that could be a problem
+                filtered_node[sample_path] = np.nan  # if a value is missing, that could be a problem
         make_data_array_dict(all_dict, filtered_node)
 
     for dat in all_dict.keys():
@@ -125,20 +123,18 @@ def process_args(_input, output, schema, do_chunks, n_processes):
 
 
 def generate_scalar_path_pairs(node, path=""):
-    """ Walk through the node finding the paths to the data and the data """
+    """Walk through the node finding the paths to the data and the data"""
     children = node.child_names()
     for child in children:
         if isinstance(node[child], conduit.Node):
-            for pair in generate_scalar_path_pairs(
-                node[child], path=path + child + "/"
-            ):
+            for pair in generate_scalar_path_pairs(node[child], path=path + child + "/"):
                 yield pair
         else:
             yield path + child, node[child]
 
 
 def make_data_array_dict(d, node):
-    """ Pact a node to the end of the list in the dictionary with same name path """
+    """Pact a node to the end of the list in the dictionary with same name path"""
     for path, datum in generate_scalar_path_pairs(node):
         # patch for older versions of conduit
         datum = np.array(datum)

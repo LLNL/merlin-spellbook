@@ -80,13 +80,7 @@ def process_scale(scale):
 
 
 class MakeSamples(CliCommand):
-    def get_samples(
-        self,
-        sample_type,
-        n_samples,
-        n_dims,
-        seed
-    ):
+    def get_samples(self, sample_type, n_samples, n_dims, seed):
         if sample_type == "random":
             x = np.random.random((n_samples, n_dims))
         elif sample_type == "grid":
