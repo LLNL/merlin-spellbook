@@ -9,6 +9,7 @@ except ModuleNotFoundError:
     print("Conduit not available! These tests will be skipped!")
     skip_conduit_tests = True
 
+
 def make_dummy_node():
     x = conduit.Node()
     data_types = [1, 1.0, "hi", "c"]

@@ -2,7 +2,6 @@
 
 import os
 import shutil
-import sys
 
 import numpy as np
 
@@ -81,7 +80,7 @@ class Stacker(object):
             try:
                 vv = stack_jagged(v)
                 self.dout[k] = vv
-            except:
+            except Exception:
                 print(f"Error stacking {k}")
 
         # Write to the target file

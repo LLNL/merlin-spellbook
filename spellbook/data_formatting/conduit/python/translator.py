@@ -33,7 +33,6 @@ import glob
 import multiprocessing as mp
 import os
 import re
-import sys
 
 import numpy as np
 
@@ -44,7 +43,7 @@ WARN = None
 try:
     import conduit
     import conduit.relay.io
-except:
+except ModuleNotFoundError:
     WARN = "\nWARNING: conduit not found."
 
 
@@ -103,7 +102,7 @@ def run(_input, output, schema):
 
 
 def translate_chunk(chunk, outputs, schema):
-    _chunk_id = re.search("_\d+", chunk)
+    _chunk_id = re.search(r"_\d+", chunk)
     chunk_id = _chunk_id[0]
     chunk_output = f"{outputs[0]}{chunk_id}{outputs[1]}"
     run(chunk, chunk_output, schema)

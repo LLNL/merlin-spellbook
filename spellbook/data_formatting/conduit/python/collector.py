@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-import json
-import sys
 from itertools import zip_longest
 from uuid import uuid4
 
@@ -11,7 +9,7 @@ from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 WARN = ""
 try:
     import conduit
-except:
+except ModuleNotFoundError:
     WARN = "\nWARNING: conduit not found."
 
 
@@ -67,7 +65,7 @@ def process_args(args):
 
                     result[new_path] = subnode[top_path]
                     results.append(top_path)
-            except:
+            except IOError:
                 print("Unable to load " + path)
 
         cb.dump_node(result, savename(fileno, args))

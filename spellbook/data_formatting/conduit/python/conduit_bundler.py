@@ -46,7 +46,7 @@ LOG = logging.getLogger(__name__)
 try:
     import conduit
     import conduit.relay.io
-except:
+except ModuleNotFoundError:
     LOG.warning("conduit not found")
 
 

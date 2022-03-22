@@ -1,5 +1,4 @@
 import ast
-import sys
 
 import numpy as np
 import pyDOE2 as doe
