@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Conduit tests are skipped when conduit python package is not available.
-- Removed unused import libraries
-- Fixed bare "except" statements
+- Rename l variable in setup to line.
+- Removed unused import libraries.
+- Fixed bare "except" statements.
+- Created a get_samples function for sample generation in MakeSamples.run.
+- Update workflow to always run syntax checkers.
 
 ## [0.6.0]
 
