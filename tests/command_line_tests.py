@@ -33,12 +33,10 @@ Script for running command line interface tests.
 Built for 1) manual use and 2) continuous integration.
 """
 import argparse
-import os
 import shutil
 import sys
 import time
 from contextlib import suppress
-from glob import glob
 from re import search
 from subprocess import PIPE, Popen
 
@@ -246,7 +244,7 @@ def define_tests():
     """
 
     # shortcut string variables
-    config_dir = "./CLI_TEST_MERLIN_CONFIG"
+    #config_dir = "./CLI_TEST_MERLIN_CONFIG"
 
     return {
         "spellbook": ("spellbook", ReturnCodeCond(1)),

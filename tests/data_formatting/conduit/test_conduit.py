@@ -1,7 +1,4 @@
 import os
-import sys
-
-import numpy as np
 
 skip_conduit_tests = False
 
