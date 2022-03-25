@@ -1,5 +1,4 @@
 import ast
-import sys
 
 import numpy as np
 import pyDOE2 as doe
@@ -81,25 +80,7 @@ def process_scale(scale):
 
 
 class MakeSamples(CliCommand):
-    def run(
-        self,
-        seed,
-        n,
-        dims,
-        sample_type,
-        scale,
-        scale_factor,
-        outfile,
-        x0,
-        x1,
-        n_line,
-        hard_bounds,
-    ):
-        np.random.seed(seed)
-        n_samples = n
-        n_dims = dims
-        hard_bounds = hard_bounds
-        sample_type = sample_type
+    def get_samples(self, sample_type, n_samples, n_dims, seed):
         if sample_type == "random":
             x = np.random.random((n_samples, n_dims))
         elif sample_type == "grid":
@@ -120,6 +101,30 @@ class MakeSamples(CliCommand):
             x = 0.5 * (_x + 1.0)
         else:
             raise ValueError(sample_type + " is not a valid choice for sample_type!")
+
+        return x
+
+    def run(
+        self,
+        seed,
+        n,
+        dims,
+        sample_type,
+        scale,
+        scale_factor,
+        outfile,
+        x0,
+        x1,
+        n_line,
+        hard_bounds,
+    ):
+        np.random.seed(seed)
+        n_samples = n
+        n_dims = dims
+        hard_bounds = hard_bounds
+        sample_type = sample_type
+
+        x = self.get_samples(sample_type, n_samples, n_dims, seed)
 
         scales = process_scale(scale)
 

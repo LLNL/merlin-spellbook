@@ -1,4 +1,5 @@
 # Development dependencies.
+pylint
 black
 dep-license
 flake8

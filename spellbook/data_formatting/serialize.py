@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 import json
-import os
-import sys
 
 
 """ Serializes a command-line input variable list"""
@@ -23,7 +21,9 @@ def convert_string(string):
         return int(string)
     try:
         return float(string)
-    except:
+    except ValueError:
+        return string
+    except OverflowError:
         return string
 
 

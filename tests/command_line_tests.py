@@ -33,12 +33,10 @@ Script for running command line interface tests.
 Built for 1) manual use and 2) continuous integration.
 """
 import argparse
-import os
 import shutil
 import sys
 import time
 from contextlib import suppress
-from glob import glob
 from re import search
 from subprocess import PIPE, Popen
 
@@ -163,9 +161,7 @@ def run_tests(args, tests):
     if failures == 0:
         print(f"Done. {n_to_run} tests passed in {round(total_time, 2)} s.")
         return 0
-    print(
-        f"Done. {failures} tests out of {n_to_run} failed after {round(total_time, 2)} s.\n"
-    )
+    print(f"Done. {failures} tests out of {n_to_run} failed after {round(total_time, 2)} s.\n")
     return 1
 
 
@@ -246,7 +242,7 @@ def define_tests():
     """
 
     # shortcut string variables
-    config_dir = "./CLI_TEST_MERLIN_CONFIG"
+    # config_dir = "./CLI_TEST_MERLIN_CONFIG"
 
     return {
         "spellbook": ("spellbook", ReturnCodeCond(1)),
@@ -277,9 +273,7 @@ def setup_argparse():
         action="store_true",
         help="Flag for stopping all testing upon first failure",
     )
-    parser.add_argument(
-        "--verbose", action="store_true", help="Flag for more detailed output messages"
-    )
+    parser.add_argument("--verbose", action="store_true", help="Flag for more detailed output messages")
     parser.add_argument(
         "--ids",
         action="store",
@@ -287,8 +281,7 @@ def setup_argparse():
         type=int,
         nargs="+",
         default=None,
-        help="Provide space-delimited ids of tests you want to run."
-        "Example: '--ids 1 5 8 13'",
+        help="Provide space-delimited ids of tests you want to run." "Example: '--ids 1 5 8 13'",
     )
     return parser
 

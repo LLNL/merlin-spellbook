@@ -2,7 +2,6 @@
 
 import os
 import shutil
-import sys
 
 import numpy as np
 
@@ -25,9 +24,7 @@ def pad_many(arrays, dims, dont_pad_first=False, value=np.nan):
         if dont_pad_first:
             pad_dist[0] = 0
         padder = np.column_stack((zeros, pad_dist))
-        fixed.append(
-            np.pad(np.atleast_2d(a), padder, mode="constant", constant_values=value)
-        )
+        fixed.append(np.pad(np.atleast_2d(a), padder, mode="constant", constant_values=value))
     return fixed
 
 
@@ -49,11 +46,7 @@ class Stacker(object):
 
         if not force:
             if os.path.isfile(target):
-                print(
-                    "stack_npz error opening target file (does {0} exist?).".format(
-                        target
-                    )
-                )
+                print("stack_npz error opening target file (does {0} exist?).".format(target))
                 print('Pass "-f" argument to force re-creation of output file.')
                 return
 
@@ -81,7 +74,7 @@ class Stacker(object):
             try:
                 vv = stack_jagged(v)
                 self.dout[k] = vv
-            except:
+            except Exception:
                 print(f"Error stacking {k}")
 
         # Write to the target file

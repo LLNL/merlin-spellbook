@@ -42,6 +42,7 @@ jobs:
         pip3 install --upgrade -r requirements/dev.txt
 
     - name: Lint with flake8
+      if: always()
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -49,18 +50,22 @@ jobs:
         flake8 . --count --max-complexity=$MAX_COMPLEXITY --statistics --max-line-length=$MAX_LINE_LENGTH
 
     - name: Lint with isort
+      if: always()
       run: |
         python3 -m isort --check --line-length $MAX_LINE_LENGTH spellbook
-        python3 -m isort --check --line-length $MAX_LINE_LENGTH tests
+        # Skipping test_conduit due to temporary fix for missing conduit python package.
+        python3 -m isort --check --line-length $MAX_LINE_LENGTH --skip tests/data_formatting/conduit/test_conduit.py tests
         python3 -m isort --check --line-length $MAX_LINE_LENGTH *.py
 
     - name: Lint with Black
+      if: always()
       run: |
         python3 -m black --check --line-length $MAX_LINE_LENGTH --target-version py36 spellbook
         python3 -m black --check --line-length $MAX_LINE_LENGTH --target-version py36 tests
         python3 -m black --check --line-length $MAX_LINE_LENGTH --target-version py36 *.py
 
     - name: Lint with PyLint
+      if: always()
       run: |
         python3 -m pylint spellbook --rcfile=setup.cfg --exit-zero
         python3 -m pylint tests --rcfile=setup.cfg --exit-zero
@@ -101,5 +106,5 @@ jobs:
 
     - name: Run integration test suite
       run: |
-        python3 tests/command-line-tests.py
+        python3 tests/command_line_tests.py
 

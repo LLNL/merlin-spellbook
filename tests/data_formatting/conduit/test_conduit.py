@@ -1,17 +1,15 @@
 import os
-import sys
-
-import numpy as np
 
 
+skip_conduit_tests = False
 
 try:
     import conduit
     from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 except ModuleNotFoundError:
-    print("Conduit not available! These tests will fail!")
-    print("Exiting nicely!")
-    sys.exit()
+    print("Conduit not available! These tests will be skipped!")
+    skip_conduit_tests = True
+
 
 def make_dummy_node():
     x = conduit.Node()
@@ -23,18 +21,20 @@ def make_dummy_node():
 
 
 def test_make_conduit_node():
-    x = make_dummy_node()
+    if skip_conduit_tests:
+        return
+    make_dummy_node()
 
 
 def test_save_node():
+    if skip_conduit_tests:
+        return
     x = make_dummy_node()
     save_node_many(x)
     delete_data()
 
 
-def save_node_many(
-    node, base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin")
-):
+def save_node_many(node, base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin")):
     for ext in exts:
         cb.dump_node(node, base + ext)
 
@@ -47,6 +47,8 @@ def delete_conduit_file(filename):
 
 
 def test_load_node():
+    if skip_conduit_tests:
+        return
     x = make_dummy_node()
     save_node_many(x)
     _ = load_node_many(base="_dummy")
@@ -54,6 +56,8 @@ def test_load_node():
 
 
 def test_load_handle():
+    if skip_conduit_tests:
+        return
     base = "_dummy"
     exts = (".h5", ".hdf5", ".json", ".yaml", ".cbin")
     x = make_dummy_node()
@@ -90,9 +94,7 @@ def nodes_equal(node1, node2):
     return node1.to_json() == node2.to_json()
 
 
-def load_node_many(
-    base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin"), path="/"
-):
+def load_node_many(base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin"), path="/"):
     nodes = []
     for ext in exts:
         node = cb.load_node(base + ext, path)
