@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-import traceback
 from typing import List, Optional
 
 import click
@@ -20,6 +19,7 @@ class SpellbookCLI(click.MultiCommand):
     Args:
         click (_type_): _description_
     """
+
     def list_commands(self, ctx: click.Context) -> List[str]:
         """Actively looks for command scripts in the plugin directory
 
@@ -30,12 +30,7 @@ class SpellbookCLI(click.MultiCommand):
             List[str]: List of implemented spellbook commands
         """
         files = os.listdir(PLUGIN_DIR)
-        files = [
-            file[:-3]
-            for file in files
-            if file.endswith(".py")
-            if not file.startswith("__")
-        ]
+        files = [file[:-3] for file in files if file.endswith(".py") if not file.startswith("__")]
         return sorted(files)
 
     def get_command(self, ctx: click.Context, cmd_name: str) -> click.core.Command:
@@ -80,10 +75,12 @@ def main() -> None:
     if len(sys.argv) == 1:
         with click.Context(spellbook) as ctx:
             click.echo(spellbook.get_help(ctx))
+        return 1
     try:
         spellbook()
     except Exception as err:
         LOG.error(str(err))
+        return 1
 
 
 if __name__ == "__main__":

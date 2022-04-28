@@ -4,6 +4,7 @@ VSTRING=[0-9]\+\.[0-9]\+\.[0-9]\+
 
 PROJ=spellbook
 TEST=tests
+MAX_LINE_LENGTH=127
 
 unit-tests:
 	python3 -m pytest $(TEST)/
@@ -35,9 +36,9 @@ clean:
 	-rm -rf build
 
 fix-style:
-	isort $(PROJ)
-	isort $(TEST)
-	isort *.py
-	black --target-version py38 $(PROJ)
-	black --target-version py38 $(TEST)
-	black --target-version py38 *.py
+	isort --line-length $(MAX_LINE_LENGTH) $(PROJ)
+	isort --line-length $(MAX_LINE_LENGTH) $(TEST)
+	isort --line-length $(MAX_LINE_LENGTH) *.py
+	black --line-length $(MAX_LINE_LENGTH) --target-version py36 $(PROJ)
+	black --line-length $(MAX_LINE_LENGTH) --target-version py36 $(TEST)
+	black --line-length $(MAX_LINE_LENGTH) --target-version py36 *.py
