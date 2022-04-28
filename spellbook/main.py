@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import traceback
+from typing import List, Optional
 
 import click
 
@@ -14,41 +15,52 @@ PLUGIN_DIR = os.path.join(os.path.dirname(__file__), "commands")
 
 
 class SpellbookCLI(click.MultiCommand):
-    def list_commands(self, ctx):
+    """_summary_
+
+    Args:
+        click (_type_): _description_
+    """
+    def list_commands(self, ctx: click.Context) -> List[str]:
+        """Actively looks for command scripts in the plugin directory
+
+        Args:
+            ctx (click.Context):
+
+        Returns:
+            List[str]: List of implemented spellbook commands
         """
-        Avoids file reads for max speed.
-        """
-        return [
-            "collect",
-            "conduit-collect",
-            "conduit-translate",
-            "learn",
-            "make-samples",
-            "predict",
-            "serialize",
-            "stack-npz",
-            "translate",
+        files = os.listdir(PLUGIN_DIR)
+        files = [
+            file[:-3]
+            for file in files
+            if file.endswith(".py")
+            if not file.startswith("__")
         ]
+        return sorted(files)
 
-    def list_commands_dynamically(self, ctx):
-        rv = []
-        for filename in os.listdir(PLUGIN_DIR):
-            if filename.startswith("__"):
-                continue
-            if filename.endswith(".py"):
-                rv.append(filename[:-3])
-        rv.sort()
-        return rv
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.core.Command:
+        """Get command from implemented scripts
 
-    def get_command(self, ctx, name):
-        ns = {}
-        fn = os.path.join(PLUGIN_DIR, name + ".py")
-        if not os.path.isfile(fn):
-            return
-        with open(fn) as f:
-            code = compile(f.read(), fn, "exec")
-            eval(code, ns, ns)
-        return ns["cli"]
+        Args:
+            ctx (click.Context): _description_
+            cmd_name (str): _description_
+
+        Raises:
+            FileNotFoundError: _description_
+
+        Returns:
+            click.core.Command: Requested function
+        """
+        command_script_path = os.path.join(PLUGIN_DIR, cmd_name + ".py")
+        if not os.path.isfile(command_script_path):
+            raise FileNotFoundError(f"No script for command '{cmd_name}' was found")
+
+        globals_dict: dict = {}
+        with open(command_script_path, "rb") as f:
+            code = compile(f.read(), command_script_path, "exec")
+
+        eval(code, globals_dict)
+        return globals_dict["cli"]
 
 
 @click.command(cls=SpellbookCLI)
@@ -57,25 +69,21 @@ class SpellbookCLI(click.MultiCommand):
     required=False,
     default="INFO",
     type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR"], case_sensitive=False),
-    help="set the logger level",
+    help="Set the logger level",
 )
 @click.version_option(VERSION)
-def spellbook(level):
+def spellbook(level: Optional[str]):
     setup_logging(logger=LOG, log_level=level.upper(), colors=True)
 
 
-def main():
+def main() -> None:
     if len(sys.argv) == 1:
         with click.Context(spellbook) as ctx:
             click.echo(spellbook.get_help(ctx))
-        return 1
     try:
         spellbook()
-    except Exception as e:
-        # LOG.debug(traceback.format_exc())
-        print(traceback.format_exc())
-        LOG.error(str(e))
-        return 1
+    except Exception as err:
+        LOG.error(str(err))
 
 
 if __name__ == "__main__":

@@ -13,8 +13,12 @@ def setup_argparse():
         help=".json file with X and y data in each sample",
         default="results.json",
     )
-    parser.add_argument("-output", help=".npz file with the arrays", default="results.npz")
-    parser.add_argument("-schema", help="schema for a single sample data", default="features.json")
+    parser.add_argument(
+        "-output", help=".npz file with the arrays", default="results.npz"
+    )
+    parser.add_argument(
+        "-schema", help="schema for a single sample data", default="features.json"
+    )
     return parser
 
 
@@ -47,7 +51,9 @@ def generate_scalar_path_pairs(node, schema, path=""):
         if child in schema.keys():
             if isinstance(node[child], dict):
                 if isinstance(schema[child], dict):
-                    for pair in generate_scalar_path_pairs(node[child], schema[child], path=path + child + "/"):
+                    for pair in generate_scalar_path_pairs(
+                        node[child], schema[child], path=path + child + "/"
+                    ):
                         yield pair
             else:
                 if not isinstance(schema[child], dict):

@@ -35,9 +35,9 @@ clean:
 	-rm -rf build
 
 fix-style:
-	isort -rc $(PROJ)
-	isort -rc $(TEST)
+	isort $(PROJ)
+	isort $(TEST)
 	isort *.py
-	black --target-version py36 $(PROJ)
-	black --target-version py36 $(TEST)
-	black --target-version py36 *.py
+	black --target-version py38 $(PROJ)
+	black --target-version py38 $(TEST)
+	black --target-version py38 *.py

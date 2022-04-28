@@ -26,7 +26,7 @@ import click
 )
 def cli(force, target, source):
     """
-    stacker for npz files.
+    Stacker for npz files.
     """
     from spellbook.data_formatting import stack_npz
 

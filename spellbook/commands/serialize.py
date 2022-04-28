@@ -53,7 +53,7 @@ from spellbook.utils import OptionEatAll
 )
 def cli(output, vars, splitter, delimiter, verbose, indent):
     """
-    write a serialized file from cli arguments.
+    Write a serialized file from cli arguments.
     """
     from spellbook.data_formatting import serialize
 

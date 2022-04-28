@@ -27,7 +27,7 @@ import click
 )
 def cli(input, output, schema):
     """
-    Flatten sample json file into numpy", filtering with an external schema.
+    Flatten sample json file into numpy, filtering with an external schema.
     """
     from spellbook.data_formatting import translator
 
