@@ -34,44 +34,54 @@ Built for 1) manual use and 2) continuous integration.
 """
 import argparse
 import shutil
+import subprocess
 import sys
 import time
 from contextlib import suppress
 from re import search
-from subprocess import PIPE, Popen
+from subprocess import PIPE
+from typing import Any, Dict, Tuple
 
 
 OUTPUT_DIR = "cli_test_studies"
 
 
-def run_single_test(name, test, test_label="", buffer_length=50):
-    dot_length = buffer_length - len(name) - len(str(test_label))
-    print(f"TEST {test_label}: {name}{'.'*dot_length}", end="")
+def run_single_test(test_name: str, test: tuple, test_id: int, buffer_length: int = 50) -> Tuple[bool, dict]:
+    """Run a single test
+
+    Args:
+        test_name (str): Test name
+        test (tuple): Test
+        test_id (int): Test id corresponding to test name
+        buffer_length (int, optional): _description_. Defaults to 50.
+
+    Returns:
+        Tuple[bool, dict]: _description_
+    """
+    print(f"TEST {test_id}: {test_name:{'.'}<{buffer_length}}", end="")
     command = test[0]
-    conditions = test[1]
-    if not isinstance(conditions, list):
-        conditions = [conditions]
+    conditions = test[1] if isinstance(test[1], list) else [test[1]]
 
     start_time = time.time()
-    process = Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
-    stdout, stderr = process.communicate()
+    process = subprocess.run(command, stdout=PIPE, stderr=PIPE, shell=True, check=True)
     end_time = time.time()
     total_time = end_time - start_time
-    if stdout is not None:
-        stdout = stdout.decode("utf-8")
-    if stderr is not None:
-        stderr = stderr.decode("utf-8")
-    return_code = process.returncode
+
+    if process.stdout is not None:
+        stdout = process.stdout.decode("utf-8")
+    if process.stderr is not None:
+        stderr = process.stderr.decode("utf-8")
 
     info = {
         "total_time": total_time,
         "command": command,
         "stdout": stdout,
         "stderr": stderr,
-        "return_code": return_code,
+        "return_code": process.returncode,
     }
 
     # ensure all test conditions are satisfied
+    passed: bool
     for condition in conditions:
         condition.ingest_info(info)
         passed = condition.passes
@@ -81,7 +91,7 @@ def run_single_test(name, test, test_label="", buffer_length=50):
     return passed, info
 
 
-def clear_test_studies_dir():
+def clear_test_studies_dir() -> None:
     """
     Deletes the 'test_studies' directory, in order to preserve
     state each time cli tests are run.
@@ -90,22 +100,30 @@ def clear_test_studies_dir():
         shutil.rmtree(f"./{OUTPUT_DIR}")
 
 
-def process_test_result(passed, info, is_verbose, exit):
-    """
-    Process and print test results to the console.
+def process_test_result(passed: bool, info: dict, is_verbose: bool, early_exit: bool) -> int:
+    """Process and print test results to the console.
+
+    Args:
+        passed (bool): Flag describing whether the tests passed
+        info (dict): Information about the tests ran
+        is_verbose (bool): Verbose
+        early_exit (bool): Early early_exit
+
+    Returns:
+        int: exit status: -1 is exit, 0 is failed, 1 is passed
     """
     # if the environment does not contain necessary programs, exit early.
     if passed is False and "spellbook: command not found" in info["stderr"]:
         print(f"\nMissing from environment:\n\t{info['stderr']}")
-        return None
-    elif passed is False:
+        return -1
+    if passed is False:
         print("FAIL")
-        if exit is True:
-            return None
+        if early_exit:
+            return -1
     else:
-        print("pass")
+        print("PASS")
 
-    if is_verbose is True:
+    if is_verbose:
         print(f"\tcommand: {info['command']}")
         print(f"\telapsed time: {round(info['total_time'], 2)} s")
         if info["return_code"] != 0:
@@ -113,60 +131,59 @@ def process_test_result(passed, info, is_verbose, exit):
         if info["stderr"] != "":
             print(f"\tstderr:\n{info['stderr']}")
 
-    return passed
+    return 1 if passed else 0
 
 
-def run_tests(args, tests):
+def run_tests(args: argparse.Namespace, tests: Dict[str, tuple]) -> int:
     """
-    Run all inputted tests.
-    :param `tests`: a dictionary of
-        {"test_name" : ("test_command", [conditions])}
-    """
-    selective = False
-    n_to_run = len(tests)
-    if args.ids is not None and len(args.ids) > 0:
-        if not all(x > 0 for x in args.ids):
-            raise ValueError(f"Test ids must be between 1 and {len(tests)}, inclusive.")
-        selective = True
-        n_to_run = len(args.ids)
+     Run all defined tests or only ones specified by args
 
-    print(f"Running {n_to_run} integration tests...")
+    Args:
+        args (argparse.Namespace): Parsed arguments
+        tests (Dict[str, tuple]): {"test_name" : ("test_command", [conditions])}
+
+    Returns:
+        int: 0 for success, 1 for fail
+    """
+    if args.ids is None:
+        test_ids = list(range(1, len(tests) + 1))
+    elif sum(0 < test_id <= len(tests) for test_id in args.ids) == len(args.ids):
+        test_ids = args.ids
+    else:
+        raise ValueError(f"Test ids must be between 1 and {len(tests)}, inclusive.")
+
+    print(f"Running {len(test_ids)} integration tests...")
     start_time = time.time()
 
-    total = 0
     failures = 0
-    for test_name, test in tests.items():
-        test_label = total + 1
-        if selective and test_label not in args.ids:
-            total += 1
+    for label_id, (test_name, test) in enumerate(tests.items(), 1):
+        if label_id not in test_ids:
             continue
         try:
-            passed, info = run_single_test(test_name, test, test_label)
-        except BaseException as e:
-            print(e)
-            passed = False
-            info = None
+            passed, info = run_single_test(test_name, test, label_id)
+        except BaseException as err:
+            print(err)
+            raise BaseException("Sorry, not quiet sure what happened") from err
 
-        result = process_test_result(passed, info, args.verbose, args.exit)
-        if result is None:
+        result = process_test_result(passed, info, args.verbose, args.early_exit)
+        if result == -1:
             print("Exiting early")
             return 1
-        if result is False:
-            failures += 1
-        total += 1
+
+        failures += not passed
 
     end_time = time.time()
     total_time = end_time - start_time
 
     if failures == 0:
-        print(f"Done. {n_to_run} tests passed in {round(total_time, 2)} s.")
+        print(f"Done. {len(test_ids)} tests passed in {round(total_time, 2)} s.")
         return 0
-    print(f"Done. {failures} tests out of {n_to_run} failed after {round(total_time, 2)} s.\n")
+    print(f"Done. {failures} tests out of {len(test_ids)} failed after {round(total_time, 2)} s.\n")
     return 1
 
 
 class Condition:
-    def ingest_info(self, info):
+    def ingest_info(self, info: Dict[str, Any]) -> None:
         """
         This function allows child classes of Condition
         to take in data AFTER a test is run.
@@ -175,7 +192,7 @@ class Condition:
             setattr(self, key, val)
 
     @property
-    def passes(self):
+    def passes(self) -> bool:
         print("Extend this class!")
         return False
 
@@ -186,14 +203,14 @@ class ReturnCodeCond(Condition):
     as its return code.
     """
 
-    def __init__(self, expected_code=0):
+    def __init__(self, expected_code: int = 0) -> None:
         """
         :param `expected_code`: the expected return code
         """
         self.expected_code = expected_code
 
     @property
-    def passes(self):
+    def passes(self) -> bool:
         return self.return_code == self.expected_code
 
 
@@ -204,7 +221,7 @@ class NoStderrCond(Condition):
     """
 
     @property
-    def passes(self):
+    def passes(self) -> bool:
         return self.stderr == ""
 
 
@@ -214,27 +231,35 @@ class RegexCond(Condition):
     given regular expression. Defaults to stdout.
     """
 
-    def __init__(self, regex, negate=False):
+    def __init__(self, regex: str, negate: bool = False) -> None:
         """
-        :param `regex`: a string regex pattern
+
+        Args:
+            regex (str): a string regex pattern
+            negate (bool, optional): negate the search result. Defaults to False.
         """
         self.regex = regex
         self.negate = negate
 
-    def is_within(self, text):
-        """
-        :param `text`: text in which to search for a regex match
+    def is_within(self, text: str) -> bool:
+        """Searches for self.regex in text
+
+        Args:
+            text (str): text in which to search for a regex match
+
+        Returns:
+            bool: returns True if there was a match, False otherwise
         """
         return search(self.regex, text) is not None
 
     @property
-    def passes(self):
+    def passes(self) -> bool:
         if self.negate:
             return not self.is_within(self.stdout)
         return self.is_within(self.stdout) or self.is_within(self.stderr)
 
 
-def define_tests():
+def define_tests() -> Dict[str, tuple]:
     """
     Returns a dictionary of tests, where the key
     is the test's name, and the value is a tuple
@@ -266,10 +291,10 @@ def define_tests():
     }
 
 
-def setup_argparse():
+def setup_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="run_tests cli parser")
     parser.add_argument(
-        "--exit",
+        "--early_exit",
         action="store_true",
         help="Flag for stopping all testing upon first failure",
     )
@@ -286,7 +311,7 @@ def setup_argparse():
     return parser
 
 
-def main():
+def main() -> int:
     """
     High-level CLI test operations.
     """

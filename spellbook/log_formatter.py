@@ -40,13 +40,16 @@ FORMATS = {
 }
 
 
-def setup_logging(logger, log_level="INFO", colors=True):
+def setup_logging(logger: logging.Logger, log_level: str = "INFO", colors: bool = True) -> None:
     """
     Setup and configure Python logging.
 
-    :param `logger`: a logging.Logger object
-    :param  `log_level`: logger level
+    Args:
+        logger (logging.Logger): Logger object
+        log_level (str, optional): Detail level. Defaults to "INFO".
+        colors (bool, optional): Color logs. Defaults to True.
     """
+
     formatter = logging.Formatter()
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
@@ -55,5 +58,5 @@ def setup_logging(logger, log_level="INFO", colors=True):
     logger.setLevel(log_level)
     logger.propagate = False
 
-    if colors is True:
+    if colors:
         coloredlogs.install(level=log_level, logger=logger, fmt=FORMATS["DEFAULT"])

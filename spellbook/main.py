@@ -67,17 +67,18 @@ class SpellbookCLI(click.MultiCommand):
     help="Set the logger level",
 )
 @click.version_option(VERSION)
-def spellbook(level: Optional[str]):
+def spellbook(level: str) -> None:
     setup_logging(logger=LOG, log_level=level.upper(), colors=True)
 
 
-def main() -> None:
+def main() -> int:
     if len(sys.argv) == 1:
         with click.Context(spellbook) as ctx:
             click.echo(spellbook.get_help(ctx))
         return 1
     try:
         spellbook()
+        return 0
     except Exception as err:
         LOG.error(str(err))
         return 1
