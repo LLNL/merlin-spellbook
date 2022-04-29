@@ -63,7 +63,7 @@ def run_single_test(test_name: str, test: tuple, test_id: int, buffer_length: in
     conditions = test[1] if isinstance(test[1], list) else [test[1]]
 
     start_time = time.time()
-    process = subprocess.run(command, stdout=PIPE, stderr=PIPE, shell=True, check=True)
+    process = subprocess.run(command, stdout=PIPE, stderr=PIPE, shell=True)
     end_time = time.time()
     total_time = end_time - start_time
 
