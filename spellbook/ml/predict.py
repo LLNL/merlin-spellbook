@@ -35,13 +35,15 @@ import numpy as np
 try:
     import cPickle as pickle
 except ImportError:
-    import pickle
+    import pickle  # type: ignore
 
 
 def predict(args):
-    regr = pickle.load(open(args.reg, "rb"))
+    with open(args.reg, "rb") as f:
+        regr = pickle.load(f)
 
     X = np.load(args.infile)
+    y_pred = regr.predict(X)
 
-    new_y = regr.predict(X)
-    np.save(open(args.outfile, "wb"), new_y)
+    with open(args.outfile, "wb") as f:
+        np.save(f, y_pred)

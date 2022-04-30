@@ -67,6 +67,8 @@ def run_single_test(test_name: str, test: tuple, test_id: int, buffer_length: in
     end_time = time.time()
     total_time = end_time - start_time
 
+    stdout = None
+    stderr = None
     if process.stdout is not None:
         stdout = process.stdout.decode("utf-8")
     if process.stderr is not None:
@@ -81,7 +83,7 @@ def run_single_test(test_name: str, test: tuple, test_id: int, buffer_length: in
     }
 
     # ensure all test conditions are satisfied
-    passed: bool
+    passed: bool = False
     for condition in conditions:
         condition.ingest_info(info)
         passed = condition.passes

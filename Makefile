@@ -5,17 +5,18 @@ VSTRING=[0-9]\+\.[0-9]\+\.[0-9]\+
 PROJ=spellbook
 TEST=tests
 MAX_LINE_LENGTH=127
+MAX_COMPLEXITY=15
 
 unit-tests:
-	python3 -m pytest $(TEST)/
+	python -m pytest $(TEST)/
 
 command-line-tests:
-	python3 $(TEST)/command_line_tests.py
+	python $(TEST)/command_line_tests.py
 
 tests: unit-tests command-line-tests
 
 release:
-	python3 -m build .
+	python -m build .
 
 # Use like this: make VER=?.?.? verison
 version:
@@ -42,3 +43,38 @@ fix-style:
 	black --line-length $(MAX_LINE_LENGTH) --target-version py36 $(PROJ)
 	black --line-length $(MAX_LINE_LENGTH) --target-version py36 $(TEST)
 	black --line-length $(MAX_LINE_LENGTH) --target-version py36 *.py
+
+check-flake8:
+	echo "Flake8 linting for invalid source (bad syntax, undefined variables)..."; \
+	flake8 --count --select=E9,F63,F7,F82 --show-source --statistics; \
+	echo "Flake8 linting failure for CI..."; \
+	flake8 . --count --max-complexity=15 --statistics --max-line-length=127; \
+
+
+check-black:
+	black --check --line-length $(MAX_LINE_LENGTH) --target-version py36 $(PROJ); \
+	black --check --line-length $(MAX_LINE_LENGTH) --target-version py36 $(TEST); \
+	black --check --line-length $(MAX_LINE_LENGTH) --target-version py36 *.py; \
+
+
+check-isort:
+	isort --check --line-length $(MAX_LINE_LENGTH) $(PROJ); \
+	isort --check --line-length $(MAX_LINE_LENGTH) $(TEST); \
+	isort --check --line-length $(MAX_LINE_LENGTH) *.py; \
+
+
+check-pylint:
+	echo "PyLinting spellbook source..."; \
+	pylint $(PROJ) --rcfile=setup.cfg; \
+	echo "PyLinting spellbook tests..."; \
+	pylint $(TEST) --rcfile=setup.cfg; \
+
+check-mypy:
+	echo "mypying spellbook source..."; \
+	mypy $(PROJ) --config-file=setup.cfg; \
+	echo "mypying spellbook tests..."; \
+	mypy $(TEST) --config-file=setup.cfg; \
+
+check-style: check-flake8 check-black check-isort check-pylint check-mypy
+
+check-push: tests check-style

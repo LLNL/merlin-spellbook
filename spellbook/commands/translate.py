@@ -2,6 +2,8 @@ from types import SimpleNamespace
 
 import click
 
+from spellbook.data_formatting import translator
+
 
 @click.command()
 @click.option(
@@ -29,7 +31,6 @@ def cli(input, output, schema):
     """
     Flatten sample json file into numpy, filtering with an external schema.
     """
-    from spellbook.data_formatting import translator
 
     args = SimpleNamespace(**{"input": input, "output": output, "schema": schema})
     translator.process_args(args)

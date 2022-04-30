@@ -1,5 +1,7 @@
 import click
 
+from spellbook.data_formatting.conduit.python import translator
+
 
 @click.command()
 @click.option(
@@ -42,6 +44,5 @@ def cli(input, output, schema, chunks, n):
     """
     Flatten sample file into another format (conduit-compatible or numpy)", filtering with an external schema.
     """
-    from spellbook.data_formatting.conduit.python import translator
 
     translator.process_args(input, output, schema, chunks, n)

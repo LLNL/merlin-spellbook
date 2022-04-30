@@ -2,6 +2,8 @@ from types import SimpleNamespace
 
 import click
 
+from spellbook.data_formatting import stack_npz
+
 
 @click.command()
 @click.option(
@@ -28,7 +30,6 @@ def cli(force, target, source):
     """
     Stacker for npz files.
     """
-    from spellbook.data_formatting import stack_npz
 
     args = SimpleNamespace(**{"force": force, "target": target, "source": source})
     stack_npz.process_args(args)

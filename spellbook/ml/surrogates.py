@@ -31,8 +31,6 @@
 
 from __future__ import print_function
 
-from sklearn import base
-
 
 try:
     from sklearn.utils import all_estimators
@@ -50,22 +48,13 @@ class sklearnRegressors(object):
     choices = surrogates.sklearnRegressors.names()
     """
 
-    def reg_dict():
-        _all_regressors = {}
-        estimators = all_estimators()
-        for name, class_ in estimators:
-            if issubclass(class_, base.RegressorMixin):
-                _all_regressors[name] = class_
-        return _all_regressors
-
-    all_regs = reg_dict()
+    all_regs = dict(all_estimators(type_filter="regressor"))
 
     @classmethod
     def factory(cls, name, *args, **kwargs):
-        if name in cls.all_regs:
-            return cls.all_regs[name](*args, **kwargs)
-        else:
+        if name not in cls.all_regs:
             raise ValueError("Unknown regressor name " + name + "! For valid choices see sklearnRegressors.names()")
+        return cls.all_regs[name](*args, **kwargs)
 
     @classmethod
     def names(cls):
@@ -75,8 +64,8 @@ class sklearnRegressors(object):
 def test_factory():
 
     regressors = sklearnRegressors.names()
-    for r in regressors:
-        _ = sklearnRegressors.factory(r)
+    for regressor in regressors:
+        _ = sklearnRegressors.factory(regressor)
 
 
 def test_random_forest():

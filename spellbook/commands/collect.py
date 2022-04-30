@@ -2,6 +2,8 @@ from types import SimpleNamespace
 
 import click
 
+from spellbook.data_formatting import collector
+
 
 @click.command()
 @click.option(
@@ -22,7 +24,6 @@ def cli(instring, outfile):
     """
     Collect many json files into a single json file
     """
-    from spellbook.data_formatting import collector
 
     args = SimpleNamespace(**{"instring": instring, "outfile": outfile})
     collector.process_args(args)

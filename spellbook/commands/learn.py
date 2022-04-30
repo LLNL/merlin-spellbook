@@ -2,6 +2,8 @@ from types import SimpleNamespace
 
 import click
 
+from spellbook.ml import learn_alt as learn
+
 
 @click.command()
 @click.option(
@@ -43,7 +45,6 @@ def cli(infile, x, y, outfile, regressor):
     """
     Use sklearn to make a regressor
     """
-    from spellbook.ml import learn_alt as learn
 
     args = SimpleNamespace(
         **{

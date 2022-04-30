@@ -5,7 +5,7 @@ import numpy as np
 from spellbook.ml.learn import stack_arrays
 
 
-def test_stack_arrays():
+def test_stack_arrays() -> None:
     data1 = np.random.random((3, 2))
     data2 = np.zeros((3, 2))
     data3 = np.ones((3, 2))

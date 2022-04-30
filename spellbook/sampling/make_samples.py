@@ -1,13 +1,18 @@
 import ast
+from typing import List, Tuple, Union
 
 import numpy as np
 import pyDOE2 as doe
+from numpy.typing import NDArray
 from scipy.stats.distributions import norm
 
-from spellbook.commands import CliCommand
 
-
-def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
+def scale_samples(
+    samples_norm: NDArray,
+    limits: List[tuple],
+    limits_norm: Tuple[float, float] = (0.0, 1.0),
+    do_log: Union[List, bool] = False,
+) -> NDArray:
     """Scale samples to new limits, either log10 or linearly.
 
     Args:
@@ -57,12 +62,13 @@ def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
     """
     norms = np.asarray(samples_norm)
     if len(norms.shape) != 2:
-        raise ValueError()
+        raise ValueError("samples_norm needs to be 2 dimensional")
+
     ndims = norms.shape[1]
     if not hasattr(do_log, "__iter__"):
         do_log = ndims * [do_log]
     logs = np.asarray(do_log)
-    lims_norm = np.array([limits_norm for i in logs])
+    lims_norm = np.array([limits_norm for _ in logs])
     _lims = [np.log10(limit) if log else limit for limit, log in zip(limits, logs)]
     lims = np.array(_lims)
 
@@ -72,77 +78,110 @@ def scale_samples(samples_norm, limits, limits_norm=(0, 1), do_log=False):
     return samples
 
 
-def process_scale(scale):
-    if scale is not None:
-        raw = ast.literal_eval(scale)
-        processed = np.array(raw, dtype=float).tolist()
-        return processed
+def process_scale(scales_str: str) -> Tuple[list, list]:
+    """Parse the limits and type of scaling from string input
+
+    Args:
+        scales_str (str): argparser input
+
+    Returns:
+        Tuple[list, list]: a tuple of the limits and scaling type
+    """
+    try:
+        scales_list = ast.literal_eval(scales_str)
+    except ValueError:
+        raise ValueError("scale flag not used correctly")
+
+    processed_scales = []
+    do_log = []
+    for scale in scales_list:
+        if len(scale) == 3:
+            do_log.append(scale[2] == "log")
+        elif len(scale) == 2:
+            do_log.append(False)
+        else:
+            raise ValueError("scale flag not used correctly")
+        processed_scales.append((scale[0], scale[1]))
+
+    return (processed_scales, do_log)
 
 
-class MakeSamples(CliCommand):
-    def get_samples(self, sample_type, n_samples, n_dims, seed):
+class MakeSamples:
+    def get_init_samples(self, sample_type: str, n_samples: int, n_dims: int, seed: int) -> NDArray:
+        """Generate the initial set of samples
+
+        Args:
+            sample_type (str): Type of sampling
+            n_samples (int): Number of samples
+            n_dims (int): Number of dimensions
+            seed (int): Random seed
+
+        Returns:
+            NDArray: initial samples
+        """
         if sample_type == "random":
-            x = np.random.random((n_samples, n_dims))
+            samples = np.random.random((n_samples, n_dims))
         elif sample_type == "grid":
             subdivision = int(pow(n_samples, 1 / float(n_dims)))
-            temp = [np.linspace(0, 1.0, subdivision) for i in range(n_dims)]
-            X = np.meshgrid(*temp)
-            x = np.stack([xx.flatten() for xx in X], axis=1)
+            temp = [np.linspace(0, 1.0, subdivision) for _ in range(n_dims)]
+            samples_mesh = np.meshgrid(*temp)
+            samples = np.stack([xx.flatten() for xx in samples_mesh], axis=1)
         elif sample_type == "lhs":
-            x = doe.lhs(n_dims, samples=n_samples, random_state=seed)
+            samples = doe.lhs(n_dims, samples=n_samples, random_state=seed)
         elif sample_type == "lhd":
-            _x = doe.lhs(n_dims, samples=n_samples, random_state=seed)
-            x = norm(loc=0.5, scale=0.125).ppf(_x)
+            _samples = doe.lhs(n_dims, samples=n_samples, random_state=seed)
+            samples = norm(loc=0.5, scale=0.125).ppf(_samples)
         elif sample_type == "star":
-            _x = doe.doe_star.star(n_dims)[0]
-            x = 0.5 * (_x + 1.0)  # transform to center at 0.5 (range 0-1)
-        elif sample_type == "ccf" or sample_type == "ccc" or sample_type == "cci":
-            _x = np.unique(doe.ccdesign(n_dims, face=sample_type), axis=0)
-            x = 0.5 * (_x + 1.0)
+            _samples = doe.doe_star.star(n_dims)[0]
+            samples = 0.5 * (_samples + 1.0)  # transform to center at 0.5 (range 0-1)
+        elif sample_type in ("ccf", "ccc", "cci"):
+            _samples = np.unique(doe.ccdesign(n_dims, face=sample_type), axis=0)
+            samples = 0.5 * (_samples + 1.0)
         else:
-            raise ValueError(sample_type + " is not a valid choice for sample_type!")
+            raise ValueError(f"{sample_type} is not a valid choice for sample_type!")
 
-        return x
+        return samples
 
-    def run(
+    def generate_samples(
         self,
-        seed,
-        n,
-        dims,
-        sample_type,
-        scale,
-        scale_factor,
-        outfile,
-        x0,
-        x1,
-        n_line,
-        hard_bounds,
-    ):
+        seed: int,
+        n_samples: int,
+        n_dims: int,
+        sample_type: str,
+        scale: str,
+        scale_factor: float,
+        outfile: str,
+        x0: str,
+        x1: str,
+        n_line: int,
+        hard_bounds: bool,
+    ) -> None:
+        """Generate and scale samples. Save the samples in outfile
+
+        Args:
+            seed (int): Random seed
+            n_samples (int): Number of samples
+            n_dims (int): Number of dimensions
+            sample_type (str): Type of sampling desired
+            scale (str): Scale ranges
+            scale_factor (float): scale factor to apply to all ranges
+            outfile (str): name of output .npy file
+            x0 (str): file with optional point to center samples around
+            x1 (str): file with x1 to add points between x0 and x1 (non inclusive) along a line
+            n_line (int): number of samples along a line between x0 and x1
+            hard_bounds (bool): force all points to lie within -scale
+        """
         np.random.seed(seed)
-        n_samples = n
-        n_dims = dims
-        hard_bounds = hard_bounds
-        sample_type = sample_type
 
-        x = self.get_samples(sample_type, n_samples, n_dims, seed)
+        samples = self.get_init_samples(sample_type, n_samples, n_dims, seed)
 
-        scales = process_scale(scale)
-
-        if scales is not None:
-            limits = []
-            do_log = []
-            for scale in scales:
-                limits.append((scale[0], scale[1]))
-                if len(scale) < 3:
-                    scale.append("linear")
-                if scale[2] == "log":
-                    do_log.append(True)
-                else:
-                    do_log.append(False)
-            x = scale_samples(x, limits, do_log=do_log)
+        scales = None
+        if scale:
+            scales, do_log = process_scale(scale)
+            samples = scale_samples(samples, scales, do_log=do_log)
 
         # scale the whole box
-        x = scale_factor * x
+        samples *= scale_factor
 
         # add x0
         if x0 is not None:
@@ -153,33 +192,33 @@ class MakeSamples(CliCommand):
             else:
                 center = scale_factor * 0.5
             # Loop over all x0 points
-            all_x = []
+            all_samples = []
             for _x0 in x0:
 
-                _x = x + _x0 - center
+                _samples = samples + _x0 - center
 
                 # replace the first entry with x0 for the random ones
-                if sample_type == "lhs" or sample_type == "lhd":
-                    _x[0] = _x0
+                if sample_type in ("lhs", "lhd"):
+                    _samples[0] = _x0
                 else:  # add it for the stencil points
-                    _x = np.insert(_x, 0, _x0, axis=0)
+                    _samples = np.insert(_samples, 0, _x0, axis=0)
 
                 if x1 is not None:
                     x1 = np.load(x1)
                     line_range = np.linspace(0, 1, n_line + 1, endpoint=False)[1:]
                     line_samples = _x0 + np.outer(line_range, (x1 - _x0))
-                    _x = np.vstack((_x, line_samples))
-                all_x.append(_x)
+                    _samples = np.vstack((_samples, line_samples))
+                all_samples.append(_samples)
 
-            x = np.vstack(all_x)
+            samples = np.vstack(all_samples)
 
         if hard_bounds:
             if scales is None:
-                x = np.clip(x, 0, 1)
+                samples = np.clip(samples, 0, 1)
             else:
                 for i, dim in enumerate(scales):
-                    x[:, i] = np.clip(x[:, i], dim[0], dim[1])
+                    samples[:, i] = np.clip(samples[:, i], dim[0], dim[1])
 
-        print(x)
+        print(samples)
 
-        np.save(outfile, x)
+        np.save(outfile, samples)

@@ -2,6 +2,8 @@ from types import SimpleNamespace
 
 import click
 
+from spellbook.ml import predict
+
 
 @click.command()
 @click.option(
@@ -29,7 +31,6 @@ def cli(infile, reg, outfile):
     """
     Use a regressor to make a prediction
     """
-    from spellbook.ml import predict
 
     args = SimpleNamespace(**{"infile": infile, "reg": reg, "outfile": outfile})
     predict.predict(args)

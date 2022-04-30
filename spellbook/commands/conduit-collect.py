@@ -2,6 +2,7 @@ from types import SimpleNamespace
 
 import click
 
+from spellbook.data_formatting.conduit.python import collector
 from spellbook.utils import OptionEatAll
 
 
@@ -38,7 +39,6 @@ def cli(infiles, outfile, chunk_size, add_uuid):
     """
     Convert a list of conduit-readable files into a single big conduit node. Simple append, so nodes that already exist will get a name change to conflict-uuid
     """
-    from spellbook.data_formatting.conduit.python import collector
 
     args = SimpleNamespace(
         **{

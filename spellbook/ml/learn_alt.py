@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 try:
     import cPickle as pickle
 except ImportError:
-    import pickle
+    import pickle  # type: ignore
 
 
 FOREST_DEFAULTS = {"max_depth": 2, "random_state": 0, "n_estimators": 100}
@@ -35,14 +35,14 @@ def random_forest(args):
     regr = RandomForestRegressor(**forest_args)
     X, y = load_infile(args)
 
-    n_samples_X = X.shape[0]
-    n_samples_y = y.shape[0]
+    n_inputs = X.shape[0]
+    n_outputs = y.shape[0]
 
-    if n_samples_X != n_samples_y:
-        raise ValueError("n_samples_X != n_samples_y")
+    if n_inputs != n_outputs:
+        raise ValueError("n_inputs != n_outputs")
 
     # single feature or sample reshape as appropriate for sklearn
-    if n_samples_y == 1:
+    if n_outputs == 1:
         y.reshape((1, -1))
     elif len(y.shape) == 1:
         y.reshape((-1, 1))
