@@ -3,16 +3,15 @@ from typing import List, Tuple, Union
 
 import numpy as np
 import pyDOE2 as doe
-from numpy.typing import NDArray
 from scipy.stats.distributions import norm
 
 
 def scale_samples(
-    samples_norm: NDArray,
+    samples_norm: np.ndarray,
     limits: List[tuple],
     limits_norm: Tuple[float, float] = (0.0, 1.0),
     do_log: Union[List, bool] = False,
-) -> NDArray:
+) -> np.ndarray:
     """Scale samples to new limits, either log10 or linearly.
 
     Args:
@@ -107,7 +106,7 @@ def process_scale(scales_str: str) -> Tuple[list, list]:
 
 
 class MakeSamples:
-    def get_init_samples(self, sample_type: str, n_samples: int, n_dims: int, seed: int) -> NDArray:
+    def get_init_samples(self, sample_type: str, n_samples: int, n_dims: int, seed: int) -> np.ndarray:
         """Generate the initial set of samples
 
         Args:
@@ -117,7 +116,7 @@ class MakeSamples:
             seed (int): Random seed
 
         Returns:
-            NDArray: initial samples
+            np.ndarray: initial samples
         """
         if sample_type == "random":
             samples = np.random.random((n_samples, n_dims))
