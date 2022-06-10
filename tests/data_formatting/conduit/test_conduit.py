@@ -5,6 +5,7 @@ skip_conduit_tests = False
 
 try:
     import conduit
+
     from spellbook.data_formatting.conduit.python import conduit_bundler as cb
 except ModuleNotFoundError:
     print("Conduit not available! These tests will be skipped!")
@@ -34,7 +35,9 @@ def test_save_node():
     delete_data()
 
 
-def save_node_many(node, base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin")):
+def save_node_many(
+    node, base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin")
+):
     for ext in exts:
         cb.dump_node(node, base + ext)
 
@@ -94,7 +97,9 @@ def nodes_equal(node1, node2):
     return node1.to_json() == node2.to_json()
 
 
-def load_node_many(base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin"), path="/"):
+def load_node_many(
+    base="_dummy", exts=(".h5", ".hdf5", ".json", ".yaml", ".cbin"), path="/"
+):
     nodes = []
     for ext in exts:
         node = cb.load_node(base + ext, path)

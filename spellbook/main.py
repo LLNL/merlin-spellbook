@@ -28,6 +28,7 @@ class SpellbookCLI(click.MultiCommand):
             "serialize",
             "stack-npz",
             "translate",
+            "make-barrier-cost",
         ]
 
     def list_commands_dynamically(self, ctx):
