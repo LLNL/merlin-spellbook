@@ -62,7 +62,7 @@ def cli(infile, outfile, x_names, function, maximize, constraints):
 
     Example:
 
-    spellbook make-cost-function --infile my_data.npz -x "x0,x1" -f "y" --constraints "g<0,g>-1,h>3.141" --outfile objective.npz
+    spellbook make-cost-function --infile my_data.npz -x "x0,x1" -y "y" --constraints "g<0,g>-1,h>3.141" --outfile objective.npz
 
     spellbook learn -infile objective.npz -outfile trained_model.pkl
 
