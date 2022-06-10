@@ -1,4 +1,28 @@
 import click
+import numpy as np
+
+
+def load_infile(npz_file, X_keys=None, y_keys=None):
+    with np.load(npz_file) as data:
+        if X_keys is not None:
+            X = stack_arrays(data, X_keys)  # inputs
+        elif "X" in data.keys():
+            X = data["X"]
+        else:
+            X = data[data.files[0]]
+
+        if y_keys is not None:
+            y = stack_arrays(data, y_keys)  # outputs
+        elif "y" in data.keys():
+            y = data["y"]
+        else:
+            y = data[data.files[1]]
+    return X, y
+
+
+def stack_arrays(data, delimited_names, delimiter=","):
+    stacked = np.vstack([data[name] for name in delimited_names.split(delimiter)])
+    return stacked.T
 
 
 class OptionEatAll(click.Option):
