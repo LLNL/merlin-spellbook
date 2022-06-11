@@ -57,14 +57,19 @@ def cli(infile, outfile, x_names, function, maximize, constraints):
     """
     Make a "barrier" cost func for constrained opt.
 
+    Note: cost-function should be "minimized"
+    Adding the "maximize" flag will convert to a minimization function for you.
+
     Data are stored in a zipped npz file and saved to another zipped file, which contains two fields "X" and "y".
     "X" contains the design variables and "y" contains the new objective.
 
     Example:
 
-    spellbook make-cost-function --infile my_data.npz -x "x0,x1" -y "y" --constraints "g<0,g>-1,h>3.141" --outfile objective.npz
+    spellbook make-barrier-cost --infile my_data.npz -x "x0,x1" -y "y" --constraints "g<0,g>-1,h>3.141" --outfile objective.npz
 
     spellbook learn -infile objective.npz -outfile trained_model.pkl
+
+    python -c "import numpy as np; data = np.load('objective.npz'); print(data['X'][data["y"].argmin())])"
 
     """
     from spellbook.optimization import qoi
