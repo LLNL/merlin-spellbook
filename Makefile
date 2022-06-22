@@ -41,3 +41,7 @@ fix-style:
 	black --target-version py36 $(PROJ)
 	black --target-version py36 $(TEST)
 	black --target-version py36 *.py
+
+check-style:
+	python3 -m black --check --line-length 88 --target-version py36 $(PROJ)
+	python3 -m pylint $(PROJ) --rcfile=setup.cfg --exit-zero
