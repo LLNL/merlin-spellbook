@@ -57,8 +57,11 @@ def min_max_norm(x):
     return x / (maxx - minx)
 
 
-def make_barrier_qoi(f, g_constraints, minimize=True):
-    """Constructs a cost function for f (to be minimized) with barrier penalty constraints.
+def make_barrier_qoi(f, g_constraints, maximize=False):
+    """Constructs a cost function for f optimization with barrier penalty constraints.
+
+    Returns the qoi cost function suitable for either minimization (if maximize==False: default)
+    or maximization (if maximize==True)
 
     Each constraint in g_constraints applies a barrier penalty.
     g_constraints are a tuple of tuples with g, threshold, threshold_type
@@ -75,24 +78,37 @@ def make_barrier_qoi(f, g_constraints, minimize=True):
           (x,-2,'greater'),
           (np.sin(x),0,'greater'))
 
-    cost_qoi = make_barrier_qoi(f, gs, minimize=True)
+    cost_qoi = make_barrier_qoi(f, gs)
 
     plt.plot(x,cost_qoi)
     best = cost_qoi.argmin()
     plt.plot(x[best],cost_qoi[best],'*')
     plt.plot(x[best],f[best],'*')
 
+    cost_2 = make_barrier_qoi(f, gs, maximize=True)
+    best2 = cost_2.argmax()
+    plt.plot(x[best2], f[best2], 'o')
+
     """
     # Need to normalize constraints and f to be similar scales
     # Also make sure we are all 1D arrays (via ravel)
-    if not minimize:
+    # And flip the sign if we are maximizing
+    if maximize:
         qoi = -1.0 * min_max_norm(f).ravel()
     else:
-        qoi = 1.0 * min_max_norm(f).ravel()
+        qoi = min_max_norm(f).ravel()
+
+    # Now add the penalty terms (which assume minimization)
     for g, threshold, threshold_type in g_constraints:
         penalty = barrier(g.ravel(), threshold, threshold_type)
         norm_penalty = min_max_norm(penalty)
         qoi += norm_penalty
+
+    # If we are not minimizing, then we undo the negative transformation
+    # so that we return a function that has the same sign as the original
+    if maximize:
+        qoi *= -1.0
+
     return qoi
 
 
@@ -126,10 +142,10 @@ def process_args(args):
     output_file = args.outfile
     x_variables = args.X
     objective_name = args.objective
-    minimize = args.minimize_objective
+    maximize = args.maximize_objective
     constraint_metadata = args.constraints
     data = np.load(input_file)
     x, f = load_infile(input_file, x_variables, objective_name)
     constraints = parse_constraints(constraint_metadata, data)
-    qoi = make_barrier_qoi(f, constraints, minimize)
+    qoi = make_barrier_qoi(f, constraints, maximize)
     np.savez(output_file, X=x, y=qoi)

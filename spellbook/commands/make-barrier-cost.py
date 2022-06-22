@@ -43,7 +43,7 @@ import click
     default=False,
     is_flag=True,
     type=bool,
-    help="Create a function for maximixing (instead of minimizing, which is default)",
+    help="Create a function for maximizing (instead of minimizing, which is default)",
 )
 @click.option(
     "--constraints",
@@ -57,8 +57,7 @@ def cli(infile, outfile, x_names, function, maximize, constraints):
     """
     Make a "barrier" cost func for constrained opt.
 
-    Note: cost-function should be "minimized"
-    Adding the "maximize" flag will convert to a minimization function for you.
+    Note: the 'maximize' flag indicates this is a function that should be maximized, instead of minimized
 
     Data are stored in a zipped npz file and saved to another zipped file, which contains two fields "X" and "y".
     "X" contains the design variables and "y" contains the new objective.
@@ -80,7 +79,7 @@ def cli(infile, outfile, x_names, function, maximize, constraints):
             "outfile": outfile,
             "X": x_names,
             "objective": function,
-            "minimize_objective": not maximize,
+            "maximize_objective": maximize,
             "constraints": constraints,
         }
     )
