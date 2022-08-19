@@ -4,12 +4,17 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0]
+
+### Added
+- function `make-barrier-cost` to create optimization cost functions
+
 ## [0.6.1]
 
-## Added
+### Added
 - pylint to dev requirements for format checking
 
-## Changed
+### Changed
 - Conduit tests are skipped when conduit python package is not available. (test_conduit.py is also skipped for format checking)
 - Rename l variable in setup.py to line.
 - Removed unused import libraries.
@@ -20,15 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.0]
 
-## Added
+### Added
 - Delimiter option in serialization command.
 
-## Changed
+### Changed
 - In serialize command, grab the first entry as the key and everything else as the value.
 
 ## [0.5.3]
 
-## Fixed
+### Fixed
 - version number in docs and setup.py to match 0.5.3
 
 ## [0.5.2]
