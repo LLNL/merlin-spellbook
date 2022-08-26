@@ -4,6 +4,14 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.2]
+
+### Fixed
+- Add missing __init__.py to optimization module.
+
+### Changed
+- Remove .keepme file in optimization module.
+
 ## [0.7.1]
 
 ### Fixed
