@@ -118,6 +118,8 @@ def parse_constraints(constraint_args, data):
     args are in strings of form
         c1<4.0,c5>68.9
     """
+    if constraint_args is None:
+        return []
     constraint_data = []
     constraints = constraint_args.split(",")
     for constraint in constraints:
@@ -148,4 +150,5 @@ def process_args(args):
     x, f = load_infile(input_file, x_variables, objective_name)
     constraints = parse_constraints(constraint_metadata, data)
     qoi = make_barrier_qoi(f, constraints, maximize)
+    qoi = np.atleast_2d(qoi)
     np.savez(output_file, X=x, y=qoi)
