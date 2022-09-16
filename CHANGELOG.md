@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `make-barrier-qoi` applies `numpy.atleast_2d` to the qoi before returning.
 - `make-barrier-qoi` correctly normalizes inputs from 0 to 1.
 - `utils.stack_arrays` returns inputs in correct shape: (# of features, dim of feature).
+- `ml.learn` and `ml.learn_atl` use correct `load_infiles` function from `utils`.
 
 ## [0.7.2]
 
