@@ -12,11 +12,7 @@ import click
     help="whitespace separated list of files to collect",
 )
 @click.option(
-    "-outfile",
-    required=False,
-    default="results.hdf5",
-    type=str,
-    help="output file",
+    "-outfile", required=False, default="results.hdf5", type=str, help="output file"
 )
 def cli(instring, outfile):
     """
