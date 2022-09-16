@@ -14,4 +14,4 @@ def test_stack_arrays():
     os.remove("temp.npz")
     feature_names = "F1,F2,F3"
     result = stack_arrays(loaded, feature_names)
-    assert result.shape == (9, 2)
+    assert result.shape == (2, 9)
