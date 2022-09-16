@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `make-barrier-qoi` can accept no constraints.
 - `make-barrier-qoi` applies `numpy.atleast_2d` to the qoi before returning.
+- `make-barrier-qoi` correctly normalizes inputs from 0 to 1.
+- `utils.stack_arrays` returns inputs in correct shape: (# of features, dim of feature).
 
 ## [0.7.2]
 

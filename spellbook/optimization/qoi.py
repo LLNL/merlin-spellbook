@@ -54,7 +54,9 @@ def barrier(x, threshold, threshold_type="greater"):
 def min_max_norm(x):
     minx = np.min(x)
     maxx = np.max(x)
-    return x / (maxx - minx)
+    if minx == maxx:
+        return np.ones(x.shape)
+    return (x - minx) / (maxx - minx)
 
 
 def make_barrier_qoi(f, g_constraints, maximize=False):
@@ -109,6 +111,8 @@ def make_barrier_qoi(f, g_constraints, maximize=False):
     if maximize:
         qoi *= -1.0
 
+    # set dimensions to be consistent w/ sklearn
+    qoi = np.atleast_2d(qoi).T
     return qoi
 
 
@@ -150,5 +154,4 @@ def process_args(args):
     x, f = load_infile(input_file, x_variables, objective_name)
     constraints = parse_constraints(constraint_metadata, data)
     qoi = make_barrier_qoi(f, constraints, maximize)
-    qoi = np.atleast_2d(qoi)
     np.savez(output_file, X=x, y=qoi)
