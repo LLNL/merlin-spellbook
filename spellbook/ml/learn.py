@@ -28,8 +28,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ###############################################################################
-import numpy as np
-
 import spellbook.ml.surrogates as surrogates
 from spellbook.utils import load_infile
 

@@ -1,4 +1,3 @@
-import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from spellbook.utils import load_infile
 
