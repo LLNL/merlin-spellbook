@@ -1,5 +1,7 @@
 from sklearn.ensemble import RandomForestRegressor
+
 from spellbook.utils import load_infile
+
 
 try:
     import cPickle as pickle

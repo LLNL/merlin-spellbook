@@ -31,6 +31,7 @@
 import spellbook.ml.surrogates as surrogates
 from spellbook.utils import load_infile
 
+
 try:
     import cPickle as pickle
 except ImportError:
