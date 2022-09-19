@@ -6,13 +6,7 @@ from spellbook.utils import OptionEatAll
 
 
 @click.command()
-@click.option(
-    "--output",
-    required=False,
-    default="output.json",
-    type=str,
-    help="output file",
-)
+@click.option("--output", required=False, default="output.json", type=str, help="output file")
 @click.option(
     "--vars",
     required=False,

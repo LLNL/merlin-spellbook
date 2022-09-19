@@ -21,8 +21,8 @@ def load_infile(npz_file, X_keys=None, y_keys=None):
 
 
 def stack_arrays(data, delimited_names, delimiter=","):
-    stacked = np.vstack([data[name] for name in delimited_names.split(delimiter)])
-    return stacked.T
+    stacked = np.hstack([data[name] for name in delimited_names.split(delimiter)])
+    return stacked
 
 
 class OptionEatAll(click.Option):

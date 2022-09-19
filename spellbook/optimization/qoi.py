@@ -41,10 +41,7 @@ def barrier(x, threshold, threshold_type="greater"):
     penalty[group2] = (
         sign_x[group2]
         * xx[group2]
-        * (
-            (1.0 / g0[group2])
-            * ((gi[group2] / g0[group2]) ** 2 - 3.0 * (gi[group2] / g0[group2]) + 3.0)
-        )
+        * ((1.0 / g0[group2]) * ((gi[group2] / g0[group2]) ** 2 - 3.0 * (gi[group2] / g0[group2]) + 3.0))
     )
     penalty[group3] = 0.0
 
@@ -54,7 +51,9 @@ def barrier(x, threshold, threshold_type="greater"):
 def min_max_norm(x):
     minx = np.min(x)
     maxx = np.max(x)
-    return x / (maxx - minx)
+    if minx == maxx:
+        return np.ones(x.shape)
+    return (x - minx) / (maxx - minx)
 
 
 def make_barrier_qoi(f, g_constraints, maximize=False):
@@ -109,6 +108,8 @@ def make_barrier_qoi(f, g_constraints, maximize=False):
     if maximize:
         qoi *= -1.0
 
+    # set dimensions to be consistent w/ sklearn
+    qoi = np.atleast_2d(qoi).T
     return qoi
 
 
@@ -118,6 +119,8 @@ def parse_constraints(constraint_args, data):
     args are in strings of form
         c1<4.0,c5>68.9
     """
+    if constraint_args is None:
+        return []
     constraint_data = []
     constraints = constraint_args.split(",")
     for constraint in constraints:
@@ -128,9 +131,7 @@ def parse_constraints(constraint_args, data):
             threshold_type = "greater"
             splitter = ">"
         else:
-            raise ValueError(
-                'Bad constraint format: must be "name<value" or "name>value"'
-            )
+            raise ValueError('Bad constraint format: must be "name<value" or "name>value"')
         name, value_name = constraint.split(splitter)
         value = float(value_name)
         constraint_data.append((data[name], value, threshold_type))
