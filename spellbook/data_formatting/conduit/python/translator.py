@@ -86,9 +86,7 @@ def run(_input, output, schema):
             if data_loader.has_path(sample_path):
                 data_loader.read(filtered_node[path], sample_path)
             else:
-                filtered_node[
-                    sample_path
-                ] = np.nan  # if a value is missing, that could be a problem
+                filtered_node[sample_path] = np.nan  # if a value is missing, that could be a problem
         make_data_array_dict(all_dict, filtered_node)
 
     for dat in all_dict.keys():
@@ -129,9 +127,7 @@ def generate_scalar_path_pairs(node, path=""):
     children = node.child_names()
     for child in children:
         if isinstance(node[child], conduit.Node):
-            for pair in generate_scalar_path_pairs(
-                node[child], path=path + child + "/"
-            ):
+            for pair in generate_scalar_path_pairs(node[child], path=path + child + "/"):
                 yield pair
         else:
             yield path + child, node[child]
