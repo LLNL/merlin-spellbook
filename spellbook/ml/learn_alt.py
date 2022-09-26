@@ -16,7 +16,8 @@ def random_forest(args):
     forest_args = FOREST_DEFAULTS
 
     regr = RandomForestRegressor(**forest_args)
-    X, y = load_infile(args)
+
+    X, y = load_infile(args.infile, X_keys=args.X, y_keys=args.y)
 
     n_samples_X = X.shape[0]
     n_samples_y = y.shape[0]
