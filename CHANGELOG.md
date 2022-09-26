@@ -4,6 +4,18 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.4]
+### Fixed
+- `learn.make_regressor` and `learn_alt.random_forest` properly calls `utils.load_infile`.
+
+## [0.7.3]
+### Fixed
+- `make-barrier-qoi` can accept no constraints.
+- `make-barrier-qoi` applies `numpy.atleast_2d` to the qoi before returning.
+- `make-barrier-qoi` correctly normalizes inputs from 0 to 1.
+- `utils.stack_arrays` returns inputs in correct shape: (# of features, dim of feature).
+- `ml.learn` and `ml.learn_alt` use correct `load_infiles` function from `utils`.
+
 ## [0.7.2]
 
 ### Fixed

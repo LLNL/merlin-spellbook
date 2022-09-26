@@ -45,13 +45,5 @@ def cli(infile, x, y, outfile, regressor):
     """
     from spellbook.ml import learn_alt as learn
 
-    args = SimpleNamespace(
-        **{
-            "infile": infile,
-            "X": x,
-            "y": y,
-            "outfile": outfile,
-            "regressor": regressor,
-        }
-    )
+    args = SimpleNamespace(**{"infile": infile, "X": x, "y": y, "outfile": outfile, "regressor": regressor})
     learn.random_forest(args)

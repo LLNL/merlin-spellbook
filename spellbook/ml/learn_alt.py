@@ -1,5 +1,6 @@
-import numpy as np
 from sklearn.ensemble import RandomForestRegressor
+
+from spellbook.utils import load_infile
 
 
 try:
@@ -11,29 +12,12 @@ except ImportError:
 FOREST_DEFAULTS = {"max_depth": 2, "random_state": 0, "n_estimators": 100}
 
 
-def load_infile(args):
-    with np.load(args.infile) as data:
-        if args.X is not None:
-            X = stack_arrays(data, args.X)  # inputs
-        elif "X" in data.keys():
-            X = data["X"]
-        else:
-            X = data[data.files[0]]
-
-        if args.y is not None:
-            y = stack_arrays(data, args.y)  # outputs
-        elif "y" in data.keys():
-            y = data["y"]
-        else:
-            y = data[data.files[1]]
-    return X, y
-
-
 def random_forest(args):
     forest_args = FOREST_DEFAULTS
 
     regr = RandomForestRegressor(**forest_args)
-    X, y = load_infile(args)
+
+    X, y = load_infile(args.infile, X_keys=args.X, y_keys=args.y)
 
     n_samples_X = X.shape[0]
     n_samples_y = y.shape[0]
@@ -50,8 +34,3 @@ def random_forest(args):
     regr.fit(X, y)
     with open(args.outfile, "wb") as f:
         pickle.dump(regr, f)
-
-
-def stack_arrays(data, delimited_names, delimiter=","):
-    stacked = np.vstack([data[name] for name in delimited_names.split(delimiter)])
-    return stacked.T
