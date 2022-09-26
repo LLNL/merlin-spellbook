@@ -45,7 +45,7 @@ def make_regressor(args):
         reg_args = args.reg_args
 
     regr = surrogates.sklearnRegressors.factory(args.regressor, **reg_args)
-    X, y = load_infile(args)
+    X, y = load_infile(args.infile, X_keys=args.X, y_keys=args.y)
 
     n_samples_X = X.shape[0]
     n_samples_y = y.shape[0]
