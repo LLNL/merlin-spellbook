@@ -78,6 +78,10 @@ def process_scale(scale):
         processed = np.array(raw, dtype=float).tolist()
         return processed
 
+def process_round(round):
+    if round is not None:
+        return round.strip('[|]').replace(" ","").split(",")
+
 
 class MakeSamples(CliCommand):
     def get_samples(self, sample_type, n_samples, n_dims, seed):
@@ -112,6 +116,7 @@ class MakeSamples(CliCommand):
         sample_type,
         scale,
         scale_factor,
+        round,
         outfile,
         x0,
         x1,
@@ -143,6 +148,23 @@ class MakeSamples(CliCommand):
 
         # scale the whole box
         x = scale_factor * x
+
+        if round is not None:
+            # round the samples
+            round = process_round(round)
+            values = ['False', 'round', 'floor', 'ceil']
+            # check that the array sizes are the same
+            if len(round) != n_dims:
+                raise ValueError("length of -round must equal value of -dims.")
+            for e, r in enumerate(round):
+                if r.lower() not in [ v.lower for v in values]:
+                    raise ValueError(f"{r} is not an option. Must use {values}.")
+                elif r == 'round':
+                    x[:,e] = np.round(x[:,e])
+                elif r == 'floor':
+                    x[:,e] = np.floor(x[:,e])
+                elif r == 'ceil':
+                    x[:,e] = np.ceil(x[:,e])
 
         # add x0
         if x0 is not None:

@@ -61,6 +61,17 @@ import click
     help="number of samples along a line between x0 and x1",
 )
 @click.option(
+    "-round",
+    required=False,
+    default=None,
+    type=str,
+    help=(
+        "will round generated samples with options of False (no rounding), "
+        "round (nearest integer), floor, or ceil. Format is '[False, ceil, "
+        "ceil]'."
+    )
+)
+@click.option(
     "--hard-bounds",
     is_flag=True,
     required=False,
@@ -75,6 +86,7 @@ def cli(
     sample_type,
     scale,
     scale_factor,
+    round,
     outfile,
     x0,
     x1,
@@ -94,6 +106,7 @@ def cli(
         sample_type,
         scale,
         scale_factor,
+        round,
         outfile,
         x0,
         x1,
