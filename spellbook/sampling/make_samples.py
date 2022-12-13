@@ -157,7 +157,7 @@ class MakeSamples(CliCommand):
             if len(round) != n_dims:
                 raise ValueError("length of -round must equal value of -dims.")
             for e, r in enumerate(round):
-                if r.lower() not in [ v.lower for v in values]:
+                if r.lower() not in [ v.lower() for v in values]:
                     raise ValueError(f"{r} is not an option. Must use {values}.")
                 elif r == 'round':
                     x[:,e] = np.round(x[:,e])
