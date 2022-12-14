@@ -160,7 +160,7 @@ class MakeSamples(CliCommand):
             for e, r in enumerate(round):
                 if r.lower() not in [ v.lower() for v in values]:
                     raise ValueError(f"{r} is not an option. Must use {values}.")
-                if r != 'False':
+                if r.lower() != 'false':
                     func = getattr(np, r)
                     x[:,e] = func(x[:,e].astype('float')).astype('int')
 
