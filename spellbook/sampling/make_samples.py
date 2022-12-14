@@ -160,12 +160,9 @@ class MakeSamples(CliCommand):
             for e, r in enumerate(round):
                 if r.lower() not in [ v.lower() for v in values]:
                     raise ValueError(f"{r} is not an option. Must use {values}.")
-                elif r == 'round':
-                    x[:,e] = np.round(x[:,e].astype('float')).astype('int')
-                elif r == 'floor':
-                    x[:,e] = np.floor(x[:,e].astype('float')).astype('int')
-                elif r == 'ceil':
-                    x[:,e] = np.ceil(x[:,e].astype('float')).astype('int')
+                if r != 'False':
+                    func = getattr(np, r)
+                    x[:,e] = func(x[:,e].astype('float')).astype('int')
 
         # add x0
         if x0 is not None:
