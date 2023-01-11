@@ -9,8 +9,20 @@ import click
     type=int,
     help="random number seed for generating samples",
 )
-@click.option("-n", required=False, default=100, type=int, help="number of samples")
-@click.option("-dims", required=False, default=2, type=int, help="number of dimensions")
+@click.option(
+    "-n",
+    required=False,
+    default=100,
+    type=int,
+    help="number of samples"
+)
+@click.option(
+    "-dims",
+    required=False,
+    default=2,
+    type=int,
+    help="number of dimensions"
+)
 @click.option(
     "-sample_type",
     required=False,
@@ -72,6 +84,19 @@ import click
     )
 )
 @click.option(
+    "-repeat",
+    required=False,
+    default=None,
+    type=str,
+    help=(
+        "enable to repeat the generated samples by a given amounts. "
+        "Optionally, can fix the seed by specifying which column of the "
+        "PARAMETERS the seed value is located. Format is '[5, -1]' to specify "
+        "five repeats and the seed column being located at the last column. "
+        "Can also only specify one value."
+    )
+)
+@click.option(
     "--hard-bounds",
     is_flag=True,
     required=False,
@@ -87,6 +112,7 @@ def cli(
     scale,
     scale_factor,
     round,
+    repeat,
     outfile,
     x0,
     x1,
@@ -107,6 +133,7 @@ def cli(
         scale,
         scale_factor,
         round,
+        repeat,
         outfile,
         x0,
         x1,
