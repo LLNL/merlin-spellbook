@@ -82,6 +82,9 @@ def process_round(round):
     if round is not None:
         return round.strip('[|]').replace(" ","").split(",")
 
+def process_repeat(repeat):
+    return repeat.strip('[|]').replace(" ","").split(",")
+
 
 class MakeSamples(CliCommand):
     def get_samples(self, sample_type, n_samples, n_dims, seed):
@@ -117,6 +120,7 @@ class MakeSamples(CliCommand):
         scale,
         scale_factor,
         round,
+        repeat,
         outfile,
         x0,
         x1,
@@ -163,6 +167,27 @@ class MakeSamples(CliCommand):
                 if r.lower() != 'false':
                     func = getattr(np, r)
                     x[:,e] = func(x[:,e].astype('float')).astype('int')
+
+        if repeat is not None:
+            repeat = process_repeat(repeat)
+            # Check that the values are integers
+            try:
+                repeat = [int(r) for r in repeat]
+            except:
+                raise ValueError(
+                    f"one of the values in {repeat} is not in integer format."
+                )
+            num_repeat = repeat[0]
+            x = np.repeat(x, num_repeat, axis=0)
+            if len(repeat) == 2:
+                seed_col = repeat[1]
+                # Generate and fix seed value to specified column
+                s = np.random.rand(n_samples) * 10**6
+                s = np.round(s).astype('int').tolist()
+                s = s * num_repeat
+                s = np.array(s)
+                # Insert into array for the specified column
+                x[:, seed_col] = s[:]
 
         # add x0
         if x0 is not None:
