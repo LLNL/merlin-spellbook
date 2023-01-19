@@ -259,11 +259,11 @@ def define_tests():
             ReturnCodeCond(),
         ),
         "spellbook make-samples -n 6 -dims 4 -round [False, round, floor, ceil]" : (
-            "spellbook make-samples -n 6 -dims 4 -round [False, round, floor, ceil]",
+            "spellbook make-samples -n 6 -dims 4 -round [False, round, floor, ceil]; rm samples.npy",
             ReturnCodeCond()
         ),
         "spellbook make-samples -n 6 -dims 4 -repeat [5, -1]" : (
-            "spellbook make-samples -n 6 -dims 4 -repeat [5, -1]",
+            "spellbook make-samples -n 6 -dims 4 -repeat [5, -1]; rm samples.npy",
             ReturnCodeCond()
         ),
         # "spellbook learn": ("spellbook learn", ReturnCodeCond()),
