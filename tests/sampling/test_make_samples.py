@@ -8,7 +8,7 @@ import os
 import numpy as np
 import numpy.testing
 
-from spellbook.ml.learn import stack_arrays
+from spellbook.utils import stack_arrays
 from spellbook.sampling.make_samples import scale_samples
 
 

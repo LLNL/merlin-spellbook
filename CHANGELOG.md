@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - style and version number
+- testing for make-samples
 
 ## [0.8.0]
 
