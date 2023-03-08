@@ -35,13 +35,15 @@ clean:
 	-rm -rf build
 
 fix-style:
-	isort -rc $(PROJ)
-	isort -rc $(TEST)
-	isort *.py
-	black --target-version py36 $(PROJ)
-	black --target-version py36 $(TEST)
-	black --target-version py36 *.py
+	python3 -m isort --line-length 88 $(PROJ)
+	python3 -m isort --line-length 88 $(TEST)
+	python3 -m isort --line-length 88 *.py
+	python3 -m black --line-length 88 --target-version py36 $(PROJ)
+	python3 -m black --line-length 88 --target-version py36 $(TEST)
+	python3 -m black --line-length 88 --target-version py36 *.py
 
 check-style:
 	python3 -m black --check --line-length 88 --target-version py36 $(PROJ)
+	python3 -m black --check --line-length 88 --target-version py36 $(TEST)
 	python3 -m pylint $(PROJ) --rcfile=setup.cfg --exit-zero
+	python3 -m pylint *.py --rcfile=setup.cfg --exit-zero
