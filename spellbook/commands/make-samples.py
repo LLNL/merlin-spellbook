@@ -9,20 +9,8 @@ import click
     type=int,
     help="random number seed for generating samples",
 )
-@click.option(
-    "-n",
-    required=False,
-    default=100,
-    type=int,
-    help="number of samples"
-)
-@click.option(
-    "-dims",
-    required=False,
-    default=2,
-    type=int,
-    help="number of dimensions"
-)
+@click.option("-n", required=False, default=100, type=int, help="number of samples")
+@click.option("-dims", required=False, default=2, type=int, help="number of dimensions")
 @click.option(
     "-sample_type",
     required=False,
@@ -81,7 +69,7 @@ import click
         "will round generated samples with options of False (no rounding), "
         "round (nearest integer), floor, or ceil. Format is '[False, ceil, "
         "ceil]'."
-    )
+    ),
 )
 @click.option(
     "-repeat",
@@ -94,7 +82,7 @@ import click
         "PARAMETERS the seed value is located. Format is '[5, -1]' to specify "
         "five repeats and the seed column being located at the last column. "
         "Can also only specify one value."
-    )
+    ),
 )
 @click.option(
     "--hard-bounds",

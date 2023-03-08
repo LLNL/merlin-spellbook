@@ -6,7 +6,7 @@
 #
 # LLNL-CODE-<PENDING>
 # All rights reserved.
-# This file is part of merlin-spellbook, Version: 0.7.4.
+# This file is part of merlin-spellbook, Version: 0.8.1.
 #
 # For details, see https://github.com/LLNL/merlin-spellbook.
 #
@@ -58,7 +58,9 @@ def determine_protocol(fname):
     if ext.startswith("."):
         protocol = ext.lower().strip(".")
     else:
-        raise ValueError("{0} needs an ext (eg .hdf5) to determine protocol!".format(fname))
+        raise ValueError(
+            "{0} needs an ext (eg .hdf5) to determine protocol!".format(fname)
+        )
     # Map .h5 to .hdf5
     if protocol == "h5":
         protocol = "hdf5"
@@ -155,7 +157,10 @@ def dump_node(
         try:
             conduit.relay.io.save(conduit_node, fname, options=save_options)
         except TypeError:  # Conduit version needs to be updated.
-            LOG.error("Unable to customize save: please upgrade conduit to " "expose save options!")
+            LOG.error(
+                "Unable to customize save: please upgrade conduit to "
+                "expose save options!"
+            )
             conduit.relay.io.save(conduit_node, fname)
     else:
         conduit.relay.io.save(conduit_node, fname)

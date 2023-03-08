@@ -41,7 +41,10 @@ def barrier(x, threshold, threshold_type="greater"):
     penalty[group2] = (
         sign_x[group2]
         * xx[group2]
-        * ((1.0 / g0[group2]) * ((gi[group2] / g0[group2]) ** 2 - 3.0 * (gi[group2] / g0[group2]) + 3.0))
+        * (
+            (1.0 / g0[group2])
+            * ((gi[group2] / g0[group2]) ** 2 - 3.0 * (gi[group2] / g0[group2]) + 3.0)
+        )
     )
     penalty[group3] = 0.0
 
@@ -131,7 +134,9 @@ def parse_constraints(constraint_args, data):
             threshold_type = "greater"
             splitter = ">"
         else:
-            raise ValueError('Bad constraint format: must be "name<value" or "name>value"')
+            raise ValueError(
+                'Bad constraint format: must be "name<value" or "name>value"'
+            )
         name, value_name = constraint.split(splitter)
         value = float(value_name)
         constraint_data.append((data[name], value, threshold_type))

@@ -81,11 +81,11 @@ def process_scale(scale):
 
 def process_round(round):
     if round is not None:
-        return round.strip('[|]').replace(" ", "").split(",")
+        return round.strip("[|]").replace(" ", "").split(",")
 
 
 def process_repeat(repeat):
-    return repeat.strip('[|]').replace(" ", "").split(",")
+    return repeat.strip("[|]").replace(" ", "").split(",")
 
 
 class MakeSamples(CliCommand):
@@ -130,19 +130,19 @@ class MakeSamples(CliCommand):
 
     def apply_rounding(self, x, round):
         if round is not None:
-            x = x.astype('object')
+            x = x.astype("object")
             # round the samples
             round = process_round(round)
-            values = ['False', 'round', 'floor', 'ceil']
+            values = ["False", "round", "floor", "ceil"]
             # check that the array sizes are the same
             if len(round) != self.n_dims:
                 raise ValueError("length of -round must equal value of -dims.")
             for e, r in enumerate(round):
                 if r.lower() not in [v.lower() for v in values]:
                     raise ValueError(f"{r} is not an option. Must use {values}.")
-                if r.lower() != 'false':
+                if r.lower() != "false":
                     func = getattr(np, r)
-                    x[:, e] = func(x[:, e].astype('float')).astype('int')
+                    x[:, e] = func(x[:, e].astype("float")).astype("int")
         return x
 
     def apply_repeat(self, x, repeat):
@@ -161,7 +161,7 @@ class MakeSamples(CliCommand):
                 seed_col = repeat[1]
                 # Generate and fix seed value to specified column
                 s = np.random.rand(self.n_samples) * 10**6
-                s = np.round(s).astype('int').tolist()
+                s = np.round(s).astype("int").tolist()
                 s = s * num_repeat
                 s = np.array(s)
                 # Insert into array for the specified column
