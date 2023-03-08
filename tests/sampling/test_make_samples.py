@@ -7,7 +7,6 @@ import numpy as np
 import numpy.testing
 
 from spellbook.sampling.make_samples import scale_samples
-from spellbook.utils import stack_arrays
 
 
 def test_scale_samples_nolog_1():
