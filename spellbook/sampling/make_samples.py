@@ -79,6 +79,15 @@ def process_scale(scale):
         return processed
 
 
+def process_round(round):
+    if round is not None:
+        return round.strip('[|]').replace(" ", "").split(",")
+
+
+def process_repeat(repeat):
+    return repeat.strip('[|]').replace(" ", "").split(",")
+
+
 class MakeSamples(CliCommand):
     def get_samples(self, sample_type, n_samples, n_dims, seed):
         if sample_type == "random":
@@ -104,30 +113,7 @@ class MakeSamples(CliCommand):
 
         return x
 
-    def run(
-        self,
-        seed,
-        n,
-        dims,
-        sample_type,
-        scale,
-        scale_factor,
-        outfile,
-        x0,
-        x1,
-        n_line,
-        hard_bounds,
-    ):
-        np.random.seed(seed)
-        n_samples = n
-        n_dims = dims
-        hard_bounds = hard_bounds
-        sample_type = sample_type
-
-        x = self.get_samples(sample_type, n_samples, n_dims, seed)
-
-        scales = process_scale(scale)
-
+    def apply_scale(self, x, scales):
         if scales is not None:
             limits = []
             do_log = []
@@ -140,9 +126,81 @@ class MakeSamples(CliCommand):
                 else:
                     do_log.append(False)
             x = scale_samples(x, limits, do_log=do_log)
+        return x
+
+    def apply_rounding(self, x, round):
+        if round is not None:
+            x = x.astype('object')
+            # round the samples
+            round = process_round(round)
+            values = ['False', 'round', 'floor', 'ceil']
+            # check that the array sizes are the same
+            if len(round) != self.n_dims:
+                raise ValueError("length of -round must equal value of -dims.")
+            for e, r in enumerate(round):
+                if r.lower() not in [v.lower() for v in values]:
+                    raise ValueError(f"{r} is not an option. Must use {values}.")
+                if r.lower() != 'false':
+                    func = getattr(np, r)
+                    x[:, e] = func(x[:, e].astype('float')).astype('int')
+        return x
+
+    def apply_repeat(self, x, repeat):
+        if repeat is not None:
+            repeat = process_repeat(repeat)
+            # Check that the values are integers
+            try:
+                repeat = [int(r) for r in repeat]
+            except ValueError:
+                raise ValueError(
+                    f"one of the values in {repeat} is not in integer format."
+                )
+            num_repeat = repeat[0]
+            x = np.repeat(x, num_repeat, axis=0)
+            if len(repeat) == 2:
+                seed_col = repeat[1]
+                # Generate and fix seed value to specified column
+                s = np.random.rand(self.n_samples) * 10**6
+                s = np.round(s).astype('int').tolist()
+                s = s * num_repeat
+                s = np.array(s)
+                # Insert into array for the specified column
+                x[:, seed_col] = s[:]
+        return x
+
+    def run(
+        self,
+        seed,
+        n,
+        dims,
+        sample_type,
+        scale,
+        scale_factor,
+        round,
+        repeat,
+        outfile,
+        x0,
+        x1,
+        n_line,
+        hard_bounds,
+    ):
+        np.random.seed(seed)
+        self.n_samples = n
+        self.n_dims = dims
+        hard_bounds = hard_bounds
+        sample_type = sample_type
+
+        x = self.get_samples(sample_type, self.n_samples, self.n_dims, seed)
+
+        scales = process_scale(scale)
+
+        x = self.apply_scale(x, scales)
 
         # scale the whole box
         x = scale_factor * x
+
+        x = self.apply_rounding(x, round)
+        x = self.apply_repeat(x, repeat)
 
         # add x0
         if x0 is not None:
