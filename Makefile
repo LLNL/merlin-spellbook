@@ -35,9 +35,9 @@ clean:
 	-rm -rf build
 
 fix-style:
-	isort -rc $(PROJ)
-	isort -rc $(TEST)
-	isort *.py
+	python3 -m isort --line-length 88 $(PROJ)
+	python3 -m isort --line-length 88 $(TEST)
+	python3 -m isort --line-length 88 *.py
 	python3 -m black --line-length 88 --target-version py36 $(PROJ)
 	python3 -m black --line-length 88 --target-version py36 $(TEST)
 	python3 -m black --line-length 88 --target-version py36 *.py

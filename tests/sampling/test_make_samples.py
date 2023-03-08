@@ -3,13 +3,11 @@
 #  Checks for various ranges of values to sample
 #  for both linear and log scaling.
 # -----------------------------------------------------------------------
-import os
-
 import numpy as np
 import numpy.testing
 
-from spellbook.utils import stack_arrays
 from spellbook.sampling.make_samples import scale_samples
+from spellbook.utils import stack_arrays
 
 
 def test_scale_samples_nolog_1():
