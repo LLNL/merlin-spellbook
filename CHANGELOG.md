@@ -4,7 +4,11 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [0.8.0]
+
+### Added
+- -round and -repeat options to make-samples, which allows for mixed integers and floats
+
 ### Changed
 - changed python version support to 3.7 - 3.11 (3.6 is past end-of-life)
 
