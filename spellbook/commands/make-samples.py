@@ -66,9 +66,10 @@ import click
     default=None,
     type=str,
     help=(
-        "will round generated samples with options of False (no rounding), "
-        "round (nearest integer), floor, or ceil. Format is '[False, ceil, "
-        "ceil]'."
+        "Will round generated samples with options of False (no rounding), "
+        "round (nearest integer), round_n (round to the nearest n decimal places), floor, "
+        "or ceil. Format is '[False,ceil,round_3]'. The number of entries must match the "
+        "number of dimensions (dims)."
     ),
 )
 @click.option(

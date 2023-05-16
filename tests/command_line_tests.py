@@ -112,6 +112,8 @@ def process_test_result(passed, info, is_verbose, exit):
             print(f"\treturn code: {info['return_code']}")
         if info["stderr"] != "":
             print(f"\tstderr:\n{info['stderr']}")
+        if info["stdout"] != "":
+            print(f"\tstdout:\n{info['stdout']}")
 
     return passed
 
@@ -263,6 +265,10 @@ def define_tests():
         "spellbook make-samples round": (
             "spellbook make-samples -n 6 -dims 4 -round '[False, round, floor, ceil]'; rm samples.npy",
             ReturnCodeCond(),
+        ),
+        "spellbook make-samples round to specific decimal": (
+            "spellbook make-samples -n 1 -dims 2 -round '[round, round_3]'; rm samples.npy",
+            [ReturnCodeCond(), RegexCond(r"\[(\d\s)(\d\.\d{1,3})\]")],
         ),
         "spellbook make-samples repeat": (
             "spellbook make-samples -n 6 -dims 4 -repeat '[5, -1]'; rm samples.npy",
