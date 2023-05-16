@@ -133,16 +133,38 @@ class MakeSamples(CliCommand):
             x = x.astype("object")
             # round the samples
             round = process_round(round)
-            values = ["False", "round", "floor", "ceil"]
+            values = ["False", "floor", "ceil"]
             # check that the array sizes are the same
             if len(round) != self.n_dims:
                 raise ValueError("length of -round must equal value of -dims.")
             for e, r in enumerate(round):
-                if r.lower() not in [v.lower() for v in values]:
-                    raise ValueError(f"{r} is not an option. Must use {values}.")
-                if r.lower() != "false":
-                    func = getattr(np, r)
-                    x[:, e] = func(x[:, e].astype("float")).astype("int")
+                # Validate user input
+                r_lower = r.lower()
+                if (
+                    r_lower not in [v.lower() for v in values]
+                    and "round" not in r_lower
+                ):
+                    raise ValueError(
+                        f"{r} is not an option. Must use {values}, round, or round_n (where n is an integer > 0)."
+                    )
+                # Check if the user wants to ignore rounding for this iteration
+                if r_lower != "false":
+                    if "round" in r:
+                        # Get the decimal to round by (if necessary)
+                        round_parsed = r.split("_")
+                        try:
+                            decimals = int(round_parsed[1])
+                        except IndexError:
+                            decimals = 0
+                        # Round the samples to the decimal provided
+                        x[:, e] = np.round_(x[:, e].astype("float"), decimals=decimals)
+                        # Convert to integer if we're rounding to the nearest int
+                        if decimals == 0:
+                            x[:, e] = x[:, e].astype("int")
+                    else:
+                        # Round by ceil or floor
+                        func = getattr(np, r)
+                        x[:, e] = func(x[:, e].astype("float")).astype("int")
         return x
 
     def apply_repeat(self, x, repeat):
