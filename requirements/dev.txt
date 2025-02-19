@@ -1,6 +1,6 @@
 # Development dependencies.
 pylint
-black==22.8.0
+black
 dep-license
 flake8
 isort
