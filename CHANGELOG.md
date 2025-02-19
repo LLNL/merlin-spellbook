@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Dropped support for python 3.7 and older
+- Updated Makefile to use newer check-style targets
 
 ## [0.8.1]
 

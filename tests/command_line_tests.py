@@ -46,7 +46,7 @@ OUTPUT_DIR = "cli_test_studies"
 
 def run_single_test(name, test, test_label="", buffer_length=50):
     dot_length = buffer_length - len(name) - len(str(test_label))
-    print(f"TEST {test_label}: {name}{'.'*dot_length}", end="")
+    print(f"TEST {test_label}: {name}{'.' * dot_length}", end="")
     command = test[0]
     conditions = test[1]
     if not isinstance(conditions, list):
