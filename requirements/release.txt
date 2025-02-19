@@ -2,6 +2,6 @@ importlib_resources; python_version < '3.7'
 coloredlogs
 click
 numpy
-pyDOE2
+pyDOE3
 scipy
 scikit-learn
