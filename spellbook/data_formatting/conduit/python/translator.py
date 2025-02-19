@@ -86,9 +86,9 @@ def run(_input, output, schema):
             if data_loader.has_path(sample_path):
                 data_loader.read(filtered_node[path], sample_path)
             else:
-                filtered_node[
-                    sample_path
-                ] = np.nan  # if a value is missing, that could be a problem
+                filtered_node[sample_path] = (
+                    np.nan
+                )  # if a value is missing, that could be a problem
         make_data_array_dict(all_dict, filtered_node)
 
     for dat in all_dict.keys():
