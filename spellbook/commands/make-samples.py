@@ -16,7 +16,7 @@ import click
     required=False,
     default="random",
     type=str,
-    help="type of sampling. options: random, grid, lhs, lhd, star, ccf, ccc, cci. If grid, will try to get close to the correct number of samples. for lhd min-max correspond to +- 3 sigma range",
+    help="type of sampling. options: random, normal, truncnorm, grid, lhs, lhd, star, ccf, ccc, cci. If grid, will try to get close to the correct number of samples. for lhd min-max correspond to +- 3 sigma range",
 )
 @click.option(
     "-scale",
@@ -92,6 +92,34 @@ import click
     type=bool,
     help="force all points to lie within -scale",
 )
+@click.option(
+    "-mean",
+    required=False,
+    default=None,
+    type=str,
+    help="an array [mu0, mu1, ...] of means used by normal or truncnorm distribution",
+)
+@click.option(
+    "-std",
+    required=False,
+    default=None,
+    type=str,
+    help="an array of standard deviations [std0, std1, ...] used by normal or truncnorm distribution",
+)
+@click.option(
+    "-lower_std",
+    required=False,
+    default=-2.0,
+    type=float,
+    help="lower bound in terms of the number of std deviations from the mean; used by truncnorm distribution (can be negative)",
+)
+@click.option(
+    "-upper_std",
+    required=False,
+    default=2.0,
+    type=float,
+    help="upper bound in terms of the number of standard deviations from the mean; used by truncnorm distribution",
+)
 def cli(
     seed,
     n,
@@ -106,6 +134,10 @@ def cli(
     x1,
     n_line,
     hard_bounds,
+    mean,
+    std,
+    lower_std,
+    upper_std
 ):
     """
     Generate some samples!
@@ -127,4 +159,8 @@ def cli(
         x1,
         n_line,
         hard_bounds,
+        mean,
+        std,
+        lower_std,
+        upper_std
     )
