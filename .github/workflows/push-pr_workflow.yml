@@ -58,7 +58,7 @@ jobs:
 
     - name: Lint with Black
       run: |
-        black --check --line-length $MAX_LINE_LENGTH --target-version py38 spellbook tests *.py
+        black --check --line-length $MAX_LINE_LENGTH --target-version py311 spellbook tests *.py
 
     - name: Lint with PyLint
       run: |
