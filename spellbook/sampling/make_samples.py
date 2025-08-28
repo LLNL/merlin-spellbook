@@ -2,8 +2,8 @@ import ast
 
 import numpy as np
 import pyDOE3 as doe
-from scipy.stats.distributions import norm
 from scipy.stats import truncnorm
+from scipy.stats.distributions import norm
 
 from spellbook.commands import CliCommand
 
@@ -88,6 +88,7 @@ def process_round(round):
 def process_repeat(repeat):
     return repeat.strip("[|]").replace(" ", "").split(",")
 
+
 def process_array(array, n_dims):
     arr = array.strip("[|]").replace(" ", "").split(",")
     arr = [float(x) for x in arr]
@@ -118,20 +119,20 @@ class MakeSamples(CliCommand):
         if sample_type == "random":
             x = np.random.random((n_samples, n_dims))
         elif sample_type == "normal":
-            mean = kwargs.get('mean', np.zeros(n_dims))
-            std = kwargs.get('std', np.ones(n_dims))
+            mean = kwargs.get("mean", np.zeros(n_dims))
+            std = kwargs.get("std", np.ones(n_dims))
             mean, std = process_mean_std(n_dims, mean, std)
             x = np.random.normal(loc=mean, scale=std, size=(n_samples, n_dims))
         elif sample_type == "truncnorm":
-            mean = kwargs.get('mean', np.zeros(n_dims))
-            std = kwargs.get('std', np.ones(n_dims))
-            lower_std = kwargs.get('lower_std', -2.0)
-            upper_std = kwargs.get('upper_std', 2.0)
+            mean = kwargs.get("mean", np.zeros(n_dims))
+            std = kwargs.get("std", np.ones(n_dims))
+            lower_std = kwargs.get("lower_std", -2.0)
+            upper_std = kwargs.get("upper_std", 2.0)
             mean, std = process_mean_std(n_dims, mean, std)
             x = np.zeros((n_samples, n_dims))
             for d in range(n_dims):
-              rv = truncnorm(lower_std, upper_std, loc=mean[d], scale=std[d])
-              x[:, d] = rv.rvs(n_samples)
+                rv = truncnorm(lower_std, upper_std, loc=mean[d], scale=std[d])
+                x[:, d] = rv.rvs(n_samples)
             return x
         elif sample_type == "grid":
             subdivision = int(pow(n_samples, 1 / float(n_dims)))
@@ -227,7 +228,7 @@ class MakeSamples(CliCommand):
         mean,
         std,
         lower_std,
-        upper_std
+        upper_std,
     ):
         np.random.seed(seed)
         self.n_samples = n
@@ -235,8 +236,16 @@ class MakeSamples(CliCommand):
         hard_bounds = hard_bounds
         sample_type = sample_type
 
-        x = self.get_samples(sample_type, self.n_samples, self.n_dims, seed,
-           mean=mean, std=std, lower_std=lower_std, upper_std=upper_std)
+        x = self.get_samples(
+            sample_type,
+            self.n_samples,
+            self.n_dims,
+            seed,
+            mean=mean,
+            std=std,
+            lower_std=lower_std,
+            upper_std=upper_std,
+        )
 
         scales = process_scale(scale)
 

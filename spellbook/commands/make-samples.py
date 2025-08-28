@@ -137,7 +137,7 @@ def cli(
     mean,
     std,
     lower_std,
-    upper_std
+    upper_std,
 ):
     """
     Generate some samples!
@@ -162,5 +162,5 @@ def cli(
         mean,
         std,
         lower_std,
-        upper_std
+        upper_std,
     )
