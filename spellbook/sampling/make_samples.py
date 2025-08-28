@@ -152,9 +152,7 @@ class MakeSamples(CliCommand):
             try:
                 repeat = [int(r) for r in repeat]
             except ValueError:
-                raise ValueError(
-                    f"one of the values in {repeat} is not in integer format."
-                )
+                raise ValueError(f"one of the values in {repeat} is not in integer format.")
             num_repeat = repeat[0]
             x = np.repeat(x, num_repeat, axis=0)
             if len(repeat) == 2:
