@@ -4,10 +4,15 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.9.1]
+## [Unreleased]
 
 ### Added
 - Added normal and truncnorm distributions
+
+### Changed
+- Updated GitHub actions
+    - Now uses a version of actions/cache that's not deprecated
+    - Utilizes a shared action for jobs to reduce duplicate code
 
 ## [0.9.0]
 

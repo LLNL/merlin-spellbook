@@ -11,9 +11,7 @@ import click
     type=str,
     help="whitespace separated list of files to collect",
 )
-@click.option(
-    "-outfile", required=False, default="results.hdf5", type=str, help="output file"
-)
+@click.option("-outfile", required=False, default="results.hdf5", type=str, help="output file")
 def cli(instring, outfile):
     """
     Collect many json files into a single json file

@@ -95,7 +95,7 @@ def process_array(array, n_dims):
     if len(arr) == 1:
         arr = n_dims * arr
     elif len(arr) != n_dims:
-        raise ValueError(f"mean must be of length {n_dims} or 1")
+        raise ValueError(f"The processed array must be of length {n_dims} or 1")
     return np.array(arr)
 
 
@@ -122,7 +122,8 @@ class MakeSamples(CliCommand):
             mean = kwargs.get("mean", np.zeros(n_dims))
             std = kwargs.get("std", np.ones(n_dims))
             mean, std = process_mean_std(n_dims, mean, std)
-            x = np.random.normal(loc=mean, scale=std, size=(n_samples, n_dims))
+            rng = np.random.default_rng(seed)
+            x = rng.normal(loc=mean, scale=std, size=(n_samples, n_dims))
         elif sample_type == "truncnorm":
             mean = kwargs.get("mean", np.zeros(n_dims))
             std = kwargs.get("std", np.ones(n_dims))
@@ -132,8 +133,7 @@ class MakeSamples(CliCommand):
             x = np.zeros((n_samples, n_dims))
             for d in range(n_dims):
                 rv = truncnorm(lower_std, upper_std, loc=mean[d], scale=std[d])
-                x[:, d] = rv.rvs(n_samples)
-            return x
+                x[:, d] = rv.rvs(n_samples, random_state=seed)
         elif sample_type == "grid":
             subdivision = int(pow(n_samples, 1 / float(n_dims)))
             temp = [np.linspace(0, 1.0, subdivision) for i in range(n_dims)]
@@ -194,9 +194,7 @@ class MakeSamples(CliCommand):
             try:
                 repeat = [int(r) for r in repeat]
             except ValueError:
-                raise ValueError(
-                    f"one of the values in {repeat} is not in integer format."
-                )
+                raise ValueError(f"one of the values in {repeat} is not in integer format.")
             num_repeat = repeat[0]
             x = np.repeat(x, num_repeat, axis=0)
             if len(repeat) == 2:
