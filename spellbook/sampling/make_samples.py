@@ -2,6 +2,7 @@ import ast
 
 import numpy as np
 import pyDOE3 as doe
+from scipy.stats import truncnorm
 from scipy.stats.distributions import norm
 
 from spellbook.commands import CliCommand
@@ -88,10 +89,51 @@ def process_repeat(repeat):
     return repeat.strip("[|]").replace(" ", "").split(",")
 
 
+def process_array(array, n_dims):
+    arr = array.strip("[|]").replace(" ", "").split(",")
+    arr = [float(x) for x in arr]
+    if len(arr) == 1:
+        arr = n_dims * arr
+    elif len(arr) != n_dims:
+        raise ValueError(f"The processed array must be of length {n_dims} or 1")
+    return np.array(arr)
+
+
+def process_mean_std(n_dims, mean=None, std=None):
+
+    if mean is None:
+        mean = np.zeros(n_dims)
+    else:
+        mean = process_array(mean, n_dims)
+
+    if std is None:
+        std = np.ones(n_dims)
+    else:
+        std = process_array(std, n_dims)
+
+    return mean, std
+
+
 class MakeSamples(CliCommand):
-    def get_samples(self, sample_type, n_samples, n_dims, seed):
+    def get_samples(self, sample_type, n_samples, n_dims, seed, **kwargs):
         if sample_type == "random":
             x = np.random.random((n_samples, n_dims))
+        elif sample_type == "normal":
+            mean = kwargs.get("mean", np.zeros(n_dims))
+            std = kwargs.get("std", np.ones(n_dims))
+            mean, std = process_mean_std(n_dims, mean, std)
+            rng = np.random.default_rng(seed)
+            x = rng.normal(loc=mean, scale=std, size=(n_samples, n_dims))
+        elif sample_type == "truncnorm":
+            mean = kwargs.get("mean", np.zeros(n_dims))
+            std = kwargs.get("std", np.ones(n_dims))
+            lower_std = kwargs.get("lower_std", -2.0)
+            upper_std = kwargs.get("upper_std", 2.0)
+            mean, std = process_mean_std(n_dims, mean, std)
+            x = np.zeros((n_samples, n_dims))
+            for d in range(n_dims):
+                rv = truncnorm(lower_std, upper_std, loc=mean[d], scale=std[d])
+                x[:, d] = rv.rvs(n_samples, random_state=seed)
         elif sample_type == "grid":
             subdivision = int(pow(n_samples, 1 / float(n_dims)))
             temp = [np.linspace(0, 1.0, subdivision) for i in range(n_dims)]
@@ -181,6 +223,10 @@ class MakeSamples(CliCommand):
         x1,
         n_line,
         hard_bounds,
+        mean,
+        std,
+        lower_std,
+        upper_std,
     ):
         np.random.seed(seed)
         self.n_samples = n
@@ -188,7 +234,16 @@ class MakeSamples(CliCommand):
         hard_bounds = hard_bounds
         sample_type = sample_type
 
-        x = self.get_samples(sample_type, self.n_samples, self.n_dims, seed)
+        x = self.get_samples(
+            sample_type,
+            self.n_samples,
+            self.n_dims,
+            seed,
+            mean=mean,
+            std=std,
+            lower_std=lower_std,
+            upper_std=upper_std,
+        )
 
         scales = process_scale(scale)
 

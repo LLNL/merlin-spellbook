@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added normal and truncnorm distributions
+
 ### Changed
 - Updated GitHub actions
     - Now uses a version of actions/cache that's not deprecated
