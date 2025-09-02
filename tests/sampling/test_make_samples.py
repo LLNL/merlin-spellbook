@@ -1,8 +1,14 @@
-#
-# Test Description
-#  Checks for various ranges of values to sample
-#  for both linear and log scaling.
-# -----------------------------------------------------------------------
+##############################################################################
+# Copyright (c) Lawrence Livermore National Security, LLC and other
+# Merlin-Spellbook Project developers. See top-level LICENSE and COPYRIGHT
+# files for dates and other details. No copyright assignment is required to
+# contribute to Merlin-Spellbook.
+##############################################################################
+
+"""
+Checks for various ranges of values to sample for both linear and log scaling.
+"""
+
 import numpy as np
 import numpy.testing
 
