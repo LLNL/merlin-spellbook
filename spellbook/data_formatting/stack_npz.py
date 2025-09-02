@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+##############################################################################
+# Copyright (c) Lawrence Livermore National Security, LLC and other
+# Merlin-Spellbook Project developers. See top-level LICENSE and COPYRIGHT
+# files for dates and other details. No copyright assignment is required to
+# contribute to Merlin-Spellbook.
+##############################################################################
 
 import os
 import shutil
@@ -24,9 +30,7 @@ def pad_many(arrays, dims, dont_pad_first=False, value=np.nan):
         if dont_pad_first:
             pad_dist[0] = 0
         padder = np.column_stack((zeros, pad_dist))
-        fixed.append(
-            np.pad(np.atleast_2d(a), padder, mode="constant", constant_values=value)
-        )
+        fixed.append(np.pad(np.atleast_2d(a), padder, mode="constant", constant_values=value))
     return fixed
 
 
@@ -48,11 +52,7 @@ class Stacker(object):
 
         if not force:
             if os.path.isfile(target):
-                print(
-                    "stack_npz error opening target file (does {0} exist?).".format(
-                        target
-                    )
-                )
+                print("stack_npz error opening target file (does {0} exist?).".format(target))
                 print('Pass "-f" argument to force re-creation of output file.')
                 return
 

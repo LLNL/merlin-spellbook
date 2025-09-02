@@ -1,32 +1,9 @@
-###############################################################################
-# Copyright (c) 2022, Lawrence Livermore National Security, LLC.
-# Produced at the Lawrence Livermore National Laboratory
-# Written by the Merlin dev team, listed in the CONTRIBUTORS file.
-# <merlin@llnl.gov>
-#
-# LLNL-CODE-797170
-# All rights reserved.
-# This file is part of Merlin Spellbook.
-#
-# For details, see https://github.com/LLNL/merlin.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-###############################################################################
+##############################################################################
+# Copyright (c) Lawrence Livermore National Security, LLC and other
+# Merlin-Spellbook Project developers. See top-level LICENSE and COPYRIGHT
+# files for dates and other details. No copyright assignment is required to
+# contribute to Merlin-Spellbook.
+##############################################################################
 
 """
 Script for running command line interface tests.
@@ -161,9 +138,7 @@ def run_tests(args, tests):
     if failures == 0:
         print(f"Done. {n_to_run} tests passed in {round(total_time, 2)} s.")
         return 0
-    print(
-        f"Done. {failures} tests out of {n_to_run} failed after {round(total_time, 2)} s.\n"
-    )
+    print(f"Done. {failures} tests out of {n_to_run} failed after {round(total_time, 2)} s.\n")
     return 1
 
 
@@ -283,9 +258,7 @@ def setup_argparse():
         action="store_true",
         help="Flag for stopping all testing upon first failure",
     )
-    parser.add_argument(
-        "--verbose", action="store_true", help="Flag for more detailed output messages"
-    )
+    parser.add_argument("--verbose", action="store_true", help="Flag for more detailed output messages")
     parser.add_argument(
         "--ids",
         action="store",
@@ -293,8 +266,7 @@ def setup_argparse():
         type=int,
         nargs="+",
         default=None,
-        help="Provide space-delimited ids of tests you want to run."
-        "Example: '--ids 1 5 8 13'",
+        help="Provide space-delimited ids of tests you want to run." "Example: '--ids 1 5 8 13'",
     )
     return parser
 

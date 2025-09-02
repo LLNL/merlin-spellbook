@@ -9,40 +9,43 @@ jobs:
     if: github.event_name == 'pull_request'
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Checkout the whole history, in case the target is way far behind
+
+    - name: Check if target branch has been merged
+      run: |
+        if git merge-base --is-ancestor ${{ github.event.pull_request.base.sha }} ${{ github.sha }}; then
+          echo "Target branch has been merged into the source branch."
+        else
+          echo "Target branch has not been merged into the source branch. Please merge in target first."
+          exit 1
+        fi
 
     - name: Check that CHANGELOG has been updated
       run: |
         # If this step fails, this means you haven't updated the CHANGELOG.md file with notes on your contribution.
-        git diff --name-only $(git merge-base origin/main HEAD) | grep '^CHANGELOG.md$' && echo "Thanks for helping keep our CHANGELOG up-to-date!"
+        if git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -q '^CHANGELOG.md$'; then
+          echo "Thanks for helping keep our CHANGELOG up-to-date!"
+        else
+          echo "Please update the CHANGELOG.md file with notes on your contribution."
+          exit 1
+        fi
 
   Lint:
     runs-on: ubuntu-latest
     env:
-      MAX_LINE_LENGTH: 88
-      MAX_COMPLEXITY: 18
+      MAX_LINE_LENGTH: 127
+      MAX_COMPLEXITY: 15
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+    - uses: actions/checkout@v4
 
-    - name: Check cache
-      uses: actions/cache@v2
+    - uses: ./.github/actions/setup-python
       with:
-        path: ~/.cache/pip
-        key: ${{ hashFiles('requirements/release.txt') }}-${{ hashFiles('requirements/dev.txt') }}
-
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install --upgrade -r requirements.txt; fi
-        pip3 install --upgrade -r requirements/dev.txt
+        python-version: '3.x'    
 
     - name: Lint with flake8
-      if: always()
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -50,25 +53,16 @@ jobs:
         flake8 . --count --max-complexity=$MAX_COMPLEXITY --statistics --max-line-length=$MAX_LINE_LENGTH
 
     - name: Lint with isort
-      if: always()
       run: |
-        python3 -m isort --check --line-length $MAX_LINE_LENGTH spellbook
-        # Skipping test_conduit due to temporary fix for missing conduit python package.
-        python3 -m isort --check --line-length $MAX_LINE_LENGTH --skip tests/data_formatting/conduit/test_conduit.py tests
-        python3 -m isort --check --line-length $MAX_LINE_LENGTH *.py
+        isort --check --line-length $MAX_LINE_LENGTH spellbook tests *.py
 
     - name: Lint with Black
-      if: always()
       run: |
-        python3 -m black --check --line-length $MAX_LINE_LENGTH --target-version py36 spellbook
-        python3 -m black --check --line-length $MAX_LINE_LENGTH --target-version py36 tests
-        python3 -m black --check --line-length $MAX_LINE_LENGTH --target-version py36 *.py
+        black --check --line-length $MAX_LINE_LENGTH --target-version py311 spellbook tests *.py
 
     - name: Lint with PyLint
-      if: always()
       run: |
-        python3 -m pylint spellbook --rcfile=setup.cfg --exit-zero
-        python3 -m pylint tests --rcfile=setup.cfg --exit-zero
+        pylint spellbook tests --rcfile=setup.cfg --exit-zero
 
   Local-test-suite:
     runs-on: ubuntu-latest
@@ -78,23 +72,11 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v4
+
+    - uses: ./.github/actions/setup-python
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Check cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements/release.txt') }}-${{ hashFiles('requirements/dev.txt') }}
-
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip3 install -r requirements/dev.txt
 
     - name: Install merlin-spellbook to run unit tests
       run: |
