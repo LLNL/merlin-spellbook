@@ -5,6 +5,6 @@
 # contribute to Merlin-Spellbook.
 ##############################################################################
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 VERSION = __version__
