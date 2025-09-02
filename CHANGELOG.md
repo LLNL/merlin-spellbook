@@ -4,15 +4,22 @@ All notable changes to Merlin Spellbook will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.10.0]
+## [Unreleased]
 
 ### Added
 - Added normal and truncnorm distributions
+- COPYRIGHT file for ownership details
+- New check for copyright headers in the Makefile
 
 ### Changed
 - Updated GitHub actions
     - Now uses a version of actions/cache that's not deprecated
     - Utilizes a shared action for jobs to reduce duplicate code
+- Copyright headers in all files
+  - These now point to the LICENSE and COPYRIGHT files
+  - LICENSE: Legal permissions (e.g., MIT terms)
+  - COPYRIGHT: Ownership, institutional metadata
+  - Make commands that change version/copyright year have been modified
 
 ## [0.9.0]
 
